@@ -22,6 +22,7 @@ import com.smhrd.web.entity.Board;
 import com.smhrd.web.entity.SearchCriteria;
 import com.smhrd.web.mapper.BoardMapper;
 
+@SuppressWarnings("unused")
 @Controller
 public class MyController {
 	
@@ -38,6 +39,11 @@ public class MyController {
 	//정확하게 전송방식을 지정해주는 형태를 사용
 	@GetMapping("/")
 	public String goBoard(Model model) {
+		// 전체 게시글 조회 메서드
+		// 1.DB에 접근해서 데이터 접근하기
+		List<Board> boardList = mapper.selectAll();
+		model.addAttribute("boardList", boardList);
+		
 		
 		return "cfMain";
 		//Spring boot 는 기본적으로 HTML 방식을 권장한다. 아래의 기본 설정으로 되어있음
@@ -45,5 +51,17 @@ public class MyController {
 		//     suffix : .html 
 		
 	}
+	
+	@GetMapping("/cfSearchRecipe")
+	public String boardContent() {
+		//콘솔 창에 출력 확인 해볼것. -> System. out.println("수집한 데이터 확인>>"+idx);
+		// 수집한 데이터확인
+		
+		return "cfSearchRecipe";
+	}
+	
+	
+	
+	
 	
 }
