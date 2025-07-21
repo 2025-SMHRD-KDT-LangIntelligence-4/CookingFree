@@ -45,5 +45,14 @@ public class MyController {
 		//     suffix : .html 
 		
 	}
+	@GetMapping("/cfLogin")
+	public String cfLogin(Model model) {
+		
+		return "cfLogin";
+		//Spring boot 는 기본적으로 HTML 방식을 권장한다. 아래의 기본 설정으로 되어있음
+		//경로가 prefix : resources/templates/(정적인 파일 반복문, 조건문 사용불가), 
+		//     suffix : .html 
+		
+	}
 	
 }
