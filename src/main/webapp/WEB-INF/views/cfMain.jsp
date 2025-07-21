@@ -290,7 +290,7 @@ body {
                 <div class="logo">CookIN(G)Free</div>
             </div>
             <div class="gnb-right">
-                <a href="#"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
+                <a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
                 <a href="#"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
                 <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
             </div>
@@ -312,7 +312,7 @@ body {
 	    </div>
 
 	    <div class="search">
-	        <a href="cfSearchRecipe">레시피 검색하기 <img src="/${cpath}/upload/ic_baseline-keyboard-arrow-up.svg" /></a>
+	        <a href="cfSearchRecipe">레시피 검색하기 <img src="${cpath}/upload/ic_baseline-keyboard-arrow-up.svg" /></a>
 	    </div>
 
 	    <div class="section-title">HOT 레시피</div>

@@ -173,9 +173,9 @@
 
 .conn1 {
 	background: #ffffff;
-	border-radius: 100px;
-	width: 14%;
-	height: 15%;
+	border-radius: 50%;
+	width: 60px;
+	height: 60px;
 	position: absolute;
 	right: 43%;
 	left: 43%;
@@ -187,8 +187,8 @@
 .conn2 {
 	background: #ffffff;
 	border-radius: 100px;
-	width: 14%;
-	height: 15%;
+	width: 60px;
+	height: 60px;
 	position: absolute;
 	right: 24%;
 	left: 62%;
@@ -200,8 +200,8 @@
 .conn3 {
 	background: #ffffff;
 	border-radius: 100px;
-	width: 14%;
-	height: 15%;
+	width: 60px;
+	height: 60px;
 	position: absolute;
 	right: 62%;
 	left: 24%;
