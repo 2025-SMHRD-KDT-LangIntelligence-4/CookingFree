@@ -1,0 +1,260 @@
+@charset "UTF-8";
+/* 기본 설정 */
+* {
+  box-sizing: border-box; /*패딩과 테두리까지 포함한 크기로 설정함*/
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Inter', sans-serif;
+}
+.container {
+  background: #fff;
+  position: relative; /*화면이 유동적으로 반응할때*/
+  overflow: hidden; /*화면 줄어들때 오버되는 컨텐츠 자르기*/
+  max-width: 1200px; /* 전체 화면크기 제한*/
+  margin: 0 auto; /*화면 수평정렬*/
+  padding: 0 20px;
+}
+
+/* GNB */
+.gnb {
+  display: flex; /*화면을 능동으로 배치할때*/
+  flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px;
+  background: #fff;
+  overflow-x: auto;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+/* 왼쪽/오른쪽 아이콘 링크 */
+.gnb-left a,
+.gnb-right a {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  text-decoration: none;
+  
+}
+
+/* 가운데 로고 */
+.gnb-center {
+  flex: 0 1 auto;         /* 기본값 auto 유지 + 필요시 줄어듬 */
+  min-width: 80px;        /* 최소 넓이 확보 */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.logo {
+  font-size: clamp(18px, 4vw, 32px);  /* 반응형 크기 */
+  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  color: #000;
+}
+
+/* 오른쪽 아이콘들 */
+.gnb-right {
+  display: flex;
+  gap: 12px;
+}
+
+/* 아이콘 유동 크기 + 최소한의 보장 */
+.icon {
+  width: clamp(18px, 5vw, 36px);
+  height: clamp(18px, 5vw, 36px);
+  min-width: 18px;
+  min-height: 18px;
+  object-fit: contain;
+}
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .gnb {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .gnb-right a {
+    margin-left: 6px;
+  }
+}
+
+
+/* Hero Section */
+.hero {
+   height: 500px;
+  background-size: cover;
+  background-position: center;
+  padding: 60px 60px;
+  color: white;
+   display: flex;
+  flex-direction: column;
+  /* 오른쪽 정렬 */
+  align-items: flex-end; 
+  text-align: right;
+  margin-top: 80px;
+}
+/*폰트설정*/
+.hero h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+.hero p {
+  font-size: 24px;
+}
+
+/* Intro */
+.intro {
+  padding: 100px 80px;
+}
+.intro h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+.desc p {
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+/* 검색 버튼 */
+.search {
+  text-align: center;
+  padding: 30px 0;
+}
+.search a {
+  background: #ffffff;
+  color: #000000;
+  padding: 16px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.search img {
+  width: 40px;
+  transform: rotate(90deg);
+}
+/*마우스 올렸을 때 반응*/
+.search a:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+/*이미지도 같이*/
+.search a:hover img {
+  filter: grayscale(100%) brightness(0) invert(1);
+}
+/* 섹션 타이틀 */
+.section-title {
+  font-size: 28px;
+  font-weight: bold;
+  padding: 20px 0;
+}
+
+/* 레시피 카드 */
+.recipes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.card {
+  flex: 1 1 calc(33.33% - 20px);
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 20px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 12px;
+}
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.card p {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.card a {
+  background: rgba(255, 255, 255, 0.8);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  align-self: flex-start;
+}
+
+/* 푸터 */
+.footer {
+  height: 300px;
+  background: #9f9f9f;
+  margin-top: 40px;
+}
+
+/* ✅ 반응형 미디어 쿼리 */
+@media (max-width: 1024px) {
+  .card {
+    flex: 1 1 calc(50% - 20px);
+  }
+  .hero h1 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 400px; /* 모바일에서는 높이 줄임 */
+  }
+  .gnb {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .logo {
+    font-size: 24px;
+  }
+  .hero h1 {
+    font-size: 28px;
+  }
+  .hero p {
+    font-size: 18px;
+  }
+  .recipes {
+    flex-direction: column;
+  }
+  .card {
+    flex: 1 1 100%;
+  }
+  .intro h2 {
+    font-size: 24px;
+  }
+  .desc p {
+    font-size: 16px;
+  }
+}
+/*스크롤 top버튼입니다.*/
+.top-button {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  padding: 10px 16px;
+  background-color: #333;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  display: none; /* 스크롤 전에는 숨김 */
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.top-button:hover {
+  background-color: #555;
+}
