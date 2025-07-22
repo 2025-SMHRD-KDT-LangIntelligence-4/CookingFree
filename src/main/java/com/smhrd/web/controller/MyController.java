@@ -93,23 +93,19 @@ public class MyController{
 	
 	@GetMapping("/cfMyPage")
 	public String cfMyPage() {
-		
 		return "cfMyPage";
 	}
->>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
+		
+}
 	
 	
 	//////////////////////////////////////////////////////////////////////////
 	// 여기부터 네이버로그인 작성 (70 ~ 90줄)
-<<<<<<< HEAD
 
-=======
-	
 
 	
 	
 	
->>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
 	
 	
 	
