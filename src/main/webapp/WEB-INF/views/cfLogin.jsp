@@ -123,7 +123,25 @@ body {
 	border-radius: 50%;
 	width: clamp(40px, 10vw, 60px);
 	height: clamp(40px, 10vw, 60px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
 }
+
+.sns-icon a {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	text-align: center;
+	text-decoration: none;
+	font-size: 0.75rem; /* 필요에 따라 조절 */
+	color: #fff;
+}
+
 /* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/
@@ -187,6 +205,12 @@ body {
 	}
 }
 
+.sns-icon img {
+	width: 60%;
+	height: 60%;
+	object-fit: contain;
+}
+
 </style>
 </head>
 <body>
@@ -214,13 +238,19 @@ body {
 	      <div class="createUser">회원가입</div>
 	    </div>
 	    <div class="sns-icons">
-	      <div class="sns-icon" title="연동1"></div>
-	      <div class="sns-icon" title="연동2"></div>
-	      <div class="sns-icon" title="연동3"></div>
+	      <div class="sns-icon" title="연동1">
+	      	<a href="/oauth2/authorization/google"><img src="${cpath}/upload/Google.png"/></a>
+	      </div>
+	      <div class="sns-icon" title="연동2">
+	      	<a href="/oauth2/authorization/naver"><img src="${cpath}/upload/naver.png"/></a>
+	      </div>
+	      <div class="sns-icon" title="연동3">
+	      	<a href="/oauth2/authorization/kakao"><img src="${cpath}/upload/카카오톡.png"></a>
+	      </div>
 	    </div>
 	  </div>
 	</div>
-
+ㄴ
 
 </body>
 </html>

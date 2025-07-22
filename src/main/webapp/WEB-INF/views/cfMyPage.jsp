@@ -72,23 +72,77 @@
 		margin-left: 6px;
 	}
 }
-	
+.myPage-container{
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	justify-content: center;
+}
+.myPage-title{
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	justify-content: center;
+}
+.pr-img{
+	box-sizing: border-box;
+	border-radius: 50%;
+	background-color:#c79d9d;
+	width:200px;
+	height:200px;
+}	
 </style>
 </head>
 <body>
+<!--------------------------------------------------------gnb 배너입니다.---------------------------------------------------------- -->
 <div class="gnb">
-		<div class="gnb-left">
-			<a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
-		</div>
-		<div class="gnb-center">
-			<a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
-		</div>
-		<div class="gnb-right">
-			<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
-				class="icon" /></a> <a href="#"><img
-				src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
-				src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
-		</div>
+	<div class="gnb-left">
+		<a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
 	</div>
+	<div class="gnb-center">
+		<a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
+	</div>
+	<div class="gnb-right">
+		<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
+			class="icon" /></a> <a href="#"><img
+			src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
+			src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
+	</div>
+</div>
+<!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
+<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+	<div class="myPage-title">
+		<div>My Page</div>
+		<button>프로필수정버튼이에요~</button>
+	</div>
+	<div class="myPage-container">
+		<div class="pr-img">이미지 넣을거에요~</div>
+	</div>
+	<div class="myPage-container">
+		<div>아이디</div><div>사용자 아이디 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>닉네임</div><div>사용자 닉네임 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>이메일</div><div>사용자 이메일 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>소셜아이디</div><div>사용자 소셜아이디 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>선호하는요리</div><div>사용자 선호요리 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>요리실력</div><div>사용자 요리실력 출력칸입니다~</div>  
+	</div>
+	<div class="myPage-container">
+		<div>가입일자</div><div>사용자 가입일자 출력칸입니다~</div>  
+	</div>
+<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
 </html>
