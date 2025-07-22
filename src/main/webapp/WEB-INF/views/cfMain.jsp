@@ -287,7 +287,7 @@ body {
                 <a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
             </div>
            <div class="gnb-center">
-                <div class="logo">CookIN(G)Free</div>
+                <a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
             </div>
             <div class="gnb-right">
                 <a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
