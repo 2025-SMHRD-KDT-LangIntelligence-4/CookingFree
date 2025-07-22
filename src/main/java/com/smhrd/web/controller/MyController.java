@@ -56,14 +56,18 @@ public class MyController {
 	}
 	
 	@GetMapping("/cfSearchRecipe")
-	public String boardContent() {
+	public String cfSearchRecipe() {
 		//콘솔 창에 출력 확인 해볼것. -> System. out.println("수집한 데이터 확인>>"+idx);
 		// 수집한 데이터확인
 		
 		return "cfSearchRecipe";
 	}
 	
-	
+	@GetMapping("/cfMyPage")
+	public String cfMyPage() {
+		
+		return "cfMyPage";
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////
