@@ -80,19 +80,36 @@ public class MyController{
 	}
 	
 	@GetMapping("/cfSearchRecipe")
-	public String boardContent() {
+	public String cfSearchRecipe() {
 		//콘솔 창에 출력 확인 해볼것. -> System. out.println("수집한 데이터 확인>>"+idx);
 		// 수집한 데이터확인
 		
 		return "cfSearchRecipe";
 	}
+<<<<<<< HEAD
 }
 	
+=======
+	
+	@GetMapping("/cfMyPage")
+	public String cfMyPage() {
+		
+		return "cfMyPage";
+	}
+>>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
 	
 	
 	//////////////////////////////////////////////////////////////////////////
 	// 여기부터 네이버로그인 작성 (70 ~ 90줄)
+<<<<<<< HEAD
 
+=======
+	
+
+	
+	
+	
+>>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
 	
 	
 	
@@ -111,9 +128,7 @@ public class MyController{
 	//////////////////////////////////////////////////////////////////////////
 	// 여기부터 카카오로그인 작성 (95 ~ 110줄)
 	
-	
-	
-	
+
 	
 	
 	
@@ -131,9 +146,7 @@ public class MyController{
 	////////////////////////////////////////////////////////////////////////////
 	// 여기부터 구글로그인 작성 (115 ~ 130)
 	
-	
-	
-	
+
 	
 	
 	
