@@ -1,13 +1,29 @@
 package com.smhrd.web.controller;
 
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +32,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.entity.SearchCriteria;
 import com.smhrd.web.mapper.BoardMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @SuppressWarnings("unused")
 @Controller
-public class MyController {
+public class MyController{
 	
 	// BoardMapper는 인터페이스 -> 직접 객체 생성 불가
 	// SpringContainer가 알아서 객체를 생성해서 주입하는 형식으로 진행
@@ -62,21 +86,30 @@ public class MyController {
 		
 		return "cfSearchRecipe";
 	}
+
+
+	
+
 	
 	@GetMapping("/cfMyPage")
 	public String cfMyPage() {
 		
 		return "cfMyPage";
 	}
+>>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
 	
 	
 	//////////////////////////////////////////////////////////////////////////
 	// 여기부터 네이버로그인 작성 (70 ~ 90줄)
+<<<<<<< HEAD
+
+=======
 	
 
 	
 	
 	
+>>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
 	
 	
 	
@@ -132,4 +165,4 @@ public class MyController {
 
 	
 	//////////////////////////////////////////////////////////////////////////
-}
+
