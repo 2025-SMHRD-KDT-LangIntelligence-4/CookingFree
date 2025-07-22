@@ -83,7 +83,7 @@
 .myPage-title{
 	display: flex;
 	align-items: center;
-	margin-top: 1rem;
+	margin-top: 5rem;
 	width: 100%;
 	box-sizing: border-box;
 	justify-content: center;
@@ -94,7 +94,23 @@
 	background-color:#c79d9d;
 	width:200px;
 	height:200px;
-}	
+}
+.myPage-container input{
+	width : 300px;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 1rem;
+}
+.myPage-container div{
+	width : 100px;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 1rem;
+}
 </style>
 </head>
 <body>
@@ -117,31 +133,30 @@
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 	<div class="myPage-title">
 		<div>My Page</div>
-		<button>프로필수정버튼이에요~</button>
 	</div>
-	<div class="myPage-container">
+	<div >
 		<div class="pr-img">이미지 넣을거에요~</div>
 	</div>
 	<div class="myPage-container">
-		<div>아이디</div><div>사용자 아이디 출력칸입니다~</div>  
+		<div>아이디</div><input placeholder="사용자 아이디 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>닉네임</div><div>사용자 닉네임 출력칸입니다~</div>  
+		<div>닉네임</div><input placeholder="사용자 닉네임 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>이메일</div><div>사용자 이메일 출력칸입니다~</div>  
+		<div>이메일</div><input placeholder="사사용자 이메일 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>소셜아이디</div><div>사용자 소셜아이디 출력칸입니다~</div>  
+		<div>소셜아이디</div><input placeholder="사용자 소셜아이디 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>선호하는요리</div><div>사용자 선호요리 출력칸입니다~</div>  
+		<div>선호하는요리</div><input placeholder="사용자 선호요리 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>요리실력</div><div>사용자 요리실력 출력칸입니다~</div>  
+		<div>요리실력</div><input placeholder="사용자 요리실력 출력칸입니다~"></input>  
 	</div>
 	<div class="myPage-container">
-		<div>가입일자</div><div>사용자 가입일자 출력칸입니다~</div>  
+		<div>가입일자</div><input placeholder="사용자 가입일자 출력칸입니다~"></input>  
 	</div>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
