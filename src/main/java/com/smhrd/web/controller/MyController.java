@@ -86,10 +86,10 @@ public class MyController{
 		
 		return "cfSearchRecipe";
 	}
-<<<<<<< HEAD
-}
+
+
 	
-=======
+
 	
 	@GetMapping("/cfMyPage")
 	public String cfMyPage() {
