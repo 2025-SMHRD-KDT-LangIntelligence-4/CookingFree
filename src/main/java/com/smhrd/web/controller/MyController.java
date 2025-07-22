@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.entity.SearchCriteria;
@@ -111,7 +114,8 @@ public class MyController {
 	////////////////////////////////////////////////////////////////////////////
 	// 여기부터 구글로그인 작성 (115 ~ 130)
 	
-	
+	@GetMapping("/userInfo")
+	@ResponseBody
 	
 	
 	
