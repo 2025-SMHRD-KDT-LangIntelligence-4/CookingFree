@@ -37,8 +37,6 @@ public interface BoardMapper {
 	
 	public List<Board> searchContent(SearchCriteria criteria);
 
-	public void insert(Board board);
-
 
 
 }
