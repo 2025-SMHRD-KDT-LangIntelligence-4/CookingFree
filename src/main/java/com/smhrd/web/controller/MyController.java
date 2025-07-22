@@ -61,13 +61,9 @@ public class MyController{
 	
 	//Spring boot 에서는 RequestMapping 방식을 권장하지 않음
 	//정확하게 전송방식을 지정해주는 형태를 사용
-	@GetMapping("/cfMain")
-	public String goBoard(Model model) {
-		return "cfMain";
-		//Spring boot 는 기본적으로 HTML 방식을 권장한다. 아래의 기본 설정으로 되어있음
-		//경로가 prefix : resources/templates/(정적인 파일 반복문, 조건문 사용불가), 
-		//     suffix : .html 
-		
+	@GetMapping({"/", "/cfMain"})
+	public String mainPage() {
+		return "cfMain";   // /WEB-INF/views/cfMain.jsp 뷰 렌더링
 	}
 	@GetMapping("/login")
 	public String loginPage() {

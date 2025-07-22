@@ -17,30 +17,33 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/WEB-INF/**");
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/login?error=true",
-                                "/oauth2/**",
-                                "/css/**", "/js/**", "/images/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/images/**", "/login", "/oauth2/**")
+                        .permitAll()   // 인증 없이 접근 허용
+                        .anyRequest().authenticated()  // 나머지는 인증 필수
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")                        // 로그인 URL (컨트롤러에서도 이 경로여야 함)
-                        .loginProcessingUrl("/login")               // 로그인 form action
-                        .defaultSuccessUrl("/cfMain", true)         // 로그인 성공 시 이동
-                        .failureUrl("/login?error=true")            // 실패 시 다시 로그인
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/cfMain", true)
+                        .failureUrl("/login?error=true")
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")                        // 소셜 로그인 시작 경로도 동일하게 설정
+                        .loginPage("/login")
                         .defaultSuccessUrl("/cfMain", true)
                 );
+
+
+
+
 
         return http.build();
     }
