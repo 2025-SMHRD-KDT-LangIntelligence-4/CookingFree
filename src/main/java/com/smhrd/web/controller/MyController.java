@@ -95,10 +95,10 @@ public class MyController{
 //
 //
 //
-//	@GetMapping("/cfMyPage")
-//	public String cfMyPage() {
-//		return "cfMyPage";
-//	}
+	@GetMapping("/cfMyPage")
+	public String cfMyPage() {
+		return "cfMyPage";
+	}
 //
 
 //

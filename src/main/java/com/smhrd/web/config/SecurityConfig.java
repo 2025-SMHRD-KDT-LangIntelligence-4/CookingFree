@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/images/**", "/login", "/oauth2/**")
+                        .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**")
                         .permitAll()   // 인증 없이 접근 허용
                         .anyRequest().authenticated()  // 나머지는 인증 필수
                 )
