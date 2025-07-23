@@ -4,7 +4,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -57,8 +57,9 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
+    @SuppressWarnings("deprecation")
+	@Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    	  return NoOpPasswordEncoder.getInstance(); //이걸 해주면 패스워드 암호화 없이 평문으로 사용하겠다는것. 테스트용이라 씀
     }
 }

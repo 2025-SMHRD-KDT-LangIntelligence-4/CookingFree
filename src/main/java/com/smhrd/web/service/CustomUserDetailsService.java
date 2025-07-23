@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Spring Security User 객체 생성: username, 암호화된 password, 권한(예: ROLE_USER)
         return User.builder()
                 .username(user.getEmail())
-                .password(user.getPw())  // DB는 bcrypt로 암호화된 비밀번호 저장해야 함
+                .password(user.getPw())  // DB는 bcrypt로 암호화된 비밀번호 저장해야 함, SecurityConfig 수정으로 잡아주기
                 .roles("USER")
                 .build();
     }
