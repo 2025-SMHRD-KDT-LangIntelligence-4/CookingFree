@@ -72,6 +72,64 @@
 		margin-left: 6px;
 	}
 }
+<!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
+.recipe-img{
+            width: 400px;
+            height: 300px;
+            background-color: bisque;
+            
+        }
+        .voice-btn{
+            width: 200px;
+            height: 150px;
+            background-color: skyblue;
+        }
+        .touch-btn{
+            width: 200px;
+            height: 150px;
+            background-color: green;
+        }
+        .container{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top:50px;
+        }
+        .btn-container{
+            flex-direction: column;
+        }
+        .title-container{
+            display: flex;
+            justify-content: center;
+            margin-top: 200px;
+        }
+        .title{
+            font-size: 30px;
+        }
+        .recipe-img2{
+            width: 200px;
+            height: 150px;
+            background-color: bisque;
+        }
+        .container2{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            
+        }
+        .btn-container2{
+            flex-direction: column;
+        }
+        .recipe-step-title{
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            margin-top:200px;
+            padding-left: 177px;
+        }
+
 </style>
 </head>
 <body>
@@ -90,5 +148,51 @@
 		</div>
 	</div>
 <!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
+<div class="title-container">
+        <div class="title">레시피제목입니다!</div>
+    </div>
+    <div class="container">
+        <div class="recipe-img">
+             레시피 이미지 출력하는 곳입니다.
+         </div>
+         <div class="btn-container">
+             <div class="voice-btn">
+                 음성 인식 버튼입니다.
+             </div>
+             <div class="touch-btn">
+                 터치 조작 버튼입니다.
+             </div> 
+         </div>
+    </div>
+
+    
+    <div class="recipe-step-title">레시피 과정 0️⃣</div>
+    <div class="container2">
+        <div class="recipe-img">
+            레시피 이미지 출력하는 곳입니다.
+        </div>
+         <div class="btn-container">
+             <div class="recipe-img2">
+                보유 재료를 출력하는 곳입니다.
+             </div>
+            <div class="recipe-img2">
+                레시피 과정 출력하는 곳입니다.
+            </div>
+        </div>
+    </div>
+    <div class="recipe-step-title">레시피 과정 0️⃣</div>
+    <div class="container2">
+        <div class="recipe-img">
+            레시피 이미지 출력하는 곳입니다.
+        </div>
+         <div class="btn-container">
+             <div class="recipe-img2">
+                보유 재료를 출력하는 곳입니다.
+             </div>
+            <div class="recipe-img2">
+                레시피 과정 출력하는 곳입니다.
+            </div>
+        </div>
+    </div>
 </body>
 </html>

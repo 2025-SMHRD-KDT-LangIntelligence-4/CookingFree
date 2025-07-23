@@ -79,27 +79,19 @@
 	margin-top: 1rem;
 	width: 100%;
 	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 1px solid #ddd;
-	
-}
-.full-container{
-	box-sizing: border-box;
-	max-width: 600px;
-	padding-left:40px;
-	margin: 0 auto; 
+	justify-content: center;
 }
 .myPage-title{
 	display: flex;
 	align-items: center;
-	margin-top: 3rem;
+	margin-top: 5rem;
 	width: fit-content;
 	box-sizing: border-box;
 	justify-content: center;
 	font-size:50px;
 	padding:10px 40px;
 	margin-bottom:50px;
-	border-bottom: 3px solid #ddd; 
+	border-bottom: 3px solid #bababa; 
 }
 .myPage-title-container{
 	display: flex;
@@ -110,21 +102,23 @@
 	box-sizing: border-box;
 	border-radius: 50%;
 	background-color:#c79d9d;
-	width:100px;
-	height:100px;
+	width:200px;
+	height:200px;
 	overflow:hidden;
 	align-items: center;
-	margin-right:20px;
-	margin-left:20px;
 }
 .myPage-container input{
 	width : 300px;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
 	box-sizing: border-box;
 	padding: 10px;
 	font-size: 1rem;
 }
 .myPage-container div{
 	width: auto;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
 	box-sizing: border-box;
 	padding: 10px;
 	font-size: 1rem;
@@ -136,32 +130,8 @@
 	margin-top: 1rem;
 	width: 100%;
 	box-sizing: border-box;
-	justify-content: left;
-	margin-bottom:3rem;
-}
-.footer{
-	width:100%;
-	height:100px;
-}
-.myPage-info-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 3px solid #ddd;
-	padding:10px;
-}
-.myPage-user-container{
-	display: flex;
-	align-items: center;
-	margin-top: 4rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 3px solid #ddd;
-	padding:10px;
+	justify-content: center;
+	margin-bottom:50px;
 }
 </style>
 </head>
@@ -188,40 +158,30 @@
 			<div>My Page</div>
 		</div>
 	</div>
-	<div class="full-container">
-		<div class="pr-img-container">
-			<div class="pr-img">이미지 넣을거에요~</div>
-			<div class="usernick" style="width:310px;">닉네임<div>등급</div></div>
-			<button class="logout">로그아웃</button>
-		</div>
+	<div class="pr-img-container">
+		<div class="pr-img">이미지 넣을거에요~</div>
 	</div>
-	<div class="full-container">
-		<div class="myPage-info-container">
-			<div style="margin-left:20px;">회원정보</div><div style="margin-left:330px;">회원정보 수정</div>
-		</div>
-		<div class="myPage-container">
-			<div>이메일</div><div >사용자 이메일 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>소셜아이디</div><div >사용자 소셜아이디 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>가입일자</div><div >사용자 가입일자 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-user-container">
-			<div style="margin-left:20px;">이용정보</div><div style="margin-left:330px;">이용정보 수정</div>
-		</div>
-		<div class="myPage-container">
-			<div>선호하는요리</div><div >사용자 선호요리 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>요리실력</div><div >사용자 요리실력 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>보유알러지</div><div >사용자 알러지내역 출력칸입니다~</div>  
-		</div>
+	<div class="myPage-container">
+		<div>닉네임</div><input placeholder="사용자 닉네임 출력칸입니다~"></input>  
 	</div>
-	<footer class="footer"></footer>
+	<div class="myPage-container">
+		<div>아이디</div><input placeholder="사용자 아이디 출력칸입니다~"></input>  
+	</div>
+	<div class="myPage-container">
+		<div>이메일</div><input placeholder="사사용자 이메일 출력칸입니다~"></input>  
+	</div>
+	<div class="myPage-container">
+		<div>소셜아이디</div><input placeholder="사용자 소셜아이디 출력칸입니다~"></input>  
+	</div>
+	<div class="myPage-container">
+		<div>선호하는요리</div><input placeholder="사용자 선호요리 출력칸입니다~"></input>  
+	</div>
+	<div class="myPage-container">
+		<div>요리실력</div><input placeholder="사용자 요리실력 출력칸입니다~"></input>  
+	</div>
+	<div class="myPage-container">
+		<div>가입일자</div><input placeholder="사용자 가입일자 출력칸입니다~"></input>  
+	</div>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
 </html>
