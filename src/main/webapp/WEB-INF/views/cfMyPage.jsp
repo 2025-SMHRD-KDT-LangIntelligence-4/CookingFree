@@ -72,6 +72,7 @@
 		margin-left: 6px;
 	}
 }
+/*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
 .myPage-container{
 	display: flex;
 	align-items: center;
@@ -111,6 +112,14 @@
 	padding: 10px;
 	font-size: 1rem;
 }
+.pr-img-container{
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	justify-content: center;
+}
 </style>
 </head>
 <body>
@@ -134,7 +143,7 @@
 	<div class="myPage-title">
 		<div>My Page</div>
 	</div>
-	<div >
+	<div class="pr-img-container">
 		<div class="pr-img">이미지 넣을거에요~</div>
 	</div>
 	<div class="myPage-container">

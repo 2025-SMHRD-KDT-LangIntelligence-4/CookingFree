@@ -291,7 +291,7 @@ body {
             </div>
             <div class="gnb-right">
                 <a href="${cpath}/login"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
-                <a href="${cpath}/MyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
+                <a href="${cpath}/cfMyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
                 <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
             </div>
         </div>
