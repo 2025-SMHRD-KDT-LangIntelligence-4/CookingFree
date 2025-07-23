@@ -65,98 +65,21 @@
    </if>
 </sql>	
 -->
- 
- 
- <!-- 네이버 로그인  75 ~ 100 -->
- 
+    <select id="selectUserByEmail" parameterType="string" resultType="com.smhrd.web.entity.Board">
+        SELECT * FROM cf_user WHERE email = #{email}
+    </select>
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 구글 로그인 110 ~ 130 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 카카오 로그인 140 ~ 160 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 기타 쿼리문 여기서부터 시작 -->
+    <select id="selectUserBySocialId" resultType="com.smhrd.web.entity.Board">
+        SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type = #{provider}
+    </select>
+
+    <insert id="insertSocialUser" parameterType="com.smhrd.web.entity.Board">
+        INSERT INTO cf_user(email, pw, nick, auth_type, social_id, alg_code, prefer_taste, cooking_skill, joined_at)
+        VALUES(#{email}, #{pw}, #{nick}, #{auth_type}, #{social_id}, #{alg_code}, #{prefer_taste}, #{cooking_skill}, #{joined_at})
+    </insert>
+
+
+    <!-- 기타 쿼리문 여기서부터 시작 -->
  
  <!-- 로그인 메서드 작성부분 165 ~180-->
  

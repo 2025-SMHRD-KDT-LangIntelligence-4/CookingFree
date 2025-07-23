@@ -222,7 +222,7 @@ body {
 			<a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
 		</div>
 		<div class="gnb-right">
-			<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
+			<a href="/login"><img src="${cpath}/upload/Vectorinfo.svg"
 				class="icon" /></a> <a href="#"><img
 				src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
 				src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
@@ -231,26 +231,28 @@ body {
 	<div class="login-wrapper">
 	  <div class="login-form">
 	    <div class="login-title">LOGIN</div>
-	    <input class="id" type="text" placeholder="아이디" />
-	    <input class="pw" type="password" placeholder="비밀번호" />
+		  <form action="/login" method="post">
+			  <input class="id" type="text" name="username" placeholder="아이디" required />
+			  <input class="pw" type="password" name="password" placeholder="비밀번호" required />
+			  <button class="loginBtn" type="submit">로그인</button>
+		  </form>
 	    <div class="login-links">
 	      <div class="searchIdPw">아이디/비밀번호 찾기</div>
 	      <div class="createUser">회원가입</div>
 	    </div>
 	    <div class="sns-icons">
 	      <div class="sns-icon" title="연동1">
-	      	<a href="/oauth2/authorization/google"><img src="${cpath}/upload/Google.png"/></a>
+	      	<a href="${cpath}/oauth2/authorization/google"><img src="${cpath}/upload/Google.png"/></a>
 	      </div>
 	      <div class="sns-icon" title="연동2">
-	      	<a href="/oauth2/authorization/naver"><img src="${cpath}/upload/naver.png"/></a>
+	      	<a href="${cpath}/oauth2/authorization/naver"><img src="${cpath}/upload/naver.png"/></a>
 	      </div>
 	      <div class="sns-icon" title="연동3">
-	      	<a href="/oauth2/authorization/kakao"><img src="${cpath}/upload/카카오톡.png"></a>
+	      	<a href="${cpath}/oauth2/authorization/kakao"><img src="${cpath}/upload/카카오톡.png"></a>
 	      </div>
 	    </div>
 	  </div>
 	</div>
-ㄴ
 
 </body>
 </html>

@@ -33,8 +33,21 @@
 		
 		<!-- Spring boot 는 라이브러리를 로드 할 때 버전을 설정하지 않는다.
 			 자동으로 parent 태그 안쪽에 있는 -->
-			 
-		
+
+		<!-- 바로 그 문제의 라이브러리 추가해보기 -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- 여기까지가 시큐리티. 문제있으면 지우면됨 -->
+
+
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>

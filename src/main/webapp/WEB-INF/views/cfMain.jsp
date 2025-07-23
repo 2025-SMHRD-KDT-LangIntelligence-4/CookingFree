@@ -290,8 +290,8 @@ body {
                 <a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
             </div>
             <div class="gnb-right">
-                <a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
-                <a href="cfMyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
+                <a href="${cpath}/login"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
+                <a href="${cpath}/MyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
                 <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
             </div>
         </div>
