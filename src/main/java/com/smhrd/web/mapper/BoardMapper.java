@@ -38,9 +38,9 @@ public interface BoardMapper {
 	
 	public List<Board> searchContent(SearchCriteria criteria);
 
-	Board selectUserByEmail(@Param("email") String email);
+	public Board selectUserByEmail(@Param("email") String email);
 
-	Board selectUserBySocialId(@Param("socialId") String socialId, @Param("provider") String provider);
+	public Board selectUserBySocialId(@Param("socialId") String socialId, @Param("provider") String provider);
 
 	int insertSocialUser(Board user);
 
