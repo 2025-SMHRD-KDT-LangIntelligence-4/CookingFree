@@ -73,96 +73,60 @@
 	}
 }
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
-.myPage-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 1px solid #ddd;
-	
+.join-container{
+    width: 500px;
+    height: 400px;
+    border: 3px solid rgb(131, 131, 131);
+    border-radius: 10px;
+    box-sizing: border-box;
+    justify-content: center;
+    display: flex;
+    margin-top: 50px;
+}
+.joinform{
+    margin-top: 100px;
+}
+.create-nickname,.create-id,.create-pw,.check-pw{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    gap: 20px;
+}
+.title-name{
+    display: flex;
+    justify-content: center;
 }
 .full-container{
-	box-sizing: border-box;
-	max-width: 600px;
-	padding-left:40px;
-	margin: 0 auto; 
+    display: flex;
+    justify-content: center;
 }
-.myPage-title{
-	display: flex;
-	align-items: center;
-	margin-top: 3rem;
-	width: fit-content;
-	box-sizing: border-box;
-	justify-content: center;
-	font-size:50px;
-	padding:10px 40px;
-	margin-bottom:50px;
-	border-bottom: 3px solid #ddd; 
+.joinform-title{
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
-.myPage-title-container{
-	display: flex;
-	justify-content: center;
-	width:100%;
+.title-name{
+    font-size: 40px;
+    border-bottom: 3px solid #919191;
+    width: fit-content;
+    width: 100%;
+    width: fit-content;
+    text-align: center;
+    padding: 0 20px;
+    margin-top: 80px;
+
 }
-.pr-img{
-	box-sizing: border-box;
-	border-radius: 50%;
-	background-color:#c79d9d;
-	width:100px;
-	height:100px;
-	overflow:hidden;
-	align-items: center;
-	margin-right:20px;
-	margin-left:20px;
+input{
+     border: none;
+     border-bottom: 3px solid #919191;
 }
-.myPage-container input{
-	width : 300px;
-	box-sizing: border-box;
-	padding: 10px;
-	font-size: 1rem;
-}
-.myPage-container div{
-	width: auto;
-	box-sizing: border-box;
-	padding: 10px;
-	font-size: 1rem;
-	margin-right: 10px;
-}
-.pr-img-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	margin-bottom:3rem;
+button{
+    margin-top: 50px;
 }
 .footer{
-	width:100%;
-	height:100px;
+    height: 300px;
 }
-.myPage-info-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 3px solid #ddd;
-	padding:10px;
-}
-.myPage-user-container{
-	display: flex;
-	align-items: center;
-	margin-top: 4rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: left;
-	border-bottom: 3px solid #ddd;
-	padding:10px;
-}
+
 </style>
 </head>
 <body>
@@ -183,45 +147,35 @@
 </div>
 <!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
-	<div class="myPage-title-container">
-		<div class="myPage-title">
-			<div>My Page</div>
-		</div>
-	</div>
-	<div class="full-container">
-		<div class="pr-img-container">
-			<div class="pr-img">이미지 넣을거에요~</div>
-			<div class="usernick" style="width:310px;">닉네임<div>등급</div></div>
-			<button class="logout">로그아웃</button>
-		</div>
-	</div>
-	<div class="full-container">
-		<div class="myPage-info-container">
-			<div style="margin-left:20px;">회원정보</div><div style="margin-left:330px;">회원정보 수정</div>
-		</div>
-		<div class="myPage-container">
-			<div>이메일</div><div >사용자 이메일 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>소셜아이디</div><div >사용자 소셜아이디 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>가입일자</div><div >사용자 가입일자 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-user-container">
-			<div style="margin-left:20px;">이용정보</div><div style="margin-left:330px;">이용정보 수정</div>
-		</div>
-		<div class="myPage-container">
-			<div>선호하는요리</div><div >사용자 선호요리 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>요리실력</div><div >사용자 요리실력 출력칸입니다~</div>  
-		</div>
-		<div class="myPage-container">
-			<div>보유알러지</div><div >사용자 알러지내역 출력칸입니다~</div>  
-		</div>
-	</div>
-	<footer class="footer"></footer>
+<div class="joinform-title">
+    <div class="title-name">
+        <div>회원가입</div>
+    </div>
+</div>
+<div class="full-container">
+    <div class="join-container">
+        <form action="cfjoinId" class="joinform">
+            <div class="create-nickname">
+                닉네임 입력
+                <input type="text" class="nickname">
+            </div>
+            <div class="create-id">
+                사용할ID/이메일 입력
+                <input type="text" class="userId">
+            </div>
+            <div class="create-pw">
+                사용할PW입력
+                <input type="text" class="userPW">
+            </div>
+             <div class="check-pw">
+                사용할PW재입력
+                <input type="text" class="checkPW">
+            </div>
+            <button type="submit" style="margin-left: 300px;">생성하기</button>
+        </form>
+    </div>
+</div>
+<footer class="footer"></footer>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
 </html>
