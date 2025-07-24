@@ -60,20 +60,23 @@
 		WHERE CONTENT LIKE CONCAT('%',#{searchContent},'%') </if> </sql> -->
 	<select id="selectUserByEmail" parameterType="string"
 		resultType="com.smhrd.web.entity.Board">
-		SELECT email, pw, nick FROM cf_user WHERE email = #{email}
+		SELECT user_idx, email, pw, nick, auth_type, social_id FROM cf_user WHERE
+		email = #{email}
 	</select>
-
+<!-- 
 	<select id="selectUserBySocialId"
 		resultType="com.smhrd.web.entity.Board">
 		SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type =
-		#{provider}
+		#{authType}
 	</select>
-
+ -->
 	<insert id="insertSocialUser"
 		parameterType="com.smhrd.web.entity.Board">
-		INSERT INTO cf_user(email, pw, nick, auth_type, social_id, alg_code,
+		INSERT INTO cf_user(email, pw, nick, auth_type,
+		social_id, alg_code,
 		prefer_taste, cooking_skill, joined_at)
-		VALUES(#{email}, #{pw}, #{nick}, #{auth_type}, #{social_id}, #{alg_code},
+		VALUES(#{email}, #{pw}, #{nick}, #{auth_type}, #{social_id},
+		#{alg_code},
 		#{prefer_taste}, #{cooking_skill}, #{joined_at})
 	</insert>
 

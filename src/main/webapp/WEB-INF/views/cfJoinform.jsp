@@ -147,7 +147,7 @@ button {
 					class="logo">CookIN(G)Free</div></a>
 		</div>
 		<div class="gnb-right">
-			<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
+			<a href="${cpath}/login"><img src="${cpath}/upload/Vectorinfo.svg"
 				class="icon" /></a> <a href="#"><img
 				src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
 				src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
@@ -162,46 +162,73 @@ button {
 	</div>
 	<div class="full-container">
 		<div class="join-container">
+
 			<form action="cfjoinId" method="post" class="joinform">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+
+				<c:set var="realAuthType"
+					value="${authType != null ? authType : 'L'}" />
+				<c:set var="realEmail" value="${email != null ? email : ''}" />
+				<c:set var="realNickname"
+					value="${nickname != null ? nickname : ''}" />
+				<c:set var="realSocialId"
+					value="${socialId != null ? socialId : ''}" />
+
 				<div class="create-user">
-					닉네임 입력 <input type="text" class="nickname" name="nickname" required>
+					<label for="nickname">닉네임 입력</label> <input type="text"
+						id="nickname" name="nickname" value="${realNickname}" required />
 				</div>
+
 				<div class="create-user">
-					사용할ID/이메일 입력 <input type="text" class="userId" name="userId"
-						required>
+					<label for="userId">사용할 ID / 이메일 입력</label> <input type="text"
+						id="userId" name="userId" value="${realEmail}" required
+						<c:if test="${realAuthType != 'L'}">readonly</c:if> />
 				</div>
+
+				<c:if test="${realAuthType == 'L'}">
+					<div class="create-user">
+						<label for="userPW">사용할 PW 입력</label> <input type="password"
+							id="userPW" name="userPW" required />
+					</div>
+					<div class="create-user">
+						<label for="checkPW">사용할 PW 재입력</label> <input type="password"
+							id="checkPW" name="checkPW" required />
+					</div>
+				</c:if>
+
+				<input type="hidden" name="authType" value="${realAuthType}" /> <input
+					type="hidden" name="socialId" value="${realSocialId}" />
+
 				<div class="create-user">
-					사용할PW입력 <input type="password" class="userPW" name="userPW"
-						required>
+					<label for="userAlgCode">보유 알러지</label> <input type="text"
+						id="userAlgCode" class="userAlgCode" name="userAlgCode" />
 				</div>
+
 				<div class="create-user">
-					사용할PW재입력 <input type="password" class="checkPW" name="checkPW"
-						required>
+					<label for="userPreferTaste">선호하는 맛</label> <input type="text"
+						id="userPreferTaste" class="userPreferTaste"
+						name="userPreferTaste" />
 				</div>
+
 				<div class="create-user">
-					인증타입입력 <input type="text" class="userAuthType" name="userAuthType"
-						required>
+					<label for="userCookingSkill">요리실력</label> <input type="text"
+						id="userCookingSkill" class="userCookingSkill"
+						name="userCookingSkill" />
 				</div>
-				<div class="create-user">
-					보유 알러지 <input type="text" class="userAlgCode" name="userAlgCode">
-				</div>
-				<div class="create-user">
-					선호하는 맛 <input type="text" class="userPreferTaste"
-						name="userPreferTaste">
-				</div>
-				<div class="create-user">
-					요리실력 <input type="text" class="userCookingSkill"
-						name="userCookingSkill">
-				</div>
+
 				<button type="submit" style="margin-left: 300px;">생성하기</button>
+
+				<!-- 에러 메시지 출력 -->
 				<c:if test="${not empty msg}">
-					<div style="color: red">${msg}</div>
+					<div style="color: red; margin-top: 10px;">${msg}</div>
 				</c:if>
 			</form>
 
+
+
 		</div>
-		s
+
 	</div>
 	<footer class="footer"></footer>
 	<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->

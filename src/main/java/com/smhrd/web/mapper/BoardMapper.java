@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.smhrd.web.entity.Board;
@@ -40,11 +41,11 @@ public interface BoardMapper {
 
 	public Board selectUserByEmail(@Param("email") String email);
 
-	public Board selectUserBySocialId(@Param("socialId") String socialId, @Param("provider") String provider);
 
 	public int insertSocialUser(Board user);
 	
-
+	@Select("SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type = #{authType}")
+	Board selectUserBySocialId(@Param("socialId") String socialId, @Param("authType") String authType);
 
 }
 

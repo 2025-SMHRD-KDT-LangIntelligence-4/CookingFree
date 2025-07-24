@@ -240,7 +240,7 @@ body {
 			</form>
 	    <div class="login-links">
 	      <div class="searchIdPw">아이디/비밀번호 찾기</div>
-	      <a href="${cpath}/cfJoinform" class="createUser">회원가입</a>
+	      <a href="${cpath}/cfJoinform?mode=local" class="createUser">회원가입</a>
 	    </div>
 	    <div class="sns-icons">
 	      <div class="sns-icon" title="연동1">
