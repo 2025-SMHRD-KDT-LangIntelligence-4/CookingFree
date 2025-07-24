@@ -91,10 +91,10 @@ public class MyController{
 	public String cfMyPage() {
 		return "cfMyPage";
 	}
-//
-    @GetMapping("/cfJoinform")
-    public String joinForm() {
-        return "cfJoinform";  // /WEB-INF/views/cfJoinform.jsp 로 매핑
-    }
+//		Join 기능은 컨트롤러 따로 빼서 관리하는게 효율적이라 빼고함
+//    @GetMapping("/cfJoinform")
+//    public String joinForm() {
+//        return "cfJoinform";  // /WEB-INF/views/cfJoinform.jsp 로 매핑
+//    }
 //
 }

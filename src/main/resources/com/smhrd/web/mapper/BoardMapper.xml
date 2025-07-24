@@ -4,297 +4,83 @@
 <mapper namespace="com.smhrd.web.mapper.BoardMapper">
 
 	<!-- 게시판 전체 글조회 -->
-  <select id="selectAll" resultType="com.smhrd.web.entity.Board">
-    	SELECT * FROM BOARD
-    	ORDER BY IDX DESC		
-  </select>
-  
-  <!-- 게시글 한개 조회 -->
-  <select id="boardContent" resultType="com.smhrd.web.entity.Board">
-  		SELECT * FROM BOARD WHERE IDX=#{idx}
-  </select>
-  
-  <!-- 글작성 완료 -->
-  <insert id="register" parameterType="com.smhrd.web.entity.Board">
-  		INSERT INTO BOARD(TITLE, WRITER, CONTENT,IMG_URL)
+	<select id="selectAll" resultType="com.smhrd.web.entity.Board">
+		SELECT * FROM BOARD
+		ORDER BY IDX DESC
+	</select>
+
+	<!-- 게시글 한개 조회 -->
+	<select id="boardContent"
+		resultType="com.smhrd.web.entity.Board">
+		SELECT * FROM BOARD WHERE IDX=#{idx}
+	</select>
+
+	<!-- 글작성 완료 -->
+	<insert id="register" parameterType="com.smhrd.web.entity.Board">
+		INSERT INTO BOARD(TITLE, WRITER, CONTENT,IMG_URL)
 		VALUES(#{title},#{writer},#{content},#{img_url})
-  </insert>
-  
-  <!-- 게시글 삭제 -->
-  <delete id="boardDelete" parameterType="com.smhrd.web.entity.Board">
-  	DELETE FROM BOARD WHERE IDX=#{idx}
-  </delete>
-  
-  <update id="boardUpdate" parameterType="com.smhrd.web.entity.Board">
-  	UPDATE BOARD SET TITLE = #{title}, CONTENT = #{content}, WRITER=#{writer} WHERE IDX = #{idx}
-  </update>
-  <select id="searchTitle" resultType="com.smhrd.web.entity.Board">
-  		SELECT * FROM BOARD WHERE TITLE LIKE CONCAT('%',#{search},'%');
-  </select>
-  <select id="searchContent" resultType="com.smhrd.web.entity.Board">
-  SELECT * FROM BOARD 
-  <where>
-    <if test="filter == '작성자'">
-      WRITER LIKE CONCAT('%', #{searchContent}, '%')
-    </if>
-    <if test="filter == '제목'">
-      TITLE LIKE CONCAT('%', #{searchContent}, '%')
-    </if>
-    <if test="filter == '내용'">
-      CONTENT LIKE CONCAT('%', #{searchContent}, '%')
-    </if>
-  </where>
-  ORDER BY IDX DESC
-</select>
+	</insert>
 
-<!-- MYBATIS를 활용한 동적 쿼리문
-<select id="search" parameterType="SearchCriteria" resultType="com.smhrd.web.entity.Board">
-   SELECT * FROM BOARD
-   <include refid="searchOption"/>
-</select>
+	<!-- 게시글 삭제 -->
+	<delete id="boardDelete"
+		parameterType="com.smhrd.web.entity.Board">
+		DELETE FROM BOARD WHERE IDX=#{idx}
+	</delete>
 
-<sql id="searchOption">
-   <if test="filter=='작성자'">
-       WHERE WRITER LIKE CONCAT('%',#{searchContent},'%')
-   </if>
-   <if test="filter=='제목'">
-       WHERE TITLE LIKE CONCAT('%',#{searchContent},'%')
-   </if>
-   <if test="filter=='내용'">
-       WHERE CONTENT LIKE CONCAT('%',#{searchContent},'%')
-   </if>
-</sql>	
--->
-    <select id="selectUserByEmail" parameterType="string" resultType="com.smhrd.web.entity.Board">
-    SELECT email, pw, nick FROM cf_user WHERE email = #{email}
-    </select>
+	<update id="boardUpdate"
+		parameterType="com.smhrd.web.entity.Board">
+		UPDATE BOARD SET TITLE = #{title}, CONTENT = #{content}, WRITER=#{writer}
+		WHERE IDX = #{idx}
+	</update>
+	<select id="searchTitle" resultType="com.smhrd.web.entity.Board">
+		SELECT * FROM BOARD WHERE TITLE LIKE CONCAT('%',#{search},'%');
+	</select>
+	<select id="searchContent"
+		resultType="com.smhrd.web.entity.Board">
+		SELECT * FROM BOARD
+		<where>
+			<if test="filter == '작성자'">
+				WRITER LIKE CONCAT('%', #{searchContent}, '%')
+			</if>
+			<if test="filter == '제목'">
+				TITLE LIKE CONCAT('%', #{searchContent}, '%')
+			</if>
+			<if test="filter == '내용'">
+				CONTENT LIKE CONCAT('%', #{searchContent}, '%')
+			</if>
+		</where>
+		ORDER BY IDX DESC
+	</select>
 
-    <select id="selectUserBySocialId" resultType="com.smhrd.web.entity.Board">
-        SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type = #{provider}
-    </select>
+	<!-- MYBATIS를 활용한 동적 쿼리문 <select id="search" parameterType="SearchCriteria" 
+		resultType="com.smhrd.web.entity.Board"> SELECT * FROM BOARD <include refid="searchOption"/> 
+		</select> <sql id="searchOption"> <if test="filter=='작성자'"> WHERE WRITER 
+		LIKE CONCAT('%',#{searchContent},'%') </if> <if test="filter=='제목'"> WHERE 
+		TITLE LIKE CONCAT('%',#{searchContent},'%') </if> <if test="filter=='내용'"> 
+		WHERE CONTENT LIKE CONCAT('%',#{searchContent},'%') </if> </sql> -->
+	<select id="selectUserByEmail" parameterType="string"
+		resultType="com.smhrd.web.entity.Board">
+		SELECT email, pw, nick FROM cf_user WHERE email = #{email}
+	</select>
 
-    <insert id="insertSocialUser" parameterType="com.smhrd.web.entity.Board">
-        INSERT INTO cf_user(email, pw, nick, auth_type, social_id, alg_code, prefer_taste, cooking_skill, joined_at)
-        VALUES(#{email}, #{pw}, #{nick}, #{auth_type}, #{social_id}, #{alg_code}, #{prefer_taste}, #{cooking_skill}, #{joined_at})
-    </insert>
+	<select id="selectUserBySocialId"
+		resultType="com.smhrd.web.entity.Board">
+		SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type =
+		#{provider}
+	</select>
+
+	<insert id="insertSocialUser"
+		parameterType="com.smhrd.web.entity.Board">
+		INSERT INTO cf_user(email, pw, nick, auth_type, social_id, alg_code,
+		prefer_taste, cooking_skill, joined_at)
+		VALUES(#{email}, #{pw}, #{nick}, #{auth_type}, #{social_id}, #{alg_code},
+		#{prefer_taste}, #{cooking_skill}, #{joined_at})
+	</insert>
 
 
-    <!-- 기타 쿼리문 여기서부터 시작 -->
- 
- <!-- 로그인 메서드 작성부분 165 ~180-->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!--  회원가입 메서드 작성부분 190 ~220 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 일반검색 작성부분 230 ~ 240-->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 챗봇 관련 메소드 250~280 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 레시피 요약본 가져오기 290 ~ 300 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 레시피 상세 가져오기 310 ~ 330 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!-- 레시피 리뷰?댓글? 작성하기 340 ~ 350 -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- <!--  (사용자별 알레르기 관리 추가 / 삭제) 360 ~ 370-->
- 
+	<!-- 기타 쿼리문 여기서부터 시작 -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 레시피 등록  380 ~ 390 -->
+	<!-- 로그인 메서드 작성부분 165 ~180 -->
 
 
 
@@ -314,5 +100,218 @@
 
 
 
-<!--  -->
+
+
+
+	<!-- 회원가입 메서드 작성부분 190 ~220 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 일반검색 작성부분 230 ~ 240 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 챗봇 관련 메소드 250~280 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 레시피 요약본 가져오기 290 ~ 300 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 레시피 상세 가져오기 310 ~ 330 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 레시피 리뷰?댓글? 작성하기 340 ~ 350 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- (사용자별 알레르기 관리 추가 / 삭제) 360 ~ 370 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 레시피 등록 380 ~ 390 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- -->
 </mapper>

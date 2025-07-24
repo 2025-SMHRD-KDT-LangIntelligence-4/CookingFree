@@ -1,14 +1,14 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <c:set var="cpath" value="${pageContext.request.contextPath}" />
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
 <head>
- 	<title>Document</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 /* GNB */
 .gnb {
@@ -73,126 +73,137 @@
 	}
 }
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
-.join-container{
-    width: 500px;
-    height: 500px;
-    border: 3px solid rgb(131, 131, 131);
-    border-radius: 10px;
-    box-sizing: border-box;
-    justify-content: center;
-    display: flex;
-    margin-top: 50px;
-}
-.joinform{
-    margin-top: 50px;
-}
-.create-user{
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    gap: 20px;
-}
-.title-name{
-    display: flex;
-    justify-content: center;
-}
-.full-container{
-    display: flex;
-    justify-content: center;
-}
-.joinform-title{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-.title-name{
-    font-size: 40px;
-    border-bottom: 3px solid #919191;
-    width: fit-content;
-    width: 100%;
-    width: fit-content;
-    text-align: center;
-    padding: 0 20px;
-    margin-top: 80px;
-
-}
-input{
-     border: none;
-     border-bottom: 3px solid #919191;
-}
-button{
-    margin-top: 30px;
-}
-.footer{
-    height: 300px;
+.join-container {
+	width: 500px;
+	height: 500px;
+	border: 3px solid rgb(131, 131, 131);
+	border-radius: 10px;
+	box-sizing: border-box;
+	justify-content: center;
+	display: flex;
+	margin-top: 50px;
 }
 
+.joinform {
+	margin-top: 50px;
+}
+
+.create-user {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	gap: 20px;
+}
+
+.title-name {
+	display: flex;
+	justify-content: center;
+}
+
+.full-container {
+	display: flex;
+	justify-content: center;
+}
+
+.joinform-title {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.title-name {
+	font-size: 40px;
+	border-bottom: 3px solid #919191;
+	width: fit-content;
+	width: 100%;
+	width: fit-content;
+	text-align: center;
+	padding: 0 20px;
+	margin-top: 80px;
+}
+
+input {
+	border: none;
+	border-bottom: 3px solid #919191;
+}
+
+button {
+	margin-top: 30px;
+}
+
+.footer {
+	height: 300px;
+}
 </style>
 </head>
 <body>
-<!--------------------------------------------------------gnb 배너입니다.---------------------------------------------------------- -->
-<div class="gnb">
-	<div class="gnb-left">
-		<a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
+	<!--------------------------------------------------------gnb 배너입니다.---------------------------------------------------------- -->
+	<div class="gnb">
+		<div class="gnb-left">
+			<a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
+		</div>
+		<div class="gnb-center">
+			<a href="${cpath}" style="text-decoration-line: none;"><div
+					class="logo">CookIN(G)Free</div></a>
+		</div>
+		<div class="gnb-right">
+			<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
+				class="icon" /></a> <a href="#"><img
+				src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
+				src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
+		</div>
 	</div>
-	<div class="gnb-center">
-		<a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
+	<!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
+	<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+	<div class="joinform-title">
+		<div class="title-name">
+			<div>회원가입</div>
+		</div>
 	</div>
-	<div class="gnb-right">
-		<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
-			class="icon" /></a> <a href="#"><img
-			src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
-			src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
+	<div class="full-container">
+		<div class="join-container">
+			<form action="cfjoinId" method="post" class="joinform">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				<div class="create-user">
+					닉네임 입력 <input type="text" class="nickname" name="nickname" required>
+				</div>
+				<div class="create-user">
+					사용할ID/이메일 입력 <input type="text" class="userId" name="userId"
+						required>
+				</div>
+				<div class="create-user">
+					사용할PW입력 <input type="password" class="userPW" name="userPW"
+						required>
+				</div>
+				<div class="create-user">
+					사용할PW재입력 <input type="password" class="checkPW" name="checkPW"
+						required>
+				</div>
+				<div class="create-user">
+					인증타입입력 <input type="text" class="userAuthType" name="userAuthType"
+						required>
+				</div>
+				<div class="create-user">
+					보유 알러지 <input type="text" class="userAlgCode" name="userAlgCode">
+				</div>
+				<div class="create-user">
+					선호하는 맛 <input type="text" class="userPreferTaste"
+						name="userPreferTaste">
+				</div>
+				<div class="create-user">
+					요리실력 <input type="text" class="userCookingSkill"
+						name="userCookingSkill">
+				</div>
+				<button type="submit" style="margin-left: 300px;">생성하기</button>
+				<c:if test="${not empty msg}">
+					<div style="color: red">${msg}</div>
+				</c:if>
+			</form>
+
+		</div>
+		s
 	</div>
-</div>
-<!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
-<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
-<div class="joinform-title">
-    <div class="title-name">
-        <div>회원가입</div>
-    </div>
-</div>
-<div class="full-container">
-    <div class="join-container">
-        <form action="cfjoinId" class="joinform">
-            <div class="create-user">
-                닉네임 입력
-                <input type="text" class="nickname">
-            </div>
-            <div class="create-user">
-                사용할ID/이메일 입력
-                <input type="text" class="userId">
-            </div>
-            <div class="create-user">
-                사용할PW입력
-                <input type="text" class="userPW">
-            </div>
-             <div class="create-user">
-                사용할PW재입력
-                <input type="text" class="checkPW">
-            </div>
-              <div class="create-user">
-                 인증타입입력
-                <input type="text" class="userAuthType">
-            </div>
-            <div class="create-user">
-                 보유 알러지
-                <input type="text" class="userAlgCode">
-            </div>
-            <div class="create-user">
-                 선호하는 맛
-                <input type="text" class="userPreferTaste">
-            </div>
-            <div class="create-user">
-                 요리실력
-                <input type="text" class="userCookingSkill">
-            </div>
-            <button type="submit" style="margin-left: 300px;">생성하기</button>
-        </form>
-    </div>
-    s
-</div>
-<footer class="footer"></footer>
-<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+	<footer class="footer"></footer>
+	<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
 </html>
