@@ -1,16 +1,127 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document</title>
-<style type="text/css">
-/* GNB */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .recipe-img{
+            width: 400px;
+            height: 317.2px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            
+        }
+        .voice-btn{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .touch-btn{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+        }
+        .container{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top:50px;
+        }
+        .btn-container{
+            flex-direction: column;
+        }
+        .title-container{
+            display: flex;
+            justify-content: center;
+            margin-top: 100px;
+        }
+        .title{
+            font-size: 30px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 600px;
+            margin-top:50px;
+        }
+        .recipe-img2{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+        }
+        .container2{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            
+        }
+        .btn-container2{
+            flex-direction: column;
+        }
+        .recipe-step-title{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top:200px;            
+        }
+        .scroll{
+            display: flex;
+            justify-content: center;
+            margin-top:200px; 
+            width: 100%;
+            height: 50px;
+            background-color: gray;
+        }
+        .scroll img{
+            width: 40px;
+	        transform: rotate(180deg);
+        }
+        .ingredient{
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .ingre-text{
+            width: 99%; 
+            height: 99%; 
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 2px 3px;
+            border: none;  
+        }
+        .recipe-step{
+            width: 200px;
+            height: 317.2px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+        }
+        .ingre-container{
+            border: 3px solid gray;
+            border-radius : 10px;
+            width: 600px;
+            height: 300px;
+        }
+/*--------------------------------------------------------------------------------------------------------*/
+ /*---------------------------------------------------gnb배너입니다-----------------------------------------------*/
+ /* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/
 	flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/
@@ -72,127 +183,73 @@
 		margin-left: 6px;
 	}
 }
-<!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
-.recipe-img{
-            width: 400px;
-            height: 300px;
-            background-color: bisque;
-            
-        }
-        .voice-btn{
-            width: 200px;
-            height: 150px;
-            background-color: skyblue;
-        }
-        .touch-btn{
-            width: 200px;
-            height: 150px;
-            background-color: green;
-        }
-        .container{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            margin-top:50px;
-        }
-        .btn-container{
-            flex-direction: column;
-        }
-        .title-container{
-            display: flex;
-            justify-content: center;
-            margin-top: 200px;
-        }
-        .title{
-            font-size: 30px;
-        }
-        .recipe-img2{
-            width: 200px;
-            height: 150px;
-            background-color: bisque;
-        }
-        .container2{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            
-        }
-        .btn-container2{
-            flex-direction: column;
-        }
-        .recipe-step-title{
-            display: flex;
-            align-items: left;
-            justify-content: left;
-            margin-top:200px;
-            padding-left: 177px;
-        }
 
-</style>
+ 
+
+    </style>
 </head>
 <body>
-	<div class="gnb">
-		<div class="gnb-left">
-			<a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
-		</div>
-		<div class="gnb-center">
-			<a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
-		</div>
-		<div class="gnb-right">
-			<a href="cfLogin"><img src="${cpath}/upload/Vectorinfo.svg"
-				class="icon" /></a> <a href="#"><img
-				src="${cpath}/upload/Vectorfood.svg" class="icon" /></a> <a href="#"><img
-				src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
-		</div>
-	</div>
-<!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
-<div class="title-container">
-        <div class="title">레시피제목입니다!</div>
+ <div class="gnb">
+            <div class="gnb-left">
+                <a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
+            </div>
+           <div class="gnb-center">
+                <a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
+            </div>
+            <div class="gnb-right">
+                <a href="${cpath}/login"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
+                <a href="${cpath}/cfMyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
+                <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
+            </div>
+        </div>
+<!---------------------------------------------------gnb배너입니다.--------------------------------------------------->
+    <div class="title-container">
+        <div class="title">레시피 이름</div>
     </div>
     <div class="container">
         <div class="recipe-img">
-             레시피 이미지 출력하는 곳입니다.
+             레시피 이미지
          </div>
          <div class="btn-container">
              <div class="voice-btn">
-                 음성 인식 버튼입니다.
+                 음성 인식 버튼
              </div>
              <div class="touch-btn">
-                 터치 조작 버튼입니다.
+                 터치 조작 버튼
              </div> 
          </div>
     </div>
 
+    <div class="scroll">
     
-    <div class="recipe-step-title">레시피 과정 0️⃣</div>
-    <div class="container2">
-        <div class="recipe-img">
-            레시피 이미지 출력하는 곳입니다.
-        </div>
-         <div class="btn-container">
-             <div class="recipe-img2">
-                보유 재료를 출력하는 곳입니다.
-             </div>
-            <div class="recipe-img2">
-                레시피 과정 출력하는 곳입니다.
-            </div>
+    </div>
+
+    <div class="title-container">
+        <div class="title">재료 준비</div>
+    </div>
+    <div class="ingredient">
+        <div class="ingre-container">
+            <textarea class="ingre-text">출력</textarea>
         </div>
     </div>
-    <div class="recipe-step-title">레시피 과정 0️⃣</div>
-    <div class="container2">
-        <div class="recipe-img">
-            레시피 이미지 출력하는 곳입니다.
-        </div>
-         <div class="btn-container">
-             <div class="recipe-img2">
-                보유 재료를 출력하는 곳입니다.
-             </div>
-            <div class="recipe-img2">
-                레시피 과정 출력하는 곳입니다.
-            </div>
-        </div>
+
+    <div class="scroll">
+        <img src="${cpath}/upload/ic_baseline-keyboard-arrow-up.svg" />
     </div>
+
+    <div class="title-container">
+        <div class="title">단계(요리)</div>
+    </div>
+    <div class="container">
+        <div class="recipe-img">
+             레시피 이미지
+         </div>
+        <div class="btn-container">
+             <div class="recipe-step">
+                 레시피 설명
+             </div>
+         </div>
+    </div>
+
 </body>
 </html>
