@@ -71,35 +71,30 @@ public class MyController{
 	}
 
 
-//	@GetMapping("/cfLogin")
-//	public String cfLogin(Model model) {
-//
-//		return "cfLogin";
-//		//Spring boot 는 기본적으로 HTML 방식을 권장한다. 아래의 기본 설정으로 되어있음
-//		//경로가 prefix : resources/templates/(정적인 파일 반복문, 조건문 사용불가),
-//		//     suffix : .html
-//
-//	}
 
 
-//
-//	@GetMapping("/cfSearchRecipe")
-//	public String cfSearchRecipe() {
-//		//콘솔 창에 출력 확인 해볼것. -> System. out.println("수집한 데이터 확인>>"+idx);
-//		// 수집한 데이터확인
-//
-//		return "cfSearchRecipe";
-//	}
-//
-//
-//
-//
-//
+
+
+	@GetMapping("/cfSearchRecipe")
+	public String cfSearchRecipe() {
+		//콘솔 창에 출력 확인 해볼것. -> System. out.println("수집한 데이터 확인>>"+idx);
+		// 수집한 데이터확인
+
+		return "cfSearchRecipe";
+	}
+
+
+
+
+
 	@GetMapping("/cfMyPage")
 	public String cfMyPage() {
 		return "cfMyPage";
 	}
-//
-
+//		Join 기능은 컨트롤러 따로 빼서 관리하는게 효율적이라 빼고함
+//    @GetMapping("/cfJoinform")
+//    public String joinForm() {
+//        return "cfJoinform";  // /WEB-INF/views/cfJoinform.jsp 로 매핑
+//    }
 //
 }

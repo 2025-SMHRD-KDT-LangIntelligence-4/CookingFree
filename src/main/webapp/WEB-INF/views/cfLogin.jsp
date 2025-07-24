@@ -231,14 +231,16 @@ body {
 	<div class="login-wrapper">
 	  <div class="login-form">
 	    <div class="login-title">LOGIN</div>
-		  <form action="/login" method="post">
-			  <input class="id" type="text" name="username" placeholder="아이디" required />
-			  <input class="pw" type="password" name="password" placeholder="비밀번호" required />
-			  <button class="loginBtn" type="submit">로그인</button>
-		  </form>
+			<form action="${cpath}/login" method="post">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" /> <input class="id" type="text"
+					name="username" placeholder="아이디" required /> <input class="pw"
+					type="password" name="password" placeholder="비밀번호" required />
+				<button class="loginBtn" type="submit">로그인</button>
+			</form>
 	    <div class="login-links">
 	      <div class="searchIdPw">아이디/비밀번호 찾기</div>
-	      <div class="createUser">회원가입</div>
+	      <a href="${cpath}/cfJoinform?mode=local" class="createUser">회원가입</a>
 	    </div>
 	    <div class="sns-icons">
 	      <div class="sns-icon" title="연동1">

@@ -1,18 +1,17 @@
 package com.smhrd.web.service;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.client.userinfo.*;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.*;
-import org.springframework.security.oauth2.core.user.*;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.smhrd.web.mapper.BoardMapper;
 import com.smhrd.web.entity.Board;
-
-import java.sql.Timestamp;
+import com.smhrd.web.mapper.BoardMapper;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -24,41 +23,50 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String provider = userRequest.getClientRegistration().getRegistrationId(); // google/naver/kakao
         Map<String, Object> attributes = oAuth2User.getAttributes();
+        String provider = userRequest.getClientRegistration().getRegistrationId();
 
-        String email = null;
+        System.out.println("[OAuth2UserService] provider: " + provider);
+        System.out.println("[OAuth2UserService] attributes: " + attributes);
+
         String socialId = null;
+        String email = null;
 
         if ("google".equals(provider)) {
-            email = (String) attributes.get("email");
             socialId = (String) attributes.get("sub");
+            email = (String) attributes.get("email");
+            if (socialId == null || email == null)
+                throw new OAuth2AuthenticationException(new OAuth2Error("missing_user_info"), "구글 사용자 정보 누락");
         } else if ("naver".equals(provider)) {
-            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-            email = (String) response.get("email");
-            socialId = (String) response.get("id");
+            Map<String, Object> resp = (Map<String, Object>) attributes.get("response");
+            if (resp == null)
+                throw new OAuth2AuthenticationException(new OAuth2Error("missing_user_info"), "네이버 사용자 정보 누락");
+            socialId = (String) resp.get("id");
+            email = (String) resp.get("email");
+            if (socialId == null)
+                throw new OAuth2AuthenticationException(new OAuth2Error("missing_user_id"), "네이버 사용자 ID 누락");
         } else if ("kakao".equals(provider)) {
-            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-            email = (String) kakaoAccount.get("email");
             socialId = String.valueOf(attributes.get("id"));
+            Object kakaoAccountObj = attributes.get("kakao_account");
+            if (kakaoAccountObj instanceof Map) {
+                Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoAccountObj;
+                email = (String) kakaoAccount.get("email");
+            }
+            if (socialId == null)
+                throw new OAuth2AuthenticationException(new OAuth2Error("missing_user_id"), "카카오 사용자 ID 누락");
+        } else {
+            throw new OAuth2AuthenticationException(new OAuth2Error("unsupported_provider"), "지원하지 않는 로그인 공급자입니다.");
         }
 
-        Board existingUser = boardMapper.selectUserBySocialId(socialId, provider);
+        // DB에 사용자 존재확인 (auth_type은 G, N, K처럼 한글자)
+        String authType = provider.substring(0, 1).toUpperCase();
+        Board existingUser = boardMapper.selectUserBySocialId(socialId, authType);
 
         if (existingUser == null) {
-            Board newUser = Board.builder()
-                    .email(email)
-                    .pw("")  // 소셜 로그인은 비밀번호 비워두기
-                    .nick("소셜회원")  // 이후 수정 가능
-                    .auth_type(provider)
-                    .social_id(socialId)
-                    .alg_code("")
-                    .prefer_taste("")
-                    .cooking_skill("")
-                    .joined_at(new Timestamp(System.currentTimeMillis()))
-                    .build();
-
-            boardMapper.insertSocialUser(newUser);
+            // 신규 회원은 DB 등록은 성공 핸들러에서 하므로 여기서는 넘어갑니다.
+            System.out.println("[OAuth2UserService] 신규 회원 (DB 등록 성공은 성공핸들러에서)");
+        } else {
+            System.out.println("[OAuth2UserService] 기존 회원 로그인 socialId=" + socialId);
         }
 
         return oAuth2User;
