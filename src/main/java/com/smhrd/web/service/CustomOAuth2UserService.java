@@ -32,7 +32,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String socialId = null;
         String email = null;
 
-        // provider 별로 id 와 email 파싱
+        // provider 별로 id 와 email 파
         if ("google".equals(provider)) {
             socialId = (String) attributes.get("sub");          // 구글 고유 id
             email = (String) attributes.get("email");           // 구글 이메일
