@@ -43,6 +43,7 @@ public interface BoardMapper {
 	public Board selectUserBySocialId(@Param("socialId") String socialId, @Param("provider") String provider);
 
 	public int insertSocialUser(Board user);
+	
 
 
 
