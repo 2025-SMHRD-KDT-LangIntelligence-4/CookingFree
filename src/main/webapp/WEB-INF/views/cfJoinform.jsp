@@ -190,6 +190,7 @@ button{
             <button type="submit" style="margin-left: 300px;">생성하기</button>
         </form>
     </div>
+    s
 </div>
 <footer class="footer"></footer>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
