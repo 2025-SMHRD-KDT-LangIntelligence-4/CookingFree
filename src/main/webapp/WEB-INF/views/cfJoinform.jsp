@@ -75,7 +75,7 @@
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
 .join-container{
     width: 500px;
-    height: 400px;
+    height: 500px;
     border: 3px solid rgb(131, 131, 131);
     border-radius: 10px;
     box-sizing: border-box;
@@ -84,9 +84,9 @@
     margin-top: 50px;
 }
 .joinform{
-    margin-top: 100px;
+    margin-top: 50px;
 }
-.create-nickname,.create-id,.create-pw,.check-pw{
+.create-user{
     display: flex;
     justify-content: space-between;
     padding: 10px;
@@ -121,7 +121,7 @@ input{
      border-bottom: 3px solid #919191;
 }
 button{
-    margin-top: 50px;
+    margin-top: 30px;
 }
 .footer{
     height: 300px;
@@ -155,21 +155,37 @@ button{
 <div class="full-container">
     <div class="join-container">
         <form action="cfjoinId" class="joinform">
-            <div class="create-nickname">
+            <div class="create-user">
                 닉네임 입력
                 <input type="text" class="nickname">
             </div>
-            <div class="create-id">
+            <div class="create-user">
                 사용할ID/이메일 입력
                 <input type="text" class="userId">
             </div>
-            <div class="create-pw">
+            <div class="create-user">
                 사용할PW입력
                 <input type="text" class="userPW">
             </div>
-             <div class="check-pw">
+             <div class="create-user">
                 사용할PW재입력
                 <input type="text" class="checkPW">
+            </div>
+              <div class="create-user">
+                 인증타입입력
+                <input type="text" class="userAuthType">
+            </div>
+            <div class="create-user">
+                 보유 알러지
+                <input type="text" class="userAlgCode">
+            </div>
+            <div class="create-user">
+                 선호하는 맛
+                <input type="text" class="userPreferTaste">
+            </div>
+            <div class="create-user">
+                 요리실력
+                <input type="text" class="userCookingSkill">
             </div>
             <button type="submit" style="margin-left: 300px;">생성하기</button>
         </form>
