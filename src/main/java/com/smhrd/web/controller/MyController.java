@@ -82,8 +82,11 @@ public class MyController{
 
 		return "cfSearchRecipe";
 	}
-
-
+	
+	@GetMapping("/cfRecipeinsert")
+	public String cfRecipeinsert() {
+		return "cfRecipeinsert";
+	}
 
 
 

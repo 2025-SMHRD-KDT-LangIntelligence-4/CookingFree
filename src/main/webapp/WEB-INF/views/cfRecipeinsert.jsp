@@ -169,6 +169,7 @@
             div.className = 'detail-row';
             div.innerHTML = `
                 <textarea name="details[]" cols="52" rows="5" placeholder="다음 단계를 입력하세요."></textarea>
+                <input type="file" name="image">
                 <button type="button" class="remove-btn">삭제</button>
             `;
             wrapper.appendChild(div);
