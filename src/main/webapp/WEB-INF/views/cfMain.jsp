@@ -284,7 +284,7 @@ body {
 	<div class="container">
         <div class="gnb">
             <div class="gnb-left">
-                <a href="#"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
+                <a href="${cpath}/cfJoinform"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
             </div>
            <div class="gnb-center">
                 <a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
