@@ -1,0 +1,124 @@
+@charset "UTF-8";
+/* GNB */
+.gnb {
+	display: flex; /*화면을 능동으로 배치할때*/
+	flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 20px;
+	background: #fff;
+	overflow-x: auto;
+	border-bottom: 1px solid #ddd;
+	box-sizing: border-box;
+	gap: 12px;
+}
+
+/* 왼쪽/오른쪽 아이콘 링크 */
+.gnb-left a, .gnb-right a {
+	display: flex;
+	align-items: center;
+	margin-left: 10px;
+	text-decoration: none;
+}
+
+/* 가운데 로고 */
+.gnb-center {
+	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
+	min-width: 80px; /* 최소 넓이 확보 */
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.logo {
+	font-size: clamp(18px, 4vw, 32px); /* 반응형 크기 */
+	font-weight: bold;
+	font-family: 'Inter', sans-serif;
+	color: #000;
+}
+
+/* 오른쪽 아이콘들 */
+.gnb-right {
+	display: flex;
+	gap: 12px;
+}
+
+/* 아이콘 유동 크기 + 최소한의 보장 */
+.icon {
+	width: clamp(18px, 5vw, 36px);
+	height: clamp(18px, 5vw, 36px);
+	min-width: 18px;
+	min-height: 18px;
+	object-fit: contain;
+}
+/* 모바일 대응 */
+@media ( max-width : 768px) {
+	.gnb {
+		padding: 12px;
+		gap: 8px;
+	}
+	.gnb-right a {
+		margin-left: 6px;
+	}
+}
+/*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
+.myPage-container{
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	justify-content: center;
+}
+.myPage-title{
+	display: flex;
+	align-items: center;
+	margin-top: 5rem;
+	width: fit-content;
+	box-sizing: border-box;
+	justify-content: center;
+	font-size:50px;
+	padding:10px 40px;
+	margin-bottom:50px;
+	border-bottom: 3px solid #bababa; 
+}
+.myPage-title-container{
+	display: flex;
+	justify-content: center;
+	width:100%;
+}
+.pr-img{
+	box-sizing: border-box;
+	border-radius: 50%;
+	background-color:#c79d9d;
+	width:200px;
+	height:200px;
+	overflow:hidden;
+	align-items: center;
+}
+.myPage-container input{
+	width : 300px;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 1rem;
+}
+.myPage-container div{
+	width: auto;
+	border: 3px solid #bababa;
+	border-radius: 8px;	
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 1rem;
+	margin-right: 10px;
+}
+.pr-img-container{
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	width: 100%;
+	box-sizing: border-box;
+	justify-content: center;
+	margin-bottom:50px;
+}

@@ -14,19 +14,6 @@
     
 <body>
 	<div class="container">
-        <div class="gnb">
-            <div class="gnb-left">
-                <a href="${cpath}/cfJoinform"><img src="${cpath}/upload/Vector.png" class="icon" /></a>
-            </div>
-           <div class="gnb-center">
-                <a href="${cpath}" style="text-decoration-line: none;"><div class="logo">CookIN(G)Free</div></a>
-            </div>
-            <div class="gnb-right">
-                <a href="${cpath}/login"><img src="${cpath}/upload/Vectorinfo.svg" class="icon" /></a>
-                <a href="${cpath}/cfMyPage"><img src="${cpath}/upload/Vectorfood.svg" class="icon" /></a>
-                <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a>
-            </div>
-        </div>
 
 	    <div class="hero" style="background-image: url('${cpath}/upload/050d46bc-70b3-4458-a049-aa14fc90f696_일러스트23.jpg');">
 	        <h1>야, 너도 <br /> 요리할 수 있어</h1>
