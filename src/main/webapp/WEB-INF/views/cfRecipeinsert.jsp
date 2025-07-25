@@ -80,7 +80,7 @@
      
 </style>
 </head>
-<body><!-- s --><jsp:include page="inc/header.jsp" />
+<body>
 
 
 <div class="form-container">
@@ -137,22 +137,25 @@
         </div>
 
         
-     <div class="form-row">
+     <div class="form-row" style="align-items: flex-start;">
     <label>레시피 상세내용</label>
-    <div id="details-wrapper">
-      <div class="detail-row">
-      <textarea cols="52" rows="5" name="spk" value="recipe detail"></textarea>
-      <textarea name="details[]" placeholder="다음단계를 입력해주세요"></textarea>
-        <input type="file" name="stepImage[]" accept="image/*">
-        <button type="button" class="remove-btn">삭제</button>
-      </div>
+    <div id="details-wrapper" style="flex: 1;">
+        <div class="detail-row">
+            <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+            <input type="file" name="image">
+            <button type="button" class="remove-btn">삭제</button>
+        </div>
+        <div>
+            <button type="button" class="add-btn" id="add-detail-btn">+추가하기</button>
+        </div>
     </div>
-
-    <button type="button" class="add-btn" id="add-detail-btn">+추가하기</button>
-  </div>
+</div>
 
 
-
+<div class="btn-group">
+            <button type="submit">레시피 등록</button>
+            <button type="reset" class="btn-secondary">취소</button>
+        </div>
         
 
     </form>
@@ -168,9 +171,9 @@
             const div = document.createElement('div');
             div.className = 'detail-row';
             div.innerHTML = `
-                <textarea name="details[]" cols="52" rows="5" placeholder="다음 단계를 입력하세요."></textarea>
-                <input type="file" name="image">
-                <button type="button" class="remove-btn">삭제</button>
+                	<textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+                	<input type="file" name="image">
+                	<button type="button" class="remove-btn">삭제</button>
             `;
             wrapper.appendChild(div);
         });
