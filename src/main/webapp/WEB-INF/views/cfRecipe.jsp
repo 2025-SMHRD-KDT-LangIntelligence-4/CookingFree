@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="${cpath}/css/cfRecipe.css">
 </head>
 <body><!-- s -->
+<jsp:include page="inc/header.jsp" />
     <div class="title-container">
         <div class="title">레시피 이름</div>
     </div>

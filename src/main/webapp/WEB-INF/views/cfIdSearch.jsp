@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="${cpath}/css/cfIdSearch.css">
 </head>
 <body><!-- s -->
+<jsp:include page="inc/header.jsp" />
 <!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
 	<div class="login-wrapper">
 	  <div class="login-form">

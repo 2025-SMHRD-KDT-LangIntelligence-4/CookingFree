@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="${cpath}/css/cfReview.css">
 </head>
 <body>
+<jsp:include page="inc/header.jsp" />
   <!-- 상단 레시피 제목 -->
   <div class="header">
     <input class="recipe-title-input" placeholder="레시피 제목을 입력하세요" />

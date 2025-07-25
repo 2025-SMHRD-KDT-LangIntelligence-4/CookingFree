@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="${cpath}/css/cfSearchRecipe.css">
 </head>
 <body><!-- s -->
+<jsp:include page="inc/header.jsp" />
 <!---------------------------------------------------직접입력 검색창입니다.------------------------------------------------------------------------------->
 	<form action="searchRecipe" method="post" class="search-Form">
         <div class="logo-img-wrapper">

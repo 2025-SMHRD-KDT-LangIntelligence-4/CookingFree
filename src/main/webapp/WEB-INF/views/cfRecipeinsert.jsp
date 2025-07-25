@@ -80,7 +80,7 @@
      
 </style>
 </head>
-<body><!-- s -->
+<body><!-- s --><jsp:include page="inc/header.jsp" />
 
 
 <div class="form-container">

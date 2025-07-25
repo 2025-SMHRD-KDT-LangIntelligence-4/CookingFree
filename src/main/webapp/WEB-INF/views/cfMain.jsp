@@ -14,7 +14,7 @@
     
 <body>
 	<div class="container">
-<!-- s -->
+<!-- s --><jsp:include page="inc/header.jsp" />
 	    <div class="hero" style="background-image: url('${cpath}/upload/050d46bc-70b3-4458-a049-aa14fc90f696_일러스트23.jpg');">
 	        <h1>야, 너도 <br /> 요리할 수 있어</h1>
 	        <p>알러지는 내가 처리할게</p>

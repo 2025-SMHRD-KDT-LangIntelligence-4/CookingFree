@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body><!-- s -->
+<jsp:include page="inc/header.jsp" />
 	<div class="login-wrapper">
 	  <div class="login-form">
 	    <div class="login-title">LOGIN</div>

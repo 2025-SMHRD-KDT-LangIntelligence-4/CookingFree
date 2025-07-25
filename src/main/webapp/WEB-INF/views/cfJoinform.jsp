@@ -12,6 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<jsp:include page="inc/header.jsp" />
 	<div class="joinform-title">
 		<div class="title-name">
 			<div>회원가입</div><!-- s -->
