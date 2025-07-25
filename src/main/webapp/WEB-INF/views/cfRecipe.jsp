@@ -221,7 +221,7 @@
     </div>
 
     <div class="scroll">
-    
+    		<img src="${cpath}/upload/ic_baseline-keyboard-arrow-up.svg" />
     </div>
 
     <div class="title-container">
