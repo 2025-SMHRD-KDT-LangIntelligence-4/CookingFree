@@ -15,7 +15,7 @@
   <!-- 상단 레시피 제목 -->
   <div class="header">
     <input class="recipe-title-input" placeholder="레시피 제목을 입력하세요" />
-  </div>
+  </div><!-- s -->
 
   <!-- 레시피 본문 영역 -->
   <div class="main-content">

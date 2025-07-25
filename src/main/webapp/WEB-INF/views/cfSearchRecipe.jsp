@@ -10,7 +10,7 @@
 <title>Document</title>
 <link rel="stylesheet" href="${cpath}/css/cfSearchRecipe.css">
 </head>
-<body>
+<body><!-- s -->
 <!---------------------------------------------------직접입력 검색창입니다.------------------------------------------------------------------------------->
 	<form action="searchRecipe" method="post" class="search-Form">
         <div class="logo-img-wrapper">

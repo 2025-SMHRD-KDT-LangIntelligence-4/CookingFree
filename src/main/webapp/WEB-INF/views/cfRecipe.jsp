@@ -6,7 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="${cpath}/css/cfRecipe.css">
 </head>
-<body>
+<body><!-- s -->
     <div class="title-container">
         <div class="title">레시피 이름</div>
     </div>

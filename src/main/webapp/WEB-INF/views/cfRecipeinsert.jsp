@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
+<body><!-- s -->
 
  <form action="register2" method="post">
 					<div class="form-group">

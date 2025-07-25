@@ -14,7 +14,7 @@
 <body>
 	<div class="joinform-title">
 		<div class="title-name">
-			<div>회원가입</div>
+			<div>회원가입</div><!-- s -->
 		</div>
 	</div>
 	<div class="full-container">

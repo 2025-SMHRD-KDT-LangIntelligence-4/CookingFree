@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* GNB */
 .div, .div * {
 	box-sizing: border-box;
 }

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/* GNB */
+/* GNB *//* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/
 	flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/

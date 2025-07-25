@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="${cpath}/css/cfIdSearch.css">
 </head>
-<body>
+<body><!-- s -->
 <!---------------------------------------------------------gnb 배너입니다.--------------------------------------------------------------------->
 	<div class="login-wrapper">
 	  <div class="login-form">

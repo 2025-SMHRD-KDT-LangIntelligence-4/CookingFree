@@ -5,7 +5,7 @@
     <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
-<head>
+<head><!-- s -->
  	<title>Document</title>
  	<link rel="stylesheet" href="${cpath}/css/cfMyPage.css">
     <meta charset="UTF-8">
