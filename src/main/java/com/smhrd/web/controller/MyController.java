@@ -123,4 +123,9 @@ public class MyController {
 
 	    return "redirect:/cfMyPage";
 	}
+	
+	@GetMapping("/cfRecipeIndex")
+	public String cfRecipeindex() {
+		return "cfRecipeIndex"; 
+	}
 }

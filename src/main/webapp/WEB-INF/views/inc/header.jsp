@@ -27,7 +27,7 @@
 				</sec:authorize>
 
 				<!-- 로그인 여부와 상관없이 항상 보이는 버튼들 -->
-				<a href="${cpath}/cfRecipeinsert"><img src="${cpath}/upload/Vectorfood.svg" class="icon" />
+				<a href="${cpath}/cfRecipeIndex"><img src="${cpath}/upload/Vectorfood.svg" class="icon" />
 				</a> <a href="#"><img src="${cpath}/upload/Vectorsetting.svg" class="icon" /></a> 
 			</div>
 		</div>
