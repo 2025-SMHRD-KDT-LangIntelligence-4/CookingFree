@@ -21,12 +21,17 @@
 	    </div>
 
 	    <div class="intro">
-	        <h2>알러지 걱정 없이 간편하게!</h2>
-	        <div class="desc">
-	            <p>쿠킹 프리에서는</p>
-	            <p>알러지의 위협으로부터</p>
-	            <p>자유로운</p>
-	            <p>식탁을 약속드립니다.</p>
+	    	<div class="intro-title">
+		        <h2>알러지 걱정 없이 간편하게!</h2>
+		        <div class="desc">
+		            <p>쿠킹 프리에서는</p>
+		            <p>알러지의 위협으로부터</p>
+		            <p>자유로운</p>
+		            <p>식탁을 약속드립니다.</p>
+		        </div>
+	    	</div>
+	        <div class="logo-img-container">
+	        	<img  class="logo-img" src="${cpath}/upload/cookingfree로고.jpg">
 	        </div>
 	    </div>
 

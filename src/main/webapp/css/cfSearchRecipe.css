@@ -108,7 +108,6 @@
 /* --------------------------------------------------------📱 모바일 대응 -----------------------------------------------------------------------*/
 @media ( max-width : 600px) {
 	.searchBar {
-		flex-direction: column;
 		align-items: stretch;
 	}
 	.searchBar input, .search-button {
