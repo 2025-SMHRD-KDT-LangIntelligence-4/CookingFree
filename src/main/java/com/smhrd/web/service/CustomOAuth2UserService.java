@@ -16,6 +16,7 @@ import com.smhrd.web.mapper.BoardMapper;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    
     @Autowired
     private BoardMapper boardMapper;
 

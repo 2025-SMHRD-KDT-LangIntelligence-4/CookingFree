@@ -12,7 +12,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private BoardMapper boardMapper;
 
-    // 이메일(username)으로 DB에서 사용자 정보 조회 후 UserDetails 객체 반환
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("loadUserByUsername 호출됨, 이메일 : " + email);
@@ -20,12 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("사용자 없음: " + email);
         }
-        // ...
-    
-        // Spring Security User 객체 생성: username, 암호화된 password, 권한(예: ROLE_USER)
+
+        // UserDetails 객체 리턴: username, (암호화된) password, 권한
         return User.builder()
                 .username(user.getEmail())
-                .password(user.getPw())  // DB는 bcrypt로 암호화된 비밀번호 저장해야 함, SecurityConfig 수정으로 잡아주기
+                .password(user.getPw())  // password는 암호화된 상태여야 함 (예: bcrypt)
                 .roles("USER")
                 .build();
     }

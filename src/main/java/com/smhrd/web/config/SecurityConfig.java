@@ -2,6 +2,8 @@ package com.smhrd.web.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +23,6 @@ import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
 import com.smhrd.web.service.CustomUserDetailsService;
 
-import java.sql.Timestamp;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
@@ -40,34 +40,13 @@ public class SecurityConfig {
                 .requestMatchers("/WEB-INF/**");
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**", "/cfMyPage/**", "/cfJoinform/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login").loginProcessingUrl("/login")
-                .defaultSuccessUrl("/cfMain", true)
-                .failureUrl("/login?error=true")
-            )
-            .oauth2Login(oauth2 -> oauth2
-                .loginPage("/login")
-                .successHandler(oAuth2SuccessHandler())
-                .failureHandler(oAuth2FailureHandler())
-            )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/cfjoinId"));
-
-        return http.build();
-    }
-
+    // OAuth2 로그인 성공 핸들러 (소셜 로그인 전용)
     @Bean
     public AuthenticationSuccessHandler oAuth2SuccessHandler() {
         return (request, response, authentication) -> {
             System.out.println("[AuthSuccessHandler] OAuth2 로그인 성공: " + authentication.getName());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            HttpSession session = request.getSession();
             if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
                 String provider = oauthToken.getAuthorizedClientRegistrationId();
                 var attributes = oauthToken.getPrincipal().getAttributes();
@@ -97,28 +76,30 @@ public class SecurityConfig {
 
                 Board existingUser = boardMapper.selectUserBySocialId(socialId, authType);
 
-                // 신규 회원이면 DB에 insert 하지 말고, 그냥 세션에만 저장하고 회원가입 폼으로 리다이렉트
+                // 신규 회원인 경우 회원가입 폼으로 이동
                 if (existingUser == null) {
-                    // DB 저장은 회원가입 폼 제출 시점으로 미뤄놓음 (폼에서 가입 최종 완료 시 처리)
-
-                    // 세션에 소셜 로그인 정보만 저장
-                    request.getSession().setAttribute("socialId", socialId);
-                    request.getSession().setAttribute("authType", authType);
-                    request.getSession().setAttribute("email", email != null ? email : "");
+                    session.setAttribute("socialId", socialId);
+                    session.setAttribute("authType", authType);
+                    session.setAttribute("email", email != null ? email : "");
 
                     System.out.println("[AuthSuccessHandler] 신규 회원정보 세션저장, /cfJoinform으로 리다이렉트");
                     response.sendRedirect(request.getContextPath() + "/cfJoinform");
                     return;
-                }
+                } else {
+                    // 기존 회원이면 user_idx 세션 저장
+                    session.setAttribute("user_idx", existingUser.getUser_idx());
+                    System.out.println("OAuth2 로그인 성공 후 - sessionId: " + session.getId() + ", user_idx: " + session.getAttribute("user_idx"));
 
-                System.out.println("[AuthSuccessHandler] 기존 회원, /cfMain으로 리다이렉트");
-                response.sendRedirect(request.getContextPath() + "/cfMain");
-                return;
+                    System.out.println("[AuthSuccessHandler] 기존 회원, /cfMain으로 리다이렉트");
+                    response.sendRedirect(request.getContextPath() + "/cfMain");
+                    return;
+                }
             }
             response.sendRedirect(request.getContextPath() + "/cfMain");
         };
     }
 
+    // OAuth2 로그인 실패 핸들러
     @Bean
     public AuthenticationFailureHandler oAuth2FailureHandler() {
         return (request, response, exception) -> {
@@ -137,18 +118,63 @@ public class SecurityConfig {
         };
     }
 
+    // 커스텀 폼 로그인 성공 핸들러 (로컬 로그인)
+    @Bean
+    public AuthenticationSuccessHandler customLoginSuccessHandler() {
+        return (request, response, authentication) -> {
+            String email = authentication.getName();
+            Board user = boardMapper.selectUserByEmail(email);
+            if (user != null) {
+                request.getSession().setAttribute("user_idx", user.getUser_idx());
+                System.out.println("로컬 로그인 성공 후 - sessionId: " + request.getSession().getId() +
+                        ", user_idx: " + request.getSession().getAttribute("user_idx"));
+            }
+            response.sendRedirect(request.getContextPath() + "/cfMain");
+        };
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**", "/cfMyPage/**", "/cfJoinform/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler(customLoginSuccessHandler())
+                .failureUrl("/login?error=true")
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .successHandler(oAuth2SuccessHandler())
+                .failureHandler(oAuth2FailureHandler())
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/cfMain")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+            )
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/cfjoinId"));
+
+        return http.build();
+    }
+
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                  .userDetailsService(userDetailsService)
-                  .passwordEncoder(passwordEncoder())
-                  .and()
-                  .build();
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
     }
 
     @Bean
     @SuppressWarnings("deprecation")
     public PasswordEncoder passwordEncoder() {
+        // 실제 개발 시에는 BCryptPasswordEncoder 사용을 권장합니다.
         return NoOpPasswordEncoder.getInstance();
     }
 }

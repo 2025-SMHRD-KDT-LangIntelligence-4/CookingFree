@@ -1,47 +1,49 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <c:set var="cpath" value="${pageContext.request.contextPath}" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
 <head>
- 	<title>Document</title>
- 	<link rel="stylesheet" href="${cpath}/css/cfMyPageUpdate.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" href="${cpath}/css/cfMyPageUpdate.css" />
 </head>
-<body><!-- s -->
+<body>
 <jsp:include page="inc/header.jsp" />
-	<div class="myPage-title-container">
-		<div class="myPage-title">
-			<div>My Page</div>
-		</div>
-	</div>
-	<div class="pr-img-container">
-		<div class="pr-img">이미지 넣을거에요~</div>
-	</div>
-	<div class="myPage-container">
-		<div>닉네임</div><input placeholder="사용자 닉네임 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>아이디</div><input placeholder="사용자 아이디 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>이메일</div><input placeholder="사사용자 이메일 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>소셜아이디</div><input placeholder="사용자 소셜아이디 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>선호하는요리</div><input placeholder="사용자 선호요리 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>요리실력</div><input placeholder="사용자 요리실력 출력칸입니다~"></input>  
-	</div>
-	<div class="myPage-container">
-		<div>가입일자</div><input placeholder="사용자 가입일자 출력칸입니다~"></input>  
-	</div>
-<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+
+<div class="myPage-title-container">
+    <div class="myPage-title">
+        <div>내정보 수정</div>
+    </div>
+</div>
+
+<form action="${cpath}/mypageUpdate" method="post" >
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <div class="form-group">
+        <label for="email">이메일(수정 불가)</label>
+        <input type="email" id="email" name="email" value="${user.email}" readonly />
+    </div>
+    <div class="form-group">
+        <label for="nick">닉네임</label>
+        <input type="text" id="nick" name="nick" value="${user.nick}" required />
+    </div>
+    
+    <!-- 추가 수정 가능한 항목들 -->
+    <div class="form-group">
+        <label for="prefer_taste">선호하는 요리</label>
+        <input type="text" id="prefer_taste" name="prefer_taste" value="${user.prefer_taste}" />
+    </div>
+    <div class="form-group">
+        <label for="cooking_skill">요리 실력</label>
+        <input type="text" id="cooking_skill" name="cooking_skill" value="${user.cooking_skill}" />
+    </div>
+    <div class="form-group">
+        <label for="alg_code">보유 알러지</label>
+        <input type="text" id="alg_code" name="alg_code" value="${user.alg_code}" />
+    </div>
+
+    <button type="submit">수정하기</button>
+</form>
+
+<footer class="footer"></footer>
 </body>
 </html>

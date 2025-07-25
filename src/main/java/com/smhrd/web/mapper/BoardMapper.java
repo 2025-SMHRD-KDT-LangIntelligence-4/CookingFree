@@ -47,5 +47,11 @@ public interface BoardMapper {
 	@Select("SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type = #{authType}")
 	Board selectUserBySocialId(@Param("socialId") String socialId, @Param("authType") String authType);
 
+	Board selectUserByIdx(Integer userIdx);
+
+	void updateUserInfo(Board updatedUser) ;
+
+
+
 }
 
