@@ -1,0 +1,179 @@
+@charset "UTF-8";/* GNB */
+        .recipe-img{
+            width: 400px;
+            height: 317.2px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            
+        }
+        .voice-btn{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .touch-btn{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+        }
+        .container{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top:50px;
+        }
+        .btn-container{
+            flex-direction: column;
+        }
+        .title-container{
+            display: flex;
+            justify-content: center;
+            margin-top: 100px;
+        }
+        .title{
+            font-size: 30px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 600px;
+            margin-top:50px;
+        }
+        .recipe-img2{
+            width: 200px;
+            height: 150px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+        }
+        .container2{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            
+        }
+        .btn-container2{
+            flex-direction: column;
+        }
+        .recipe-step-title{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top:200px;            
+        }
+        .scroll{
+            display: flex;
+            justify-content: center;
+            margin-top:200px; 
+            width: 100%;
+            height: 50px;
+            background-color: gray;
+        }
+        .scroll img{
+            width: 40px;
+	        transform: rotate(180deg);
+        }
+        .ingredient{
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .ingre-text{
+            width: 99%; 
+            height: 99%; 
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 2px 3px;
+            border: none;  
+        }
+        .recipe-step{
+            width: 200px;
+            height: 317.2px;
+            background-color: white;
+            border: 3px solid gray;
+            border-radius : 10px;
+            margin-left: 10px;
+        }
+        .ingre-container{
+            border: 3px solid gray;
+            border-radius : 10px;
+            width: 600px;
+            height: 300px;
+        }
+/*--------------------------------------------------------------------------------------------------------*/
+ /*---------------------------------------------------gnbë°°ëìëë¤-----------------------------------------------*/
+ /* GNB */
+.gnb {
+	display: flex; /*íë©´ì ë¥ëì¼ë¡ ë°°ì¹í ë*/
+	flex-wrap: nowrap; /*ìì§ì ë ¬ì ì íí¨ ê·¼ë° ê¸°ë¥ êµ¬íì´ ì¤í¨íë¯í¨*/
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 20px;
+	background: #fff;
+	overflow-x: auto;
+	border-bottom: 1px solid #ddd;
+	box-sizing: border-box;
+	gap: 12px;
+}
+
+/* ì¼ìª½/ì¤ë¥¸ìª½ ìì´ì½ ë§í¬ */
+.gnb-left a, .gnb-right a {
+	display: flex;
+	align-items: center;
+	margin-left: 10px;
+	text-decoration: none;
+}
+
+/* ê°ì´ë° ë¡ê³  */
+.gnb-center {
+	flex: 0 1 auto; /* ê¸°ë³¸ê° auto ì ì§ + íìì ì¤ì´ë¬ */
+	min-width: 80px; /* ìµì ëì´ íë³´ */
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.logo {
+	font-size: clamp(18px, 4vw, 32px); /* ë°ìí í¬ê¸° */
+	font-weight: bold;
+	font-family: 'Inter', sans-serif;
+	color: #000;
+}
+
+/* ì¤ë¥¸ìª½ ìì´ì½ë¤ */
+.gnb-right {
+	display: flex;
+	gap: 12px;
+}
+
+/* ìì´ì½ ì ë í¬ê¸° + ìµìíì ë³´ì¥ */
+.icon {
+	width: clamp(18px, 5vw, 36px);
+	height: clamp(18px, 5vw, 36px);
+	min-width: 18px;
+	min-height: 18px;
+	object-fit: contain;
+}
+/* ëª¨ë°ì¼ ëì */
+@media ( max-width : 768px) {
+	.gnb {
+		padding: 12px;
+		gap: 8px;
+	}
+	.gnb-right a {
+		margin-left: 6px;
+	}
+}
