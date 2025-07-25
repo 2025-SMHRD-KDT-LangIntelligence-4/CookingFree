@@ -2,12 +2,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-    <c:set var="cpath" value="${pageContext.request.contextPath}" />
+<c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>레시피 목록</title>
 <link rel="stylesheet" href="${cpath}/css/cfRecipeIndex.css">
 </head>
 <body>
@@ -18,79 +18,116 @@
 <div class="title-container">
     <div class="title">Free(G)recipe</div>
 </div>
+
 <div class="recipe-index-container">
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-        <button class="recipeInfo">레시피확인하기</button>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
-    </div>
-    <div class="recipe-index">
-        <div class="recipe-image">레시피 이미지공간입니다.</div>
-        <div class="recipe-name">레시피 이름공간입니다.이버튼을 누르면 레시피정보로 이동합니다.</div>
-        <div class="recipe-date">레시피 등록일 공간입니다.</div>
+    <c:forEach var="recipe" items="${recipeList}">
+        <div class="recipe-index">
+            <div class="recipe-image">
+                <c:choose>
+                    <c:when test="${not empty recipe.recipe_img}">
+                        <img src="${cpath}${recipe.recipe_img}" alt="${recipe.recipe_name}" style="width:100%; height:100%; object-fit: cover;" />
+                    </c:when>
+                    <c:otherwise>
+                        <div style="width:100%; height:100%; background-color:#aaa; display:flex; justify-content:center; align-items:center; color:#fff;">
+                            이미지 없음
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            <div class="recipe-name">
+                <c:out value="${recipe.recipe_name}" default="이름 없음" />
+            </div>
+            <div class="recipe-date">
+                <fmt:formatDate value="${recipe.created_at}" pattern="yyyy-MM-dd" />
+            </div>
+            <button class="recipeInfo"
+                    data-recipe-idx="${recipe.recipe_idx}"
+                    data-recipe-name="${recipe.recipe_name}"
+                    data-recipe-img="${cpath}${recipe.recipe_img}"
+                    data-recipe-desc="${recipe.recipe_desc != null ? recipe.recipe_desc : '설명 없음'}">
+                레시피확인하기
+            </button>
+        </div>
+    </c:forEach>
+</div>
+
+<!---------------------------------------------------레시피정보출력창입니다------------------------------------------------------------>
+<div class="recipe-info-modal" id="recipeModal" style="display:none;">
+    <div class="recipe-info-modal-content">
+        <h2 id="modalTitle">레시피 이름입니다.</h2>
+        <div class="recipe-info-container">
+            <div class="recipe-info-image" id="modalImage" style="width: 200px; height: 200px; background-color: #eee; margin-right: 20px;">
+                <!-- 이미지 들어감 -->
+            </div>
+            <div class="short-info" id="modalDesc" style="text-align:left; max-height:300px; overflow-y:auto;">
+                레시피간단 정보입니다.
+            </div>
+        </div>
+        <button class="move-recipe" id="modalGoButton">요리하러가기</button>   
+        <button style="margin-top: 15px;" id="modalCloseButton">닫기</button>
     </div>
 </div>
-<!---------------------------------------------------레시피정보출력창입니다------------------------------------------------------------>
-<div class="recipe-info-modal" id="recipeModal">
-		<div class="recipe-info-modal-content">
-			<h2>레시피 이름입니다.</h2>
-			<div class="recipe-info-container">
-				<div class="recipe-info-image">레시피이미지입니다.</div>
-				<div class="short-info">레시피간단 정보입니다.</div>
-	            <button class="move-recipe">요리하러가기</button>   
-			</div>
-		</div>
-	</div>
+
 <footer class="footer"></footer>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
-</body>
+
 <script>
-  const startBtn = document.querySelector('.recipeInfo');
-  const modal = document.getElementById('recipeModal');
-  const closeBtn = modal.querySelector('.gpt-close-btn');
+    // 모달과 버튼 요소 선택
+    const modal = document.getElementById('recipeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImage = document.getElementById('modalImage');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalGoButton = document.getElementById('modalGoButton');
+    const modalCloseButton = document.getElementById('modalCloseButton');
 
-  // 1. 모달 열기
-  startBtn.addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-  // 3. 모달 바깥 영역 클릭 시 닫기
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
+    // 레시피확인하기 버튼 모두 선택 후 이벤트 걸기
+    document.querySelectorAll('.recipeInfo').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const name = button.getAttribute('data-recipe-name') || '이름 없음';
+            const imgSrc = button.getAttribute('data-recipe-img') || '';
+            const desc = button.getAttribute('data-recipe-desc') || '설명 없음';
+            const recipeIdx = button.getAttribute('data-recipe-idx');
 
-  // 4. ESC 키 누르면 닫기
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      modal.style.display = 'none';
-    }
-  });
+            modalTitle.textContent = name;
+
+            // 이미지 처리
+            if(imgSrc) {
+                modalImage.innerHTML = '<img src="'+imgSrc+'" alt="'+name+'" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">';
+            } else {
+                modalImage.innerHTML = '<div style="width:100%; height:100%; background:#ccc; display:flex; justify-content:center; align-items:center; color:#666;">이미지 없음</div>';
+            }
+
+            modalDesc.textContent = desc;
+
+            modalGoButton.onclick = function() {
+                window.location.href = '${cpath}/web/recipe/detail?recipe_idx=' + recipeIdx;
+            };
+
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+        });
+    });
+
+    // 모달 닫기 버튼 이벤트
+    modalCloseButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // 모달 외부클릭시 닫기 기능
+    modal.addEventListener('click', (ev) => {
+        if(ev.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // ESC키로 닫기
+    document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') {
+            modal.style.display = 'none';
+        }
+    });
 </script>
+</body>
 </html>

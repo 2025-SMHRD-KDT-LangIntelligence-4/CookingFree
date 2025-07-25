@@ -51,7 +51,7 @@ public interface BoardMapper {
 
 	void updateUserInfo(Board updatedUser) ;
 
-
+	List<Board> selectRecipesByIds(@Param("recipeIdxList") List<Integer> recipeIdxList);
 
 }
 

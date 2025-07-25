@@ -39,5 +39,11 @@
 	  WHERE user_idx = #{user_idx}
 	</update>
 	<!-- 기타 쿼리문 여기서부터 시작 -->
-
+	<select id="selectRecipesByIds" parameterType="list" resultType="com.smhrd.web.entity.Board">
+  SELECT * FROM cf_recipe
+  WHERE recipe_idx IN
+  <foreach item="id" collection="recipeIdxList" open="(" separator="," close=")">
+    #{id}
+  </foreach>
+</select>
 </mapper>

@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -124,8 +125,21 @@ public class MyController {
 	    return "redirect:/cfMyPage";
 	}
 	
+
+
 	@GetMapping("/cfRecipeIndex")
-	public String cfRecipeindex() {
-		return "cfRecipeIndex"; 
+	public String cfRecipeIndex(Model model) {
+	    List<Integer> recipeIdxList = Arrays.asList(
+	        128671, 128932, 149207, 151148, 153040,
+	        221097, 221098, 221102, 223583, 223584,
+	        225141, 225146, 331003, 333866, 333869,
+	        340534, 340537, 343935, 344698, 346652
+	    );
+	    List<Board> recipeList = boardMapper.selectRecipesByIds(recipeIdxList);
+	    model.addAttribute("recipeList", recipeList);
+	    return "cfRecipeIndex";
 	}
+	
 }
+
+
