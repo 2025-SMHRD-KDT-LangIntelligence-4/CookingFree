@@ -18,7 +18,7 @@
         	<img class="logo-img" src="${cpath}/upload/cookingfree로고.jpg">
         </div>
         <div class="searchBar">
-          <input id="searchtext" type="text" placeholder="검색어를 입력해주세요">
+          <input id="searchtext"  name="searchText" type="text" placeholder="검색어를 입력해주세요">
           <button class="search-button" type="submit">검색</button>
         </div>
     </form>
@@ -29,16 +29,16 @@
 	<!-- GPT 검색화면이 전체화면 아래쪽에 있다고 가정 -->
 	<div class="gpt-modal-overlay" id="gptModal">
 		<div class="gpt-modal-content">
-			<h2>프리G 검색</h2>
+			<div class="chat-box" id="chat-box">
+      			<div class="chat-message bot">안녕하세요! 어떤 요리를 도와드릴까요?</div>
+    		</div>
 			<div class="gpt-container">
-				<input class="gpt-input" type="text" placeholder="궁금한 내용을 입력하세요..."
-					style="width:70%; font-size: 1rem;" />
-				<button class="gpt-send-btn">
-					<img src="${cpath}/upload/ic_baseline-keyboard-arrow-up.svg" style="width:40px; transform: rotate(90deg);"/>
-				</button>
+      			<input class="gpt-input" type="text" id="user-input" placeholder="예: 김치찌개 레시피 알려줘">
+      			<button class="gpt-send-btn" onclick="sendMessage()" style="width:40px;">전송</button>
 			</div>
 		</div>
 	</div>
+<!---------------------------------------------------GPT검색창 입니다.-------------------------------------------------------------------------------->
 </body>
 <script>
   const startBtn = document.querySelector('.start-gpt');
@@ -62,6 +62,32 @@
       modal.style.display = 'none';
     }
   });
-</script>
+  
+  /*---------------------------------------------------------gpt대화기능입니다-------------------------------------------------*/
+  
+  function sendMessage() {
+    const input = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+    const userMessage = input.value;
 
+    if (!userMessage.trim()) return;
+
+    chatBox.innerHTML += `<div class="chat-message user">${userMessage}</div>`;
+	
+    let botResponse = '';
+	    if (userMessage.includes('김치찌개')) {
+	      botResponse = '김치찌개 레시피:\n1. 김치, 돼지고기 볶기\n2. 물 넣고 끓이기\n3. 두부, 파 추가하고 간 맞추기';
+	    } else if (userMessage.includes('된장찌개')) {
+	      botResponse = '된장찌개 레시피:\n1. 된장, 멸치 육수 끓이기\n2. 야채, 두부 넣기\n3. 10분 정도 끓이면 완성!';
+	    } else {
+	      botResponse = '죄송해요. 해당 요리는 아직 학습되지 않았어요 😢';
+	    }
+	
+    chatBox.innerHTML += `<div class="chat-message bot">${botResponse}</div>`;
+
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  
+</script>
 </html>
