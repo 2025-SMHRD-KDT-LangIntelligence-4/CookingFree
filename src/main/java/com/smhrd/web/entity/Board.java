@@ -27,7 +27,8 @@ public class Board {
     private String prefer_taste;     // 선호하는 맛
     private String cooking_skill;    // 요리 실력
     private Timestamp joined_at;     // 가입 일자
-    
+    private String profile_img; 	 // 프로필 이미지 URL
+
     // ================== 기존 레시피 관련 필드 (확장) ==================
     private Integer recipe_idx;      // 레시피 식별자
     private String recipe_name;      // 레시피 명

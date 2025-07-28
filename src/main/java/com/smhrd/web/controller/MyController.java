@@ -1,5 +1,8 @@
 package com.smhrd.web.controller;
+import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,11 +12,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
@@ -38,12 +44,20 @@ public class MyController {
     private BoardMapper boardMapper;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    
+    @Value("${app.upload.base-dir}")
+    private String uploadDir;      // physical path
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;    // “/web”
 
     // OpenAI API 사용 가능 여부 추적
     private boolean openAIAvailable = true;
     private LocalDateTime lastApiCallTime = LocalDateTime.now();
 
     // ================== 기존 페이지 매핑 (유지) ==================
+    
+    
 
     @GetMapping({ "/", "/cfMain" })
     public String mainPage(Model model) {
@@ -70,6 +84,56 @@ public class MyController {
         return "cfRecipeinsert";
     }
 
+    @GetMapping({"/recipe/detail/{recipeIdx}", "/recipe/detail"})
+    public String recipeDetail(
+            @PathVariable(value = "recipeIdx", required = false) Integer pathIdx,
+            @RequestParam(value = "recipe_idx", required = false) Integer queryIdx,
+            @RequestParam(defaultValue = "1") int page,
+            HttpSession session,
+            Model model) {
+
+        // PathVariable 값이 우선, 없으면 queryParam 사용
+        Integer recipeId = (pathIdx != null ? pathIdx : queryIdx);
+        if (recipeId == null) {
+            return "redirect:/cfRecipeIndex";
+        }
+
+        // 조회수 증가 (세션 중복 방지)
+        String viewKey = "recipe_view_" + recipeId;
+        if (session.getAttribute(viewKey) == null) {
+            boardMapper.updateRecipeViewCount(recipeId);
+            session.setAttribute(viewKey, true);
+            session.setMaxInactiveInterval(24 * 60 * 60);
+        }
+
+        // 레시피 상세 정보 조회
+        Board recipe = boardMapper.getRecipeDetailWithViewCount(recipeId);
+        if (recipe == null) {
+            return "redirect:/cfRecipeIndex";
+        }
+
+        // 리뷰 페이징 처리
+        int pageSize = 10;
+        int totalReviews = boardMapper.getRecipeReviewCount(recipeId);
+        int totalPages = (totalReviews + pageSize - 1) / pageSize;
+        int offset = (page - 1) * pageSize;
+        List<Board> reviews = boardMapper.getRecipeReviews(recipeId, pageSize, offset);
+
+        // 모델에 데이터 바인딩
+        model.addAttribute("recipe", recipe);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalReviews", totalReviews);
+        model.addAttribute("currentUserIdx", session.getAttribute("user_idx"));
+
+        return "cfRecipeDetail";
+    }
+
+
+
+    // ─────────────────────────────────────────────────────────────────
+    // 마이페이지 조회
     @GetMapping("/cfMyPage")
     public String showMyPage(HttpSession session, Model model) {
         Integer userIdx = (Integer) session.getAttribute("user_idx");
@@ -78,11 +142,10 @@ public class MyController {
         }
         Board user = boardMapper.selectUserByIdx(userIdx);
         model.addAttribute("user", user);
-        
-        logger.debug("마이페이지 - user_idx: {}", userIdx);
         return "cfMyPage";
     }
 
+    // 마이페이지 수정 폼
     @GetMapping("/cfMyPageUpdate")
     public String editMyPage(HttpSession session, Model model) {
         Integer userIdx = (Integer) session.getAttribute("user_idx");
@@ -94,18 +157,34 @@ public class MyController {
         return "cfMyPageUpdate";
     }
 
+    // 마이페이지 업데이트 (프로필 이미지 포함)
     @PostMapping("/mypageUpdate")
-    public String updateUserInfo(@ModelAttribute Board updatedUser, HttpSession session) {
+    public String updateUserInfo(
+            @ModelAttribute Board updatedUser,
+            @RequestParam(required = false) MultipartFile profileImgFile,
+            HttpSession session) throws IOException {
+
         Integer userIdx = (Integer) session.getAttribute("user_idx");
         if (userIdx == null) {
             return "redirect:/login";
         }
 
+        // 프로필 이미지 업로드
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            String ext = StringUtils.getFilenameExtension(profileImgFile.getOriginalFilename());
+            String filename = UUID.randomUUID().toString() + (ext != null ? "." + ext : "");
+			File dest = new File(uploadDir, filename);
+            dest.getParentFile().mkdirs();
+            profileImgFile.transferTo(dest);
+            String imgUrl = contextPath + "/upload/profile/" + filename;
+            updatedUser.setProfile_img(imgUrl);
+        }
+
         updatedUser.setUser_idx(userIdx);
         boardMapper.updateUserInfo(updatedUser);
-
         return "redirect:/cfMyPage";
     }
+
 
     @GetMapping("/cfRecipeIndex")
     public String cfRecipeIndex(Model model) {
@@ -128,52 +207,7 @@ public class MyController {
 
     
     
-    // ================== 새로운 레시피 상세 및 조회수 기능 ==================
 
-    @GetMapping("/recipe/detail/{recipeIdx}")
-    public String recipeDetail(@PathVariable Integer recipeIdx, 
-                              HttpSession session, 
-                              Model model,
-                              @RequestParam(defaultValue = "1") int page) {
-        
-        // 조회수 증가 (중복 방지를 위한 세션 체크)
-        String viewKey = "recipe_view_" + recipeIdx;
-        if (session.getAttribute(viewKey) == null) {
-            boardMapper.updateRecipeViewCount(recipeIdx);
-            session.setAttribute(viewKey, true);
-            session.setMaxInactiveInterval(24 * 60 * 60); // 24시간
-            logger.info("조회수 증가: recipeIdx={}", recipeIdx);
-        }
-        
-        // 레시피 상세 정보 조회
-        Board recipe = boardMapper.getRecipeDetailWithViewCount(recipeIdx);
-        if (recipe == null) {
-            logger.warn("레시피를 찾을 수 없음: recipeIdx={}", recipeIdx);
-            return "redirect:/cfRecipeIndex";
-        }
-        
-        // 리뷰 목록 조회 (페이징)
-        int pageSize = 10;
-        int offset = (page - 1) * pageSize;
-        List<Board> reviews = boardMapper.getRecipeReviews(recipeIdx, pageSize, offset);
-        
-        // 리뷰 총 개수
-        Integer totalReviews = boardMapper.getRecipeReviewCount(recipeIdx);
-        int totalPages = (int) Math.ceil((double) totalReviews / pageSize);
-        
-        // 현재 로그인한 사용자 정보
-        Integer currentUserIdx = (Integer) session.getAttribute("user_idx");
-        
-        model.addAttribute("recipe", recipe);
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalReviews", totalReviews);
-        model.addAttribute("currentUserIdx", currentUserIdx);
-        
-        logger.info("레시피 상세 조회: recipeIdx={}, 리뷰 수={}", recipeIdx, totalReviews);
-        return "cfRecipeDetail";
-    }
 
     // ================== 리뷰 시스템 ==================
 

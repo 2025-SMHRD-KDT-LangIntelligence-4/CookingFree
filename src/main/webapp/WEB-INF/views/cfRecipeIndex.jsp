@@ -101,7 +101,7 @@
             modalDesc.textContent = desc;
 
             modalGoButton.onclick = function() {
-                window.location.href = '${cpath}/web/recipe/detail?recipe_idx=' + recipeIdx;
+                window.location.href = '${cpath}/recipe/detail?recipe_idx=' + recipeIdx;
             };
 
             modal.style.display = 'flex';
