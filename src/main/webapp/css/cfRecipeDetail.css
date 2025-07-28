@@ -1,0 +1,26 @@
+@charset "UTF-8";
+.container, .comment-section{
+	display:flex;
+	justify-content:center;
+	flex-wrap:wrap;
+	width:100%;
+	gap:20px;
+}
+.recipe-header{
+	display:flex;
+	justify-content:left;
+	width:100%;
+	height:auto;
+	padding: 0px 30px;
+	border-bottom:3px solid gray;
+	margin-bottom: 20px;
+	margin-top:50px;
+}
+.recipe-title-input{
+	font-size:4vw
+}
+
+.recipe-image{
+	width:100%;
+	margin-bottom:30px;
+}

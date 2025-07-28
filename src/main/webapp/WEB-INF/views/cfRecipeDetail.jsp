@@ -5,21 +5,126 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${recipe.recipe_name} - 쿠킹프리</title>
     <link rel="stylesheet" href="${cpath}/css/cfRecipeDetail.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    .gnb {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background: #fff;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    gap: 12px;    
+}
+
+.gnb-left a, .gnb-right a {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.gnb-center {
+    flex: 0 1 auto;
+    min-width: 80px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    font-size: clamp(18px, 4vw, 32px);
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    color: #000;
+}
+
+.gnb-right {
+    display: flex;
+    gap: 12px;
+}
+
+.icon {
+    width: clamp(18px, 5vw, 36px);
+    height: clamp(18px, 5vw, 36px);
+    min-width: 18px;
+    min-height: 18px;
+    object-fit: contain;
+}
+    .gnb {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background: #fff;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    gap: 12px;    
+}
+
+.gnb-left a, .gnb-right a {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.gnb-center {
+    flex: 0 1 auto;
+    min-width: 80px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    font-size: clamp(18px, 4vw, 32px);
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    color: #000;
+}
+
+.gnb-right {
+    display: flex;
+    gap: 12px;
+}
+
+.icon {
+    width: clamp(18px, 5vw, 36px);
+    height: clamp(18px, 5vw, 36px);
+    min-width: 18px;
+    min-height: 18px;
+    object-fit: contain;
+}
+@media (max-width: 768px) {
+    .gnb {
+        padding: 12px;
+        gap: 8px;
+    }
+    .gnb-right a {
+        margin-left: 6px;
+    }
+    
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <jsp:include page="inc/header.jsp" />
-    </div>
+<jsp:include page="inc/header.jsp" />
     
     <!-- 레시피 헤더 -->
     <div class="container">
         <div class="recipe-header">
-            <input class="recipe-title-input" value="${recipe.recipe_name}" readonly />
+            <div class="recipe-title-input" readonly>${recipe.recipe_name}</div>
         </div>
 
         <!-- 레시피 메인 콘텐츠 -->
@@ -97,7 +202,7 @@
         <!-- 댓글 작성 -->
         <c:if test="${currentUserIdx != null}">
             <div class="comment-input-wrapper">
-                <img class="profile" src="https://yt3.ggpht.com/default.jpg" />
+                <img class="profile" src="${cpath}/upload/profile_default.jpg" />
                 <div class="input-box">
                     <input 
                         type="text" 

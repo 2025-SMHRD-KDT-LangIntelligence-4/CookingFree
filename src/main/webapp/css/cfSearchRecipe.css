@@ -1,4 +1,7 @@
-@charset "UTF-8";/* GNB */
+@charset "UTF-8";
+body{
+	display:block !important;
+}
 /* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/

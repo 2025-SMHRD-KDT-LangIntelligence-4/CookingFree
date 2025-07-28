@@ -6,6 +6,7 @@
 	prefix="sec"%>
 <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <style>
+
 body {
 	font-family: Arial, sans-serif;
 	display: flex;
@@ -13,7 +14,6 @@ body {
 	justify-content: center;
 	min-height: 100vh;
 	margin: 0;
-	background-color: #f4f4f4;
 	
 }
 /* 기존 timer-container 스타일 유지 */
@@ -40,8 +40,6 @@ button {
 	margin: 5px;
 	border: none;
 	border-radius: 5px;
-	background-color: #007bff;
-	color: white;
 	font-size: 16px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
