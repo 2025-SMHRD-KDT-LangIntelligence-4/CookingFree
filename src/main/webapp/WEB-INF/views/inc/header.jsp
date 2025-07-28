@@ -14,6 +14,7 @@ body {
 	min-height: 100vh;
 	margin: 0;
 	background-color: #f4f4f4;
+	ㄴ
 }
 /* 기존 timer-container 스타일 유지 */
 .timer-container {
