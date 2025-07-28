@@ -1,7 +1,9 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-       <c:set var="cpath" value="${pageContext.request.contextPath}" />
+<c:set var="cpath" value="${pageContext.request.contextPath}" />
+<c:set var="_csrf" value="${_csrf}" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +15,8 @@
 <body><!-- s -->
 <jsp:include page="inc/header.jsp" />
 <!---------------------------------------------------직접입력 검색창입니다.------------------------------------------------------------------------------->
-	<form action="searchRecipe" method="post" class="search-Form">
+	<form action="${cpath}/searchRecipe" method="post" class="search-Form">
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <div class="logo-img-wrapper">
         	<img class="logo-img" src="${cpath}/upload/cookingfree로고.jpg">
         </div>
@@ -22,6 +25,19 @@
           <button class="search-button" type="submit">검색</button>
         </div>
     </form>
+    <c:if test="${not empty searchResults}">
+  <div class="results">
+    <h2>“${searchText}” 검색 결과 (${fn:length(searchResults)}건)</h2>
+    <c:forEach var="r" items="${searchResults}">
+      <div class="result-card" onclick="location.href='${cpath}/recipe/detail/${r.recipe_idx}'">
+        <img src="${not empty r.recipe_img ? r.recipe_img : cpath.concat('/upload/default-recipe.jpg')}" alt="${r.recipe_name}">
+        <h3>${r.recipe_name}</h3>
+        <p>${r.recipe_desc}</p>
+      </div>
+    </c:forEach>
+  </div>
+</c:if>
+    
     <div class="start-gpt-container">
 		<button class="start-gpt">프리G에게 물어보기</button>
     </div>

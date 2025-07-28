@@ -104,7 +104,15 @@
 	border-radius: 8px;
 	box-sizing: border-box;
 }
-
+.results { margin: 20px 0; }
+.result-card {
+  display: flex; gap: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;
+  transition: background 0.2s;
+}
+.result-card:hover { background: #f9f9f9; }
+.result-card img { width: 100px; height: 80px; object-fit: cover; border-radius: 4px; }
+.result-card h3 { margin: 0; font-size: 1.1rem; }
+.result-card p { margin: 4px 0 0; font-size: 0.9rem; color: #555; }
 /* --------------------------------------------------------📱 모바일 대응 -----------------------------------------------------------------------*/
 @media ( max-width : 600px) {
 	.searchBar {

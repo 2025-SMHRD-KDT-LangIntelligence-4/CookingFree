@@ -115,6 +115,19 @@ public class MyController {
         return "cfRecipeIndex";
     }
 
+    @PostMapping("/searchRecipe")
+    public String searchRecipe(@RequestParam("searchText") String keyword, Model model) {
+        // 알레르기 제외 검색(필요시 allergyIds 구하기)
+        List<Integer> allergyIds = Collections.emptyList();
+        // 키워드+알레르기 제외 레시피 조회
+        List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, allergyIds, 50);
+        model.addAttribute("searchResults", results);
+        model.addAttribute("searchText", keyword);
+        return "cfSearchRecipe";  // 같은 JSP에서 결과 렌더링
+    }
+
+    
+    
     // ================== 새로운 레시피 상세 및 조회수 기능 ==================
 
     @GetMapping("/recipe/detail/{recipeIdx}")
