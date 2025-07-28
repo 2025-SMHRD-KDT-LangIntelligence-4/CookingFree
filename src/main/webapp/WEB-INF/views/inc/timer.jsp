@@ -1,15 +1,9 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
-    <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>카운트다운 타이머</title>
+    <title>카운트다운 타이머 모달</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,6 +15,7 @@
             margin: 0;
             background-color: #f4f4f4;
         }
+        /* 기존 timer-container 스타일 유지 */
         .timer-container {
             background-color: #fff;
             padding: 30px;
@@ -56,21 +51,22 @@
             cursor: not-allowed;
         }
         #timerDisplay {
-            font-size: 4em; /* 더 크게 */
+            font-size: 4em;
             font-weight: bold;
             margin-bottom: 20px;
             color: #333;
         }
+        /* 모달 스타일 (전체 화면 덮기) */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
+            display: none; /* 기본적으로 숨김 */
+            position: fixed; /* 고정 위치 */
+            z-index: 10; /* 다른 요소 위에 표시 */
             left: 0;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* 어두운 배경 */
             justify-content: center;
             align-items: center;
         }
@@ -80,14 +76,17 @@
             padding: 20px;
             border: 1px solid #888;
             border-radius: 8px;
-            width: 80%;
-            max-width: 300px;
+            width: 90%; /* 화면 크기에 따라 조절 */
+            max-width: 400px; /* 최대 너비 설정 */
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            position: relative; /* 닫기 버튼 위치를 위해 */
         }
         .close-button {
             color: #aaa;
-            float: right;
+            position: absolute; /* 모달 내용의 오른쪽 상단에 고정 */
+            top: 10px;
+            right: 15px;
             font-size: 28px;
             font-weight: bold;
         }
@@ -100,29 +99,37 @@
     </style>
 </head>
 <body>
-    <div class="timer-container">
-        <h3>카운트다운 타이머</h3>
-        <div>
-            <input type="number" id="minInput" value="0" min="0" placeholder="분"> 분
-            <input type="number" id="secInput" value="0" min="0" max="59" placeholder="초"> 초
+
+    <button id="openTimerModalButton" onclick="openTimerModal()">타이머 열기</button>
+
+    <div id="fullTimerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeTimerModal()">&times;</span>
+            <div class="timer-container">
+                <h3>카운트다운 타이머</h3>
+                <div>
+                    <input type="number" id="minInput" value="0" min="0" placeholder="분"> 분
+                    <input type="number" id="secInput" value="0" min="0" max="59" placeholder="초"> 초
+                </div>
+                <div id="timerDisplay">00분 00초</div>
+                <button id="startButton" onclick="startCountdown()">시작</button>
+                <button id="resetButton" onclick="resetCountdown()" disabled>초기화</button>
+                <button id="stopButton" onclick="stopCountdown()" disabled>정지</button>
+            </div>
         </div>
-        <div id="timerDisplay">00분 00초</div>
-        <button id="startButton" onclick="startCountdown()">시작</button>
-        <button id="resetButton" onclick="resetCountdown()" disabled>초기화</button>
-        <button id="stopButton" onclick="stopCountdown()" disabled>정지</button>
     </div>
 
     <div id="timeUpModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
+            <span class="close-button" onclick="closeTimeUpModal()">&times;</span>
             <h2>시간 초과!</h2>
             <p>설정된 시간이 종료되었습니다.</p>
         </div>
     </div>
 
     <script>
-        let countdownTimer; // setInterval 참조용 변수
-        let totalSeconds;   // 총 남은 시간 (초 단위)
+        let countdownTimer;
+        let totalSeconds;
 
         // 초기화 시 버튼 상태 설정
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -137,38 +144,32 @@
 
         function updateButtonStates(isTimerRunning) {
             document.getElementById('startButton').disabled = isTimerRunning;
+            // 타이머가 실행 중이 아니거나 totalSeconds가 정의되지 않았다면 리셋 버튼 비활성화
             document.getElementById('resetButton').disabled = !isTimerRunning && totalSeconds === undefined;
             document.getElementById('stopButton').disabled = !isTimerRunning;
         }
 
         function startCountdown() {
-            // 이미 타이머가 실행 중이면 중복 실행 방지
-            if (countdownTimer) return;
+            if (countdownTimer) return; // 이미 타이머가 실행 중이면 중복 실행 방지
 
-            // 입력값 가져오기
             const min = parseInt(document.getElementById('minInput').value);
             const sec = parseInt(document.getElementById('secInput').value);
 
-            // 입력값 유효성 검사 (음수 방지 및 숫자 여부 확인)
             if (isNaN(min) || isNaN(sec) || min < 0 || sec < 0) {
                 alert("올바른 시간(분, 초)을 입력해주세요.");
                 return;
             }
 
-            // 첫 시작이거나 리셋 후 시작할 때만 총 초를 설정
             if (totalSeconds === undefined || totalSeconds === 0) {
-                 totalSeconds = (min * 60) + sec;
-                 // 처음 시작할 때 00:00인 경우 시작하지 않음
-                 if (totalSeconds <= 0) {
-                     alert("0초 이상으로 시간을 설정해주세요.");
-                     return;
-                 }
+                totalSeconds = (min * 60) + sec;
+                if (totalSeconds <= 0) {
+                    alert("0초 이상으로 시간을 설정해주세요.");
+                    return;
+                }
             }
-
 
             updateButtonStates(true); // 타이머 시작 시 버튼 상태 업데이트
 
-            // 타이머 디스플레이 초기 업데이트
             document.getElementById("timerDisplay").innerText = formatTime(totalSeconds);
 
             countdownTimer = setInterval(() => {
@@ -178,10 +179,10 @@
 
                 if (totalSeconds <= 0) {
                     clearInterval(countdownTimer);
-                    countdownTimer = null; // 타이머 참조 초기화
+                    countdownTimer = null;
                     document.getElementById("timerDisplay").innerText = "00분 00초";
-                    showModal(); // 시간 초과 시 모달창 띄우기
-                    updateButtonStates(false); // 타이머 종료 시 버튼 상태 업데이트
+                    showTimeUpModal(); // 시간 초과 시 모달창 띄우기 (이름 변경)
+                    updateButtonStates(false);
                     document.getElementById('resetButton').disabled = false; // 종료 후에는 리셋 가능
                 }
             }, 1000);
@@ -205,11 +206,25 @@
             updateButtonStates(false); // 리셋 시 버튼 상태 업데이트
         }
 
-        function showModal() {
+        // 전체 타이머 모달 열기
+        function openTimerModal() {
+            document.getElementById('fullTimerModal').style.display = 'flex';
+        }
+
+        // 전체 타이머 모달 닫기
+        function closeTimerModal() {
+            // 모달을 닫을 때 타이머도 정지시키고 초기화할지 선택
+            // resetCountdown(); // 주석을 풀면 닫을 때마다 타이머가 초기화됩니다.
+            document.getElementById('fullTimerModal').style.display = 'none';
+        }
+
+        // 시간 초과 알림 모달 열기 (기존 showModal에서 이름 변경)
+        function showTimeUpModal() {
             document.getElementById('timeUpModal').style.display = 'flex';
         }
 
-        function closeModal() {
+        // 시간 초과 알림 모달 닫기 (기존 closeModal에서 이름 변경)
+        function closeTimeUpModal() {
             document.getElementById('timeUpModal').style.display = 'none';
         }
     </script>
