@@ -13,7 +13,7 @@
 </head>
 <body><!-- s -->
 <jsp:include page="inc/header.jsp" />
-	<div class="login-wrapper">
+	<div class="login-wrapper" style="background: url(${cpath}/upload/일러스트23.jpg) center/cover no-repeat;">
 	  <div class="login-form">
 	    <div class="login-title">LOGIN</div>
 			<form action="${cpath}/login" method="post">

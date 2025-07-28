@@ -25,7 +25,7 @@
 .gnb-center {
 	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
 	min-width: 80px; /* 최소 넓이 확보 */
-	position: absolute;
+	margin-left: 30vw;
 	left: 50%;
 	transform: translateX(-50%);
 }
@@ -62,63 +62,106 @@
 	}
 }
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
-.myPage-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: center;
-}
-.myPage-title{
-	display: flex;
-	align-items: center;
-	margin-top: 5rem;
-	width: fit-content;
-	box-sizing: border-box;
-	justify-content: center;
-	font-size:50px;
-	padding:10px 40px;
-	margin-bottom:50px;
-	border-bottom: 3px solid #bababa; 
-}
-.myPage-title-container{
-	display: flex;
-	justify-content: center;
-	width:100%;
-}
-.pr-img{
-	box-sizing: border-box;
-	border-radius: 50%;
-	background-color:#c79d9d;
-	width:200px;
-	height:200px;
-	overflow:hidden;
-	align-items: center;
-}
-.myPage-container input{
-	width : 300px;
-	border: 3px solid #bababa;
-	border-radius: 8px;	
-	box-sizing: border-box;
-	padding: 10px;
-	font-size: 1rem;
-}
-.myPage-container div{
-	width: auto;
-	border: 3px solid #bababa;
-	border-radius: 8px;	
-	box-sizing: border-box;
-	padding: 10px;
-	font-size: 1rem;
-	margin-right: 10px;
-}
-.pr-img-container{
-	display: flex;
-	align-items: center;
-	margin-top: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-	justify-content: center;
-	margin-bottom:50px;
-}
+    
+    .all-container{
+        display: flex;
+        justify-content: center;
+        max-width: 80%;
+        max-height: 100%;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+    .my-page-title{
+        width: 100%;
+        border-bottom: 3px solid gray;
+        font-size: 90px;
+        margin-top: 100px;
+        display: flex;
+        justify-content: center;
+        padding-bottom: 30px;
+    }
+    .pr-img-container{
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        margin-top: 30px;
+        align-items: center;
+    }
+    .pr-img{
+        width:40%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        background-color: aqua;
+        overflow:hidden;
+        margin-bottom: 20px;
+    }
+    .name-container{
+        display: flex;
+        justify-content: space-between;
+        width:100%;
+        margin-left: 10px;
+    }
+    .info-container{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+        border-bottom: 3px solid gray;
+        padding: 10px 20px;
+        font-size: 25px;
+    }
+    .myPage-container{
+        width: 100%;
+        height: 10%;
+        display: flex;
+        justify-content: left;
+        gap: 20%;
+        text-align: center;
+        align-items: center;
+        
+    }
+    @media (max-width: 500px) {
+        .myPage-container{
+            gap: 10%;
+        }
+        .my-page-title{
+            font-size: 50px;
+        }
+        .info-container{
+            font-size: 15px;
+        }
+        .pr-img{
+            width: 60%;
+        }
+        .pr-img-container{
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .div1 {
+            font-size: 15px !important;
+        }
+        .userInfo, .usernick{
+            font-size: 15px !important;
+        }
+    }
+    .div1{
+        width: 30%;
+        font-size: 25px;
+    }
+    .body{
+        display: flex;
+        justify-content: center;
+    }
+    .userInfo{
+        width: 60%;
+        font-size: 25px;
+        overflow: auto;
+    }
+    .usernick{
+        font-size: clamp(18px, 2vw, 25px);
+    }
+    .joinform{
+        width: 100%;
+        gap: 20%;
+        display: inline-grid;
+    }

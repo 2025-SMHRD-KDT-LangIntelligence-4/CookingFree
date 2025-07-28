@@ -51,13 +51,11 @@ body {
 	justify-content: center;
 	align-items: center;
 	padding: 5vh 2vw;
-	background: url(${cpath}/upload/일러스트23.jpg) center/cover no-repeat;
 	flex: 1;
 }
 
 .login-form {
 	background: rgba(255, 255, 255, 0.85);
-	border: 3px solid #bababa;
 	border-radius: 30px;
 	width: clamp(300px, 50%, 600px);
 	padding: 3rem 2rem;

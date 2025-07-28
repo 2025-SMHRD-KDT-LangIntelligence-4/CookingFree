@@ -13,54 +13,56 @@
 </head>
 <body>
 <jsp:include page="inc/header.jsp" />
-	<div class="myPage-title-container">
-		<div class="myPage-title">
-			<div>My Page</div>
-		</div>
-	</div>
-	<div class="full-container">
-		<div class="pr-img-container">
-			<div class="pr-img">
-				<img>이미지 넣을거에요~
-			</div>
-			<div class="usernick-container">
-				<div class="usernick">${user.nick}<div>등급</div></div>
-				<!-- 로그아웃 버튼 전용 안보이는 form -->
-				<form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post" style="display:none;">
-				  	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-				</form> 
-				<button type="button" onclick="document.getElementById('logoutForm').submit();" class="logout-button">
-				  로그아웃
-				</button>
-			</div>
-		</div>
-	</div>
-	<div class="full-container">
-		<div class="myPage-info-container">
-			<div style="margin-left:20px;">회원정보</div><div style="margin-right:20px;"><a href="${cpath}/cfMyPageUpdate">회원정보 수정 </a></div>
-		</div>
-		<div class="myPage-container">
-			<div>이메일</div><div >${user.email}</div>  
-		</div>
-		<div class="myPage-container">
-			<div>닉네임</div><div >${user.nick}</div>  
-		</div>
-		<div class="myPage-container">
-			<div>가입일자</div><div >${user.joined_at}</div>  
-		</div>
-		<div class="myPage-user-container">
-			<div style="margin-left:20px;">이용정보</div><div>이용정보 수정</div>
-		</div>
-		<div class="myPage-container">
-			<div>선호하는요리</div><div >${user.prefer_taste}</div>  
-		</div>
-		<div class="myPage-container">
-			<div>요리실력</div><div >${user.cooking_skill}</div>  
-		</div>
-		<div class="myPage-container">
-			<div>보유알러지</div><div >${user.alg_code}</div>  
-		</div>
-	</div>
+<div class="body">
+
+    <div class="all-container">
+        <div class="my-page-title">
+            <div>My Page</div>
+        </div>
+        <div class="pr-img-container">
+            <div class="pr-img" style="margin-left: 10px;">
+                <img>이미지 넣을거에요~
+            </div>
+            <div class="name-container">
+                <div class="usernick">${user.nick}<div>등급</div></div>
+                <form id="logoutForm" action="${pageContext.request.contextPath}/logout" method="post" style="display:none;">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                </form>
+                <button type="button" onclick="document.getElementById('logoutForm').submit();" class="logout-button" style="margin-right: 10px;">
+                    로그아웃
+                </button>
+            </div>
+        </div>
+        <div class="info-container">
+            <div>회원정보</div>
+            <div><a href="${cpath}/cfMyPageUpdate">회원정보 수정 </a></div>
+        </div>
+        <div class="myPage-container">
+        <div class="div1">이메일</div>
+            <div class="userInfo">${user.email}</div>
+        </div>
+        <div class="myPage-container">
+            <div class="div1">닉네임</div>
+            <div class="userInfo">${user.nick}</div>
+        </div>
+        <div class="myPage-container">
+            <div class="div1">가입일자</div>
+            <div class="userInfo">${user.joined_at}</div>
+        </div>
+        <div class="myPage-container">
+            <div class="div1">선호하는요리</div>
+            <div class="userInfo">${user.prefer_taste}</div>
+        </div>
+        <div class="myPage-container">
+            <div class="div1">요리실력</div>
+            <div class="userInfo">${user.cooking_skill}</div>
+        </div>
+        <div class="myPage-container">
+            <div class="div1">보유알러지</div>
+            <div class="userInfo">${user.alg_code}</div>
+        </div>
+    </div>
+</div>
 	<footer class="footer"></footer>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
