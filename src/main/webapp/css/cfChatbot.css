@@ -1,0 +1,365 @@
+@charset "UTF-8";
+
+/* 기본 설정 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f5f5;
+}
+
+.container {
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* GNB 스타일 (기존과 동일) */
+.gnb {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background: #fff;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    gap: 12px;    
+}
+
+.gnb-left a, .gnb-right a {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.gnb-center {
+    flex: 0 1 auto;
+    min-width: 80px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    font-size: clamp(18px, 4vw, 32px);
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    color: #000;
+}
+
+.gnb-right {
+    display: flex;
+    gap: 12px;
+}
+
+.icon {
+    width: clamp(18px, 5vw, 36px);
+    height: clamp(18px, 5vw, 36px);
+    min-width: 18px;
+    min-height: 18px;
+    object-fit: contain;
+}
+
+/* 챗봇 컨테이너 */
+.chatbot-container {
+    max-width: 900px;
+    margin: 20px auto;
+    height: 80vh;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+}
+
+.chatbot-header {
+    background: #000;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    flex: 1;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.header-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.header-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #fafafa;
+    scroll-behavior: smooth;
+}
+
+.message {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message.bot {
+    justify-content: flex-start;
+}
+
+.message-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    margin: 0 8px;
+}
+
+.message.user .message-avatar {
+    background: #000;
+    color: white;
+}
+
+.message.bot .message-avatar {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.message-bubble {
+    max-width: 65%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    word-wrap: break-word;
+    line-height: 1.4;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+.message.user .message-bubble {
+    background: #000;
+    color: white;
+}
+
+.message.bot .message-bubble {
+    background: white;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.message-time {
+    font-size: 0.75em;
+    opacity: 0.7;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.recipe-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.recipe-card:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.recipe-title {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+.recipe-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.recipe-meta span {
+    background: #f0f0f0;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.typing-indicator {
+    display: none;
+    padding: 10px;
+    color: #666;
+    font-style: italic;
+    font-family: 'Inter', sans-serif;
+}
+
+.typing-indicator.show {
+    display: block;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    background: white;
+    gap: 10px;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    outline: none;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.chatbot-input input:focus {
+    border-color: #000;
+}
+
+.chatbot-input button {
+    padding: 12px 20px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+    min-width: 80px;
+    font-family: 'Inter', sans-serif;
+}
+
+.chatbot-input button:hover:not(:disabled) {
+    background: #333;
+}
+
+.chatbot-input button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.source-indicator {
+    font-size: 0.7em;
+    opacity: 0.6;
+    margin-top: 5px;
+    padding: 2px 6px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.source-openai { background: rgba(0, 0, 0, 0.1); color: #000; }
+.source-stored { background: rgba(100, 100, 100, 0.1); color: #666; }
+.source-rule { background: rgba(200, 200, 200, 0.1); color: #888; }
+.source-system { background: rgba(76, 175, 80, 0.1); color: #4CAF50; }
+.source-error { background: rgba(244, 67, 54, 0.1); color: #f44336; }
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .gnb {
+        padding: 12px;
+        gap: 8px;
+    }
+    .gnb-right a {
+        margin-left: 6px;
+    }
+    
+    .chatbot-container {
+        margin: 10px;
+        height: 90vh;
+        border-radius: 12px;
+    }
+
+    .message-bubble {
+        max-width: 85%;
+    }
+
+    .chatbot-header {
+        padding: 15px;
+        font-size: 1.1em;
+    }
+
+    .recipe-meta {
+        gap: 8px;
+    }
+}
+
+/* 스크롤바 스타일링 */
+.chatbot-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chatbot-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

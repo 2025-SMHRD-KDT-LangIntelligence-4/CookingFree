@@ -25,7 +25,7 @@
             <div class="recipe-image">
                 <c:choose>
                     <c:when test="${not empty recipe.recipe_img}">
-                        <img src="${cpath}${recipe.recipe_img}" alt="${recipe.recipe_name}" style="width:100%; height:100%; object-fit: cover;" />
+                        <img src="${recipe.recipe_img}" alt="${recipe.recipe_name}" style="width:100%; height:100%; object-fit: cover;" />
                     </c:when>
                     <c:otherwise>
                         <div style="width:100%; height:100%; background-color:#aaa; display:flex; justify-content:center; align-items:center; color:#fff;">
@@ -43,7 +43,7 @@
             <button class="recipeInfo"
                     data-recipe-idx="${recipe.recipe_idx}"
                     data-recipe-name="${recipe.recipe_name}"
-                    data-recipe-img="${cpath}${recipe.recipe_img}"
+                    data-recipe-img="${recipe.recipe_img}"
                     data-recipe-desc="${recipe.recipe_desc != null ? recipe.recipe_desc : '설명 없음'}">
                 레시피확인하기
             </button>

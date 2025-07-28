@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+    </repository>
+  </repositories>
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
+		
 	</parent>
 	<groupId>com.smhrd</groupId>
 	<artifactId>SpringBoot1</artifactId>
@@ -51,6 +59,24 @@
 
 		<!-- 여기까지가 시큐리티. 문제있으면 지우면됨 -->
 
+		<!-- Spring AI (옵션 1: OpenAI 사용) -->
+		<dependency>
+		  <groupId>org.springframework.ai</groupId>
+		  <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+		  <version>1.0.0-M2</version>
+		</dependency>
+		
+		<!-- 또는 간단한 HTTP 클라이언트로 직접 구현 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		
+		<!-- JSON 처리 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
