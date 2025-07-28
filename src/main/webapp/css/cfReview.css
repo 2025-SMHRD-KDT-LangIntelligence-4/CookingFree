@@ -1,252 +1,221 @@
-@charset "UTF-8";/* GNB */
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* 상단 레이아웃 */
-    .header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .recipe-title-input {
-      font-size: 18px;
-      font-weight: bold;
-      width: 60%;
-      padding: 10px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    /* 중간 콘텐츠 영역 */
-    .main-content {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      padding: 30px;
-    }
-
-    .recipe-image {
-      width: 400px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    .side-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .message-box, .achievement-box {
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 6px rgba(0,0,0,0.1);
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .message-box {
-      background-color: #000;
-      color: white;
-      font-size: 18px;
-      width: 300px;
-      height: 200px;
-    }
-
-    .achievement-box {
-      background-color: #f5f5f5;
-      font-size: 16px;
-      color: #444;
-      width: 300px;
-      height: 200px;
-    }
-
-    /* 댓글 영역 */
-    .comment-section {
-      width: 700px;
-      margin: 50px auto;
-    }
-
-    .comment-sort {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 10px;
-    }
-
-    .sort-dropdown {
-      position: relative;
-    }
-
-    #sortToggle {
-      cursor: pointer;
-      background: #eee;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-
-    .dropdown-options {
-      position: absolute;
-      top: 30px;
-      right: 0;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      z-index: 10;
-    }
-
-    .dropdown-options div {
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .dropdown-options div:hover {
-      background: #f2f2f2;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .comment-input-wrapper {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .profile {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-
-    .input-box {
-      flex-grow: 1;
-      position: relative;
-    }
-
-    .input-box input {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      border: none;
-      border-bottom: 1px solid #ccc;
-      outline: none;
-    }
-
-    .line {
-      height: 2px;
-      background-color: black;
-      width: 0;
-      transition: width 0.3s;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .buttons {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-    }
-
-    .buttons button {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: none;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .cancel-btn {
-      background: #f2f2f2;
-      color: #333;
-    }
-
-    .submit-btn {
-      background: #ddd;
-      color: #999;
-    }
-
-    .submit-btn.active {
-      background: #000;
-      color: #fff;
-    }
-
-    .comment-item {
-      margin-top: 10px;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-    /* GNB */
-.gnb {
-	display: flex; /*화면을 능동으로 배치할때*/
-	flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/
-	justify-content: space-between;
-	align-items: center;
-	padding: 20px 20px;
-	background: #fff;
-	overflow-x: auto;
-	border-bottom: 1px solid #ddd;
+@charset "UTF-8"; /* GNB */
+* {
 	box-sizing: border-box;
-	gap: 12px;
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial', sans-serif;
 }
 
-/* 왼쪽/오른쪽 아이콘 링크 */
-.gnb-left a, .gnb-right a {
+body {
+	background-color: #f5f5f5;
+	color: #333;
+	width: 80%;
+	margin-left: 10%;
+}
+
+header {
+	background-color: #fff;
+	padding: 20px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.title-input {
+	font-size: 2rem;
+	padding: 10px 20px;
+	border: 2px solid #ddd;
+	border-radius: 8px;
+	text-align: center;
+	width: 60%;
+	max-width: 600px;
+}
+
+.hero {
+	width: 100%;
+	height: 500px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	position: relative;
+}
+
+.img1 {
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 1/2.5;
+	object-fit: scale-down;
+	background-color: white;
+}
+
+.overlay-card {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	background: rgba(255, 255, 255, 0.95);
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	max-width: 300px;
+}
+
+.overlay-card h2 {
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+}
+
+.overlay-card .author-info {
 	display: flex;
 	align-items: center;
-	margin-left: 10px;
-	text-decoration: none;
+	margin-top: 15px;
+	border-top: 1px solid #ddd;
+	padding-top: 15px;
+	justify-content: space-between;
+	gap: 10px;
 }
 
-/* 가운데 로고 */
-.gnb-center {
-	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
-	min-width: 80px; /* 최소 넓이 확보 */
-	margin-left: 30vw;
-	left: 50%;
-	transform: translateX(-50%);
+.author-details {
+	flex: 1;
 }
 
-.logo {
-	font-size: clamp(18px, 4vw, 32px); /* 반응형 크기 */
+.author-details .name {
 	font-weight: bold;
-	font-family: 'Inter', sans-serif;
-	color: #000;
+	font-size: 0.9rem;
 }
 
-/* 오른쪽 아이콘들 */
-.gnb-right {
+.author-details .date {
+	font-size: 0.8rem;
+	color: #777;
+}
+
+.like-button {
+	background: none;
+	border: none;
+	font-size: 1.4rem;
+	color: #888;
+	cursor: pointer;
+	margin-left: 10px;
+}
+
+.like-button:hover {
+	color: red;
+}
+
+.like-count {
+	font-size: 0.85rem;
+	margin-left: 5px;
+	color: #888;
+}
+
+.meta-info {
+	margin-top: 15px;
+	font-size: 0.85rem;
+	color: #555;
 	display: flex;
-	gap: 12px;
+	gap: 10px;
+	align-items: center;
+	cursor: pointer;
 }
 
-/* 아이콘 유동 크기 + 최소한의 보장 */
-.icon {
-	width: clamp(18px, 5vw, 36px);
-	height: clamp(18px, 5vw, 36px);
-	min-width: 18px;
-	min-height: 18px;
-	object-fit: contain;
+.meta-info .read-more {
+	text-decoration: none;
+	font-weight: bold;
+	border-bottom: 2px solid #000;
 }
+
+.achievements {
+	text-align: center;
+	padding: 40px 20px;
+	background-color: #fff3cd;
+	color: #856404;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.progress {
+	padding: 30px;
+	background: #fff;
+	text-align: center;
+}
+
+.progress-bar {
+	height: 30px;
+	background: #e0e0e0;
+	border-radius: 15px;
+	overflow: hidden;
+	margin-top: 10px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.progress-fill {
+	height: 100%;
+	width: 70%;
+	background-color: #4caf50;
+	text-align: right;
+	padding-right: 10px;
+	color: #fff;
+	line-height: 30px;
+	border-radius: 15px 0 0 15px;
+}
+
+.comment-section {
+	background: #fff;
+	padding: 40px 20px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.comment-section h3 {
+	margin-bottom: 20px;
+}
+
+.comment-input {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.comment-input input[type="text"] {
+	flex: 1;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+.comment-input input[type="file"] {
+	width: 140px;
+}
+
+.comment-input button {
+	padding: 10px 20px;
+	background: #4caf50;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.comment-list {
+	border-top: 1px solid #eee;
+}
+
+.comment-item {
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.comment-image {
+	/*댓글 사진 크기*/
+	max-width: 50%;
+	border-radius: 5px;
+}
+
 /* 모바일 대응 */
 @media ( max-width : 768px) {
 	.gnb {
