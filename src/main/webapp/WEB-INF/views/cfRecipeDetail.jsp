@@ -178,10 +178,10 @@
 					</c:if>
 
 					<div class="recipe-actions">
-						<button class="btn-back" onclick="goBack()">목록으로</button>
-						<button class="btn-timer" onclick="openTimer()">타이머</button>
+						<button class="btn-back" onclick="goBack()"><img src="${cpath}/upload/reset.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
+						<button class="btn-timer" onclick="openTimer()"><img src="${cpath}/upload/timer.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
 						<c:if test="${currentUserIdx != null}">
-							<button class="btn-favorite" onclick="addToFavorites()">즐겨찾기</button>
+							<button class="btn-favorite" onclick="addToFavorites()"><img src="${cpath}/upload/star.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
 						</c:if>
 					</div>
 				</div>
