@@ -6,6 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}"/>
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+    
     <title>쿠킹프리 챗봇</title>
     <link rel="stylesheet" href="${cpath}/css/cfChatbot.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -54,6 +57,9 @@
     </div>
 
     <script>
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
         let isProcessing = false;
         
         function sendMessage() {
@@ -66,9 +72,11 @@
             
             // 특별 명령어 처리
             if (message.toLowerCase() === '/timer') {
-                window.open('${cpath}/timer', 'timer', 'width=500,height=600,scrollbars=no,resizable=no');
+                // 타이머 모달을 보여줌
+                openTimerModal(); // cfChatbot 페이지 내에 정의된 함수 (모달 열기)
+                
                 input.value = '';
-                addMessage('bot', '타이머 창을 열었습니다! ⏰ 요리 시간을 정확히 관리해보세요.', 'system');
+                addMessage('bot', '타이머가 열렸습니다! ⏰ 요리를 관리해보세요.', 'system');
                 return;
             }
             
@@ -85,6 +93,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    [csrfHeader]: csrfToken
                 },
                 body: 'message=' + encodeURIComponent(message)
             })
@@ -212,8 +221,10 @@
                 fetch('${cpath}/chatbot/reset', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
+                    	'Content-Type': 'application/x-www-form-urlencoded',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: ''
                 })
                 .then(response => response.json())
                 .then(data => {

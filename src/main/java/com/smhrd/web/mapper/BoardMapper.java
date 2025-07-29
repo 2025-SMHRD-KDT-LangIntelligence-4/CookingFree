@@ -12,141 +12,295 @@ import com.smhrd.web.entity.SearchCriteria;
 
 @Mapper
 public interface BoardMapper {
+	
+	/**
+	 * BoardMapper 인터페이스
+	 * 
+	 * MyBatis를 사용한 데이터 액세스 레이어
+	 * Board 엔티티의 필드명과 데이터베이스 컬럼이 직접 매핑됩니다.
+	 * 
+	 * 장점:
+	 * - 데이터베이스 컬럼명과 Java 필드명이 완전히 일치
+	 * - 매핑 오류 가능성 제거
+	 * - mapUnderscoreToCamelCase 설정 불필요
+	 * - 직관적인 필드-컬럼 관계
+	 * 
+	 * 주의사항:
+	 * - Java 네이밍 컨벤션과는 다르지만 데이터베이스 일관성 확보
+	 * 
+	 * @author CookingFree Team
+	 * @version 1.0
+	 * @since 2025-07-25
+	 */
     
-    // ================== 기존 CRUD 메서드 (유지) ==================
-    public List<Board> selectAll();
-    public Board boardContent(int idx);
-    public void boardWrite();
-    public void register(Board board);
-    public void boardDelete(int idx);
-    
-    @Update("UPDATE BOARD SET COUNT= COUNT+1 WHERE IDX = #{idx}")
-    public int boardCount(int idx);
-    
-    public void boardUpdate(Board board);
-    public List<Board> searchTitle(String search);
-    public List<Board> searchContent(SearchCriteria criteria);
-    
-    // ================== 사용자 관련 메서드 (유지) ==================
-    public Board selectUserByEmail(@Param("email") String email);
-    public int insertSocialUser(Board user);
-    
-    @Select("SELECT * FROM cf_user WHERE social_id = #{socialId} AND auth_type = #{authType}")
-    Board selectUserBySocialId(@Param("socialId") String socialId, @Param("authType") String authType);
-    
-    Board selectUserByIdx(Integer userIdx);
-    void updateUserInfo(Board updatedUser);
-    List<Board> selectRecipesByIds(@Param("recipeIdxList") List<Integer> recipeIdxList);
-
-    // ================== NEW: 레시피 조회수 관련 메서드 ==================
+    // ================== 사용자 관리 메서드 ==================
     
     /**
-     * 레시피 조회수 증가
+     * 사용자 ID로 사용자 정보를 조회합니다.
+     * 
+     * 반환되는 Board 객체의 사용자 관련 필드들:
+     * - user_idx: 사용자 고유 ID
+     * - alg_code: 알레르기 코드 (쉼표 구분)
+     * - auth_type: 인증 타입
+     * - social_id: 소셜 로그인 ID
+     * - prefer_taste: 선호 맛
+     * - cooking_skill: 요리 실력
+     * - joined_at: 가입 일시
+     * - profile_img: 프로필 이미지
+     * 
+     * @param user_idx 사용자 고유 ID
+     * @return 사용자 상세 정보
      */
-    void updateRecipeViewCount(@Param("recipeIdx") Integer recipeIdx);
+    Board selectUserByIdx(@Param("user_idx") Integer user_idx);
     
     /**
-     * 조회수 기준 상위 레시피 조회 (메인페이지용)
+     * 이메일로 사용자를 조회합니다.
+     * 
+     * @param email 사용자 이메일 주소
+     * @return 사용자 정보 (user_idx, auth_type 등 필드 포함)
+     */
+    public Board selectUserByEmail(@Param("email") String email);
+    
+    /**
+     * 소셜 ID로 사용자를 조회합니다.
+     * 
+     * @param social_id 소셜 플랫폼에서 제공하는 사용자 고유 ID
+     * @param auth_type 인증 타입 ("google", "kakao", "naver" 등)
+     * @return 해당하는 사용자 정보
+     */
+    @Select("SELECT * FROM cf_user WHERE social_id = #{social_id} AND auth_type = #{auth_type}")
+    Board selectUserBySocialId(@Param("social_id") String social_id, @Param("auth_type") String auth_type);
+
+    // ================== 레시피 관련 메서드==================
+    
+    /**
+     * 레시피 조회수를 1 증가시킵니다.
+     * 
+     * Board 엔티티의 view_count 필드와 직접 매핑
+     * 
+     * @param recipe_idx 조회수를 증가시킬 레시피 ID
+     */
+    void updateRecipeViewCount(@Param("recipe_idx") Integer recipe_idx);
+    
+    /**
+     * 조회수 기준 인기 레시피를 조회합니다.
+     * 
+     * 반환되는 Board 객체의 레시피 관련 필드들:
+     * - recipe_idx: 레시피 ID
+     * - recipe_name: 레시피 이름
+     * - recipe_desc: 레시피 설명
+     * - recipe_img: 대표 이미지
+     * - cook_type: 요리 분류
+     * - recipe_difficulty: 난이도
+     * - cooking_time: 조리 시간
+     * - servings: 인분 수
+     * - view_count: 조회수
+     * - created_at: 등록 일시
+     * 
+     * @param limit 조회할 레시피 개수
+     * @return 조회수 순으로 정렬된 레시피 목록 
      */
     List<Board> getTopRecipesByViewCount(@Param("limit") Integer limit);
     
     /**
-     * 조회수 기준 정렬된 레시피 목록 조회
+     * 레시피 ID 목록으로 레시피들을 조회합니다.
+     * 
+     * @param recipe_idx_list 조회할 레시피 ID 목록
+     * @return 해당하는 레시피 목록
      */
-    List<Board> getRecipesSortedByViewCount(@Param("limit") Integer limit);
-    
-    /**
-     * 특정 레시피 상세 정보 조회 (조회수 포함)
-     */
-    Board getRecipeDetailWithViewCount(@Param("recipeIdx") Integer recipeIdx);
+    List<Board> selectRecipesByIds(@Param("recipe_idx_list") List<Integer> recipe_idx_list);
 
-    // ================== NEW: 리뷰 관련 메서드 ==================
+    // ================== 리뷰/댓글 시스템 메서드 ==================
     
     /**
-     * 레시피에 리뷰 작성
+     * 레시피에 리뷰(댓글)를 작성합니다.
+     * 
+     * Board 엔티티의 리뷰 관련 필드들과 매핑:
+     * - review_idx: 리뷰 ID
+     * - recipe_idx: 레시피 ID
+     * - user_idx: 작성자 ID
+     * - cmt_content: 댓글 내용
+     * - super_idx: 상위 댓글 ID (대댓글인 경우)
+     * - created_at: 작성 일시
+     * 
+     * @param recipe_idx 리뷰를 작성할 레시피 ID
+     * @param user_idx 리뷰 작성자 ID
+     * @param cmt_content 리뷰 내용 
+     * @param super_idx 상위 댓글 ID (대댓글인 경우)
      */
-    void insertRecipeReview(@Param("recipeIdx") Integer recipeIdx,
-                           @Param("userIdx") Integer userIdx,
-                           @Param("cmtContent") String cmtContent,
-                           @Param("superIdx") Integer superIdx);
+    void insertRecipeReview(@Param("recipe_idx") Integer recipe_idx,
+                           @Param("user_idx") Integer user_idx,
+                           @Param("cmt_content") String cmt_content,
+                           @Param("super_idx") Integer super_idx);
     
     /**
-     * 특정 레시피의 리뷰 목록 조회
+     * 특정 레시피의 리뷰 목록을 조회합니다.
+     * 
+     * @param recipe_idx 레시피 ID
+     * @param limit 페이지당 리뷰 개수
+     * @param offset 페이지 오프셋
+     * @return 리뷰 목록 (review_idx, cmt_content, user_idx 등 필드 포함)
      */
-    List<Board> getRecipeReviews(@Param("recipeIdx") Integer recipeIdx,
+    List<Board> getRecipeReviews(@Param("recipe_idx") Integer recipe_idx,
                                 @Param("limit") Integer limit,
                                 @Param("offset") Integer offset);
     
     /**
-     * 리뷰 삭제 (작성자 확인 포함)
+     * 리뷰를 삭제합니다.
+     * 
+     * @param review_idx 삭제할 리뷰 ID
+     * @param user_idx 삭제 요청자 ID (권한 검증용)
+     * @return 삭제된 행 수
      */
-    int deleteRecipeReview(@Param("reviewIdx") Integer reviewIdx,
-                          @Param("userIdx") Integer userIdx);
+    int deleteRecipeReview(@Param("review_idx") Integer review_idx,
+                          @Param("user_idx") Integer user_idx);
     
     /**
-     * 리뷰 수정 (작성자 확인 포함)
+     * 리뷰를 수정합니다.
+     * 
+     * @param review_idx 수정할 리뷰 ID
+     * @param user_idx 수정 요청자 ID (권한 검증용)
+     * @param cmt_content 수정된 리뷰 내용
+     * @return 수정된 행 수
      */
-    int updateRecipeReview(@Param("reviewIdx") Integer reviewIdx,
-                          @Param("userIdx") Integer userIdx,
-                          @Param("cmtContent") String cmtContent);
-    
-    /**
-     * 특정 레시피의 리뷰 개수 조회
-     */
-    Integer getRecipeReviewCount(@Param("recipeIdx") Integer recipeIdx);
+    int updateRecipeReview(@Param("review_idx") Integer review_idx,
+                          @Param("user_idx") Integer user_idx,
+                          @Param("cmt_content") String cmt_content);
 
-    // ================== NEW: 챗봇 관련 메서드 ==================
+    // ================== 챗봇 시스템 메서드==================
     
     /**
-     * 대화 세션 저장
+     * 새로운 챗봇 대화 세션을 생성합니다.
+     * 
+     * Board 엔티티의 챗봇 관련 필드들:
+     * - session_idx: 세션 테이블 ID
+     * - session_id: 세션 고유 식별자
+     * - session_type: 세션 타입
+     * - user_idx: 사용자 ID
+     * 
+     * @param session_id 고유한 세션 식별자 (UUID)
+     * @param user_idx 사용자 ID
+     * @param session_type 세션 타입 ("general", "recipe", "support" 등)
      */
-    void insertChatSession(@Param("sessionId") String sessionId, 
-                          @Param("userIdx") Integer userIdx, 
-                          @Param("sessionType") String sessionType);
+    void insertChatSession(@Param("session_id") String session_id, 
+                          @Param("user_idx") Integer user_idx, 
+                          @Param("session_type") String session_type);
     
     /**
-     * 대화 메시지 저장
+     * 대화 메시지를 저장합니다.
+     * 
+     * Board 엔티티의 메시지 관련 필드들:
+     * - message_idx: 메시지 ID
+     * - session_id: 세션 ID
+     * - user_idx: 사용자 ID
+     * - message_type: 메시지 타입 ("user" 또는 "bot")
+     * - message_content: 메시지 내용
+     * - response_source: 응답 생성 방식 ("openai", "stored", "rule")
+     * - message_tokens: 추정 토큰 수
+     * - created_at: 생성 일시
+     * 
+     * @param session_id 대화 세션 ID 
+     * @param user_idx 사용자 ID 
+     * @param message_type "user" (사용자 메시지) 또는 "bot" (봇 응답)
+     * @param message_content 메시지 내용 
+     * @param response_source 응답 생성 방식 
+     * @param message_tokens 추정 토큰 수 
      */
-    void insertChatMessage(@Param("sessionId") String sessionId,
-                          @Param("userIdx") Integer userIdx,
-                          @Param("messageType") String messageType,
-                          @Param("messageContent") String messageContent,
-                          @Param("responseSource") String responseSource,
-                          @Param("messageTokens") Integer messageTokens);
+    void insertChatMessage(@Param("session_id") String session_id,
+                          @Param("user_idx") Integer user_idx,
+                          @Param("message_type") String message_type,
+                          @Param("message_content") String message_content,
+                          @Param("response_source") String response_source,
+                          @Param("message_tokens") Integer message_tokens);
     
     /**
-     * 유사한 대화 검색
+     * 키워드와 유사한 과거 대화를 검색합니다.
+     * 
+     * 반환되는 Board 객체들에는 다음 필드들이 포함됩니다:
+     * - user_message: 사용자가 입력한 메시지
+     * - bot_response: 봇이 생성한 응답
+     * - message_content: 메시지 내용
+     * - response_source: 응답 생성 방식
+     * - created_at: 대화 일시
+     * 
+     * @param keyword 검색할 키워드
+     * @param user_idx 사용자 ID (개인화된 검색)
+     * @param limit 검색 결과 제한 개수
+     * @return 유사한 대화 목록 (user_message, bot_response 등 필드 포함)
      */
     List<Board> findSimilarConversations(@Param("keyword") String keyword,
-                                        @Param("userIdx") Integer userIdx,
+                                        @Param("user_idx") Integer user_idx,
                                         @Param("limit") Integer limit);
     
     /**
-     * 사용자별 대화 기록 조회
+     * 사용자별 대화 기록을 조회합니다.
+     * 
+     * @param user_idx 사용자 ID 
+     * @param limit 조회할 대화 개수
+     * @return 해당 사용자의 최근 대화 목록 (message_content, message_type 등 포함)
      */
-    List<Board> getUserConversationHistory(@Param("userIdx") Integer userIdx,
+    List<Board> getUserConversationHistory(@Param("user_idx") Integer user_idx,
                                           @Param("limit") Integer limit);
     
     /**
-     * 오늘 API 사용량 조회
+     * 오늘의 OpenAI API 사용량을 조회합니다.
+     * 
+     * @param date 조회 날짜 (YYYY-MM-DD 형식)
+     * @return 해당 날짜의 API 호출 횟수
      */
     Integer getTodayApiUsage(@Param("date") String date);
     
     /**
-     * 알레르기 제외 레시피 조회
+     * 알레르기 정보를 고려한 안전한 레시피를 조회합니다.
+     * 
+     * 반환되는 Board 객체들의 레시피 필드들:
+     * - recipe_idx, recipe_name, recipe_desc
+     * - cook_type, recipe_difficulty, cooking_time
+     * - servings, view_count, created_at
+     * - tags: 레시피 태그 정보
+     * 
+     * @param allergy_ids 사용자의 알레르기 코드 목록 
+     * @param limit 추천할 레시피 개수
+     * @return 알레르기 안전 레시피 목록 
      */
-    List<Board> getAllergyFreeRecipes(@Param("allergyIds") List<Integer> allergyIds, 
+    List<Board> getAllergyFreeRecipes(@Param("allergy_ids") List<Integer> allergy_ids, 
                                       @Param("limit") Integer limit);
     
     /**
-     * 키워드로 레시피 검색 (알레르기 제외)
+     * 키워드 기반으로 알레르기 안전 레시피를 검색합니다.
+     * 
+     * 검색 대상 필드들 :
+     * - recipe_name: 레시피 이름
+     * - recipe_desc: 레시피 설명
+     * - cook_type: 요리 카테고리
+     * - tags: 레시피 태그
+     * 
+     * @param keyword 검색 키워드 (음식명, 재료명 등)
+     * @param allergy_ids 제외할 알레르기 코드 목록
+     * @param limit 검색 결과 제한 개수
+     * @return 키워드에 맞는 알레르기 안전 레시피 목록
      */
     List<Board> searchAllergyFreeRecipes(@Param("keyword") String keyword,
-                                         @Param("allergyIds") List<Integer> allergyIds,
+                                         @Param("allergy_ids") List<Integer> allergy_ids,
                                          @Param("limit") Integer limit);
     
     /**
-     * 오래된 대화 메시지 삭제
+     * 오래된 대화 메시지를 삭제합니다.
+     * 
+     * message_tokens, created_at 등 필드 기준으로 삭제
+     * 
+     * @param days 보존할 일수 (예: 90일 이전 데이터 삭제)
      */
     void deleteOldChatMessages(@Param("days") Integer days);
+
+	void updateUserInfo(Board updatedUser);
+
+	List<Board> getRecipesSortedByViewCount(int i);
+
+	Board getRecipeDetailWithViewCount(Integer recipeId);
+
+	int getRecipeReviewCount(Integer recipeId);
+
+	void insertSocialUser(Board newUser);
+
 }
