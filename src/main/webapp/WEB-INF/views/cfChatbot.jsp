@@ -14,10 +14,6 @@
 
 </head>
 <body>
-    <div class="container">
-        <jsp:include page="inc/header.jsp" />
-    </div>
-
     <div class="chatbot-container">
         <div class="chatbot-header">
             <div class="header-title">🤖 쿠킹프리 레시피 추천 봇</div>

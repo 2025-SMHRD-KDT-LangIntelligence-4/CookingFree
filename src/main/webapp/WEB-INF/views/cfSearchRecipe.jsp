@@ -86,7 +86,7 @@
 					'.start-gpt',
 					function() {
 						console.log($._data(document, "events")); // click 이벤트 등록 확인
-						$('#gptModal').show();
+						$('#gptModal').css("display","flex");
 						if (!$('#chatbotContainer').data('loaded')) {
 							$('#chatbotContainer').load(
 									'${cpath}/cfChatbot',
