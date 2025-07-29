@@ -25,16 +25,11 @@
 
             <!-- 프로필 이미지 업로드 영역 -->
             <div class="pr-img-container">
-                <label for="profile_img" class="pr-img">
-					<img src="${not empty user.profile_img ? user.profile_img : cpath}/upload/profile/default.png"
-					     alt="프로필 이미지" id="previewImg" />
-                </label>
-			<input type="file"
-			       name="profile_img"
-			       id="profile_img"
-			       accept="image/*"
-			       onchange="document.getElementById('previewImg').src =
-			                 window.URL.createObjectURL(this.files[0])"/>
+                <div name="profile_img" class="pr-img">
+					<img src="${not empty user.profile_img ? user.profile_img : cpath}/upload/profileDefault.jpg" id="previewImg" />
+					<input type="file" name="profile_img" id="profile_img" accept="image/*" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])"/>     
+                </div>
+			
                 <div class="name-container">
                     <div class="usernick">${user.nick}<div>등급</div></div>
                     <form id="logoutForm" action="${cpath}/logout" method="post" style="display:none;">
@@ -43,6 +38,7 @@
                     <button type="button" onclick="document.getElementById('logoutForm').submit();"
                             class="logout-button" style="margin-right: 10px;">로그아웃</button>
                 </div>
+                
             </div>
 
             <!-- 회원정보 수정 폼 -->

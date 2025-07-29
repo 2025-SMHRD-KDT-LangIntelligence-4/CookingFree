@@ -25,9 +25,9 @@
 .gnb-center {
 	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
 	min-width: 80px; /* 최소 넓이 확보 */
-	margin-left: 30vw;
 	left: 50%;
 	transform: translateX(-50%);
+	position: absolute;
 }
 
 .logo {
@@ -95,6 +95,12 @@
         overflow:hidden;
         margin-bottom: 20px;
     }
+    .pr-img img{
+    	object-fit:cover;
+    	width:100%;
+    	height:100%;
+    	display:block;
+    }
     .name-container{
         display: flex;
         justify-content: space-between;
@@ -159,4 +165,8 @@
     }
     .usernick{
         font-size: clamp(18px, 2vw, 25px);
+    }
+    .footer{
+    	display:flex;
+    	height:200px;
     }

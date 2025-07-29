@@ -1,5 +1,7 @@
 @charset "UTF-8";/* GNB */
-
+body{
+	flex-wrap:wrap;
+}
 /* 기본 설정 */
 .container {
 	background: #fff;
@@ -36,9 +38,9 @@
 .gnb-center {
 	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
 	min-width: 80px; /* 최소 넓이 확보 */
-	margin-left: 30vw;
 	left: 50%;
 	transform: translateX(-50%);
+	position: absolute;
 }
 
 .logo {
@@ -74,51 +76,75 @@
 }
 /* Hero Section */
 .hero {
-	height: 500px;
-	background-size: cover;
+	position: relative; /* 자식 요소인 텍스트의 위치 기준점이 됩니다. */
+    width: 100%; /* 원하는 너비 설정 */
+    height: 10%; /* 원하는 높이 설정 (이미지 크기에 맞게 조절) */
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나는 경우 숨김 */
+	/* width:100%;
+	height: 30%;
+	background-size: contain;
+	background-repeat: no-repeat;
 	background-position: center;
-	padding: 60px 60px;
 	color: white;
 	display: flex;
 	flex-direction: column;
-	/* 오른쪽 정렬 */
+	오른쪽 정렬
 	align-items: flex-end;
-	text-align: right;
-	margin-top: 80px;
+	text-align: right;*/
+	margin-top: 10%; 
+}
+.hero img{
+	 width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 컨테이너를 꽉 채우도록 설정 (가로세로 비율 유지) */
+    display: block; /* 이미지 하단의 불필요한 공백 제거 */
+}
+.text-container{
+	position: absolute;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: right;
+    width: 80%;
+    padding: 10px;
 }
 /*폰트설정*/
 .hero h1 {
-	font-size: 48px;
+	font-size: 4vw;
 	margin-bottom: 10px;
 }
 
 .hero p {
-	font-size: 24px;
+	font-size: 3vw;
 }
 
 /* Intro */
 .intro {
-	padding: 50px 80px;
+	padding: 5% 8%;
 	display:flex;
 	justify-content:center;
 	flex-wrap:wrap;
 	height:30%
 }
+.intro-title{
+	width:40%;
+}
 
 .intro h2 {
-	font-size: 32px;
+	font-size: 3vw;
 	margin-bottom: 20px;
 }
 
 .desc p {
-	font-size: 20px;
+	font-size: 2vw;
 	line-height: 1.6;
 }
 
 /* 검색 버튼 */
 .search {
 	text-align: center;
-	padding: 30px 0;
+	padding: 2% 0;
 }
 
 .search a {
@@ -131,7 +157,9 @@
 	align-items: center;
 	gap: 10px;
 }
-
+.recipe-meta{
+	margin-bottom:3%;
+}
 .search img {
 	width: 40px;
 	transform: rotate(90deg);
@@ -173,24 +201,26 @@
 }
 
 .card h3 {
-	font-size: 20px;
+	font-size: 2vw;
 	margin-bottom: 8px;
 }
 
 .card p {
-	font-size: 14px;
+	font-size: 1vw;
 	margin-bottom: 12px;
 }
 
 .card a {
 	background: rgba(255, 255, 255, 0.8);
 	color: #000;
-	padding: 8px 16px;
+	padding: 1% 2%;
 	border-radius: 8px;
 	text-decoration: none;
 	font-size: 14px;
 	align-self: flex-start;
+	margin-top:3%;
 }
+
 
 /* 푸터 */
 .footer {
@@ -204,20 +234,11 @@
 	.card {
 		flex: 1 1 calc(50% - 20px);
 	}
-	.hero h1 {
-		font-size: 36px;
-	}
 }
 
 @media ( max-width : 768px) {
 	.hero {
 		height: 40%; /* 모바일에서는 높이 줄임 */
-	}
-	.hero h1 {
-		font-size: 28px;
-	}
-	.hero p {
-		font-size: 18px;
 	}
 	.recipes {
 		flex-direction: column;
@@ -225,12 +246,11 @@
 	.card {
 		flex: 1 1 100%;
 	}
-	.intro h2 {
-		font-size: 24px;
-	}
-	.desc p {
-		font-size: 16px;
-	}
+	
+	.intro-title{
+	width:100%;
+}
+	
 }
 /*스크롤 top버튼입니다.*/
 .top-button {

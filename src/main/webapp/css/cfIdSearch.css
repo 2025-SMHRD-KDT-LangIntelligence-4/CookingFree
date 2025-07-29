@@ -159,6 +159,7 @@ body {
 	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
 	min-width: 80px; /* 최소 넓이 확보 */
 	margin-left: 30vw;
+	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
 }
