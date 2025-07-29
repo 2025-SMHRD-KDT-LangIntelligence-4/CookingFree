@@ -1,26 +1,95 @@
 @charset "UTF-8";
-.container, .comment-section{
-	display:flex;
-	justify-content:center;
-	flex-wrap:wrap;
-	width:100%;
-	gap:20px;
-}
-.recipe-header{
-	display:flex;
-	justify-content:left;
-	width:100%;
-	height:auto;
-	padding: 0px 30px;
-	border-bottom:3px solid gray;
-	margin-bottom: 20px;
-	margin-top:50px;
-}
-.recipe-title-input{
-	font-size:4vw
-}
-
-.recipe-image{
-	width:100%;
-	margin-bottom:30px;
-}
+        .container{
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .recipe-header{
+            display:flex;
+            justify-content: left;
+            width: 100%;
+            font-size: 4vw;
+            border-bottom: 3px solid gray;
+            padding: 2% 5%;
+        }
+        .reipe-image{
+        	width:100%;
+        	aspect-ratio:1/1;
+        }
+        .profile{
+        	width:10%;
+        }
+        .main-content{
+            width:40%;
+            aspect-ratio:1/1;
+            padding: 3%;
+        }
+        .side-panel{
+        	width:40%;
+        	padding:3%;
+        }
+        .message-box{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap:3%;
+        }
+        .meta-row {
+            width: 100%;
+            display: flex; /* <-- 이 속성을 추가해보세요. */
+            justify-content: space-between; /* 선택 사항: 양쪽 끝으로 라벨과 값을 배치 */
+            align-items: center; /* 선택 사항: 세로 중앙 정렬 */
+            margin-bottom: 10%; /* 선택 사항: 각 행 사이에 간격 추가 */
+            font-size: 2vw;
+            padding: 2%  10%;
+        }
+        .achievement-box{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width:100%;
+            font-size: 2vw;
+            padding: 2%;
+        }
+        .recipe-tags{
+            width: 40%;
+            display:flex;
+            flex-wrap:wrap;
+        }
+        .recipe-actions{
+            width: 40%;
+        }
+        .comment-section{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .comment-sort, .comment-input-wrapper,.login-prompt,.comment-list{
+            width: 100%;
+        }
+        .input-box{
+        	width:100%;
+        }
+        #commentInput{
+        	width:70%;
+        }
+        .comment-input-wrapper{
+        	display:flex;
+        	justify-content:center;
+        	align-items:center;
+        }
+        .recipe-description{
+        	width:80%;
+        	display:flex;
+        	flex-wrap:wrap;
+        }
+        .comment-sort{
+        	display:flex;
+        	justify-content:left;
+        }
+        .sort-dropdown{
+        	display:flex;
+        	justify-content:space-between;
+        }
