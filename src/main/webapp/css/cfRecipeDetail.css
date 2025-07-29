@@ -130,3 +130,6 @@
         	margin-bottom: 1%;
         	text-align:left;
         }
+		.recipe-actions button{
+			padding: 0;
+		}
