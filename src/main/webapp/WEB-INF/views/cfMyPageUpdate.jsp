@@ -26,7 +26,7 @@
             <!-- 프로필 이미지 업로드 영역 -->
             <div class="pr-img-container">
                 <div name="profile_img" class="pr-img">
-					<img src="${not empty user.profile_img ? user.profile_img : cpath}/upload/profileDefault.jpg" id="previewImg" />
+					<img src="${not empty user.profile_img ? user.profile_img : cpath}/upload/profileDefault.jpg" id="previewImg" onclick="document.getElementById('profile_img').click();"/>
 					<input type="file" name="profile_img" id="profile_img" accept="image/*" onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])"/>     
                 </div>
 			
@@ -77,6 +77,6 @@
     </div>
 </div>
 
-<footer class="footer"></footer>
 </body>
+<footer class="footer"></footer>
 </html>
