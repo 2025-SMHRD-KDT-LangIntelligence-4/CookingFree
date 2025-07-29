@@ -302,6 +302,23 @@ public interface BoardMapper {
 	int getRecipeReviewCount(Integer recipeId);
 
 	void insertSocialUser(Board newUser);
-	
 
+
+    /** 레시피 단계 전체 조회 */
+    List<Board> getRecipeSteps(
+            @Param("recipe_idx") Integer recipe_idx
+    );
+
+    /** 특정 단계 조회 */
+    Board getRecipeStep(
+            @Param("recipe_idx") Integer recipe_idx,
+            @Param("step_no")   Integer step_no
+    );
+
+    /** 단계 개수 조회 */
+    int countRecipeSteps(
+            @Param("recipe_idx") Integer recipe_idx
+    );
+
+    void insertReview(Integer recipe_idx, Integer user_idx, String cmt_content, Integer rating);
 }

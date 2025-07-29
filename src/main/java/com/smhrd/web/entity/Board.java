@@ -49,12 +49,7 @@ public class Board {
     private Integer detail_idx;      // 상세 식별자
     private Integer step_order;      // 조리 순서
     private String cooking_desc;     // 조리 설명
-    private String img1;             // 조리 이미지1
-    private String img2;             // 조리 이미지2
-    private String img3;             // 조리 이미지3
-    private String img4;             // 조리 이미지4
-    private String img5;             // 조리 이미지5
-    private String cooking_video;    // 조리 동영상
+    private String img;             // 조리 이미지
     
     // ================== 기존 식재료 관련 필드 (유지) ==================
     private Integer input_idx;       // 투입 식별자

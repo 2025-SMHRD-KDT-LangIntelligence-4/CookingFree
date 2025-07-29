@@ -29,8 +29,8 @@
                     <div class="pr-img">
                         <img src="${not empty user.profile_img ? user.profile_img : cpath}/upload/profileDefault.jpg"
                              id="previewImg"
-                             onclick="document.getElementById('profile_img').click();"/>
-                        <input type="file" name="profile_img" id="profile_img" accept="image/*"
+                             onclick="document.getElementById('profileImgFile').click();"/>
+                        <input type="file" name="profileImgFile" id="profileImgFile" accept="image/*"
                                onchange="document.getElementById('previewImg').src = window.URL.createObjectURL(this.files[0])"/>
                     </div>
                     <div class="name-container">

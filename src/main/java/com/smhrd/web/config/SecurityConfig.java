@@ -18,6 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
@@ -33,6 +35,11 @@ public class SecurityConfig {
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Value("${app.upload.base-dir}")
+    private String uploadDir;
+
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -137,7 +144,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**", "/cfMyPage/**", "/cfJoinform/**","/recipe/detail/**", "/recipe/detail","/recipe/**","/error","/error/**", "/cfChatbot", "/cfChatbot/**").permitAll()
+                .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**", "/cfMyPage/**","/cfjoinId", "/cfJoinform/**","/recipe/detail/**", "/recipe/detail","/recipe/**","/error","/error/**", "/cfChatbot", "/cfChatbot/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

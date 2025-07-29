@@ -21,7 +21,7 @@
         </div>
         <div class="pr-img-container">
             <div class="pr-img" style="margin-left: 10px;">
-                <img src="${cpath}${user.profile_img}" alt="프로필 이미지" />
+                <img src="${user.profile_img}" alt="프로필 이미지" />
             </div>
             <div class="name-container">
                 <div class="usernick">${user.nick}<div>등급</div></div>
@@ -66,4 +66,15 @@
 </div>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 </body>
+<script>
+    console.log(
+        "${user.profile_img}"
+        , "${user.nick}"
+        , "${user.email}"
+        , "${user.joined_at}"
+        , "${user.prefer_taste}"
+        , "${user.cooking_skill}"
+        , "${user.alg_code}"
+    )
+</script>
 </html>

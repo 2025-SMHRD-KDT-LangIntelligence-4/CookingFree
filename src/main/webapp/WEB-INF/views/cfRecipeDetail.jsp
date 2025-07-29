@@ -179,7 +179,7 @@
 
 					<div class="recipe-actions">
 						<button class="btn-back" onclick="goBack()"><img src="${cpath}/upload/reset.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
-						<button class="btn-timer" onclick="openTimer()"><img src="${cpath}/upload/timer.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
+						<button class="btn-cooktime" onclick="gocook()">요리모드</button>
 						<c:if test="${currentUserIdx != null}">
 							<button class="btn-favorite" onclick="addToFavorites()"><img src="${cpath}/upload/star.svg" style="width:4vw; aspect-ratio:1/1;"/></button>
 						</c:if>
@@ -519,7 +519,14 @@
             url.searchParams.set('sort', criteria);
             window.location.href = url.toString();
         }
-        
+		// 요리모드 버튼
+		function gocook() {
+			// recipeIdx는 JSP 모델에서 바인딩된 recipe.recipe_idx
+			const idx = ${recipe.recipe_idx};
+			// cfRecipe.jsp로 recipeIdx 쿼리 파라미터와 함께 이동
+			window.location.href = '${cpath}/cfRecipe?recipe_idx=' + idx;
+		}
+
         // 뒤로가기
         function goBack() {
             history.back();
@@ -534,6 +541,9 @@
         function addToFavorites() {
             alert('즐겨찾기 기능은 준비 중입니다.');
         }
+
+
+
     </script>
 </body>
 </html>

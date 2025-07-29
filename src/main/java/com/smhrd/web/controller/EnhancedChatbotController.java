@@ -30,6 +30,8 @@ import scala.collection.Seq;
 import org.openkoreantext.processor.OpenKoreanTextProcessorJava;
 import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
 import scala.collection.Seq;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @Validated
@@ -88,17 +90,78 @@ public class EnhancedChatbotController {
 
         try {
             Map<String, Object> response;
-
+            // AI/저장/룰 기반 응답 처리
             if (canUseOpenAI()) {
                 logger.info("OpenAI 기반 응답 생성 시도");
                 response = processWithAdvancedAI(message, user_idx, chat_session_id);
             } else {
                 logger.info("AI 호출 불가, 저장된 대화 기반 응답 시도");
                 response = processWithStoredData(message, user_idx, chat_session_id);
-
                 if (response == null || isFallbackResponse(response)) {
-                    logger.info("저장된 대화 기반 응답 없거나 기본 안내 메시지, 규칙 기반 폴백");
+                    logger.info("저장된 대화 기반 응답 없거나 규칙 기반 폴백");
                     response = processWithEnhancedRules(message, user_idx, chat_session_id);
+                }
+            }
+
+            // 세션에 마지막 추천 레시피 리스트 저장
+            @SuppressWarnings("unchecked")
+            List<Map<String,Object>> lastRecipes = null;
+            if (response.containsKey("recipes")) {
+                @SuppressWarnings("unchecked")
+                List<Map<String,Object>> recipes =
+                        (List<Map<String,Object>>) response.get("recipes");
+                session.setAttribute("lastRecipes", recipes);
+                lastRecipes = recipes;
+            } else {
+                @SuppressWarnings("unchecked")
+                List<Map<String,Object>> stored =
+                        (List<Map<String,Object>>) session.getAttribute("lastRecipes");
+                if (stored != null) {
+                    lastRecipes = stored;
+                }
+            }
+
+            String trimmed = message.trim();
+
+            // 1) 숫자 선택 처리
+            Matcher numberMatcher = Pattern.compile("^(\\d+)(번?)?$").matcher(trimmed);
+            if (numberMatcher.matches() && lastRecipes != null) {
+                int idx = Integer.parseInt(numberMatcher.group(1)) - 1;
+                if (idx >= 0 && idx < lastRecipes.size()) {
+                    Integer ridx = (Integer) lastRecipes.get(idx).get("recipe_idx");
+                    response.put("redirectUrl", "/recipe/detail/" + ridx);
+                    logger.info("숫자 선택으로 리다이렉트 설정: {}", ridx);
+                    return response;
+                }
+            }
+
+            // 2) 이름 일부 매칭 처리
+            if (lastRecipes != null) {
+                List<Map<String,Object>> matches = lastRecipes.stream()
+                        .filter(item -> {
+                            String title = ((String)item.get("title")).toLowerCase();
+                            return title.contains(trimmed.toLowerCase());
+                        })
+                        .collect(Collectors.toList());
+
+                if (matches.size() == 1) {
+                    Integer ridx = (Integer) matches.get(0).get("recipe_idx");
+                    response.put("redirectUrl", "/web/recipe/detail/" + ridx);
+                    logger.info("이름 매칭으로 리다이렉트 설정: {}", ridx);
+                    return response;
+                } else if (matches.size() > 1) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("다음과 같이 \"").append(trimmed)
+                            .append("\"가 포함된 레시피가 있습니다. 번호 또는 정확한 이름을 입력해주세요.\n\n");
+                    for (int i = 0; i < matches.size(); i++) {
+                        sb.append(i + 1).append(". ").append(matches.get(i).get("title")).append("\n");
+                    }
+                    Map<String,Object> disamb = new HashMap<>();
+                    disamb.put("success", true);
+                    disamb.put("message", sb.toString());
+                    disamb.put("source", response.get("source"));
+                    logger.info("이름 중복 매칭 후보 제시: {}개", matches.size());
+                    return disamb;
                 }
             }
 
@@ -110,6 +173,8 @@ public class EnhancedChatbotController {
             return createErrorResponse("죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.");
         }
     }
+
+
 
     /**
      * 규칙 기반 기본 안내 메시지 판단 헬퍼

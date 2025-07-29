@@ -250,4 +250,16 @@
     WHERE created_at &lt; DATE_SUB(NOW(), INTERVAL #{days} DAY)
 </delete>
 
+  <select id="getRecipeSteps" resultType="com.smhrd.web.entity.Board">
+    SELECT
+    *
+    FROM cf_recipe_detail
+    WHERE recipe_idx = #{recipe_idx}
+    ORDER BY step_order
+  </select>
+  <insert id="insertReview">
+    INSERT INTO cf_review (recipe_idx, user_idx, cmt_content, rating)
+    VALUES (#{recipe_idx}, #{user_idx}, #{cmt_content}, #{rating})
+  </insert>
+
 </mapper>

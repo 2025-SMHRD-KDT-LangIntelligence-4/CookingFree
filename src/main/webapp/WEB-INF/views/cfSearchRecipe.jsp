@@ -63,48 +63,168 @@
 
 
 
-	<div class="start-gpt-container">
+	<div class="start-gpt-container" style="text-align: center; margin: 20px 0;">
 		<button class="start-gpt">프리G에게 물어보기</button>
 	</div>
-	<!---------------------------------------------------GPT검색창 입니다.-------------------------------------------------------------------------------->
-	<!-- GPT 검색화면이 전체화면 아래쪽에 있다고 가정 -->
-	<div id="gptModal" class="gpt-modal-overlay" style="display: none;">
+
+	<div id="gptModal" class="gpt-modal-overlay">
 		<div class="gpt-modal-content">
-			<div id="chatbotContainer"></div>
+			<button class="gpt-close-btn">&times;</button>
+			<div class="chatbot-header">
+				<div class="header-title">🤖 쿠킹프리 레시피 추천 봇</div>
+				<div class="header-actions">
+					<button class="header-btn" onclick="resetChat()">새 대화</button>
+					<button class="header-btn" onclick="goHome()">홈으로</button>
+				</div>
+			</div>
+			<div class="chatbot-messages" id="chatMessages">
+				<div class="message bot">
+					<div class="message-avatar">🤖</div>
+					<div class="message-bubble">
+						안녕하세요! 알레르기에서 자유로운 레시피를 추천해드리는 쿠킹프리 봇입니다. 😊<br/><br/>
+						• "레시피 추천해줘"<br/>
+						• "/timer" 타이머 기능 이용 가능<br/>
+						<div class="source-indicator">시스템</div>
+					</div>
+				</div>
+			</div>
+			<div class="typing-indicator" id="typingIndicator">응답 준비 중…</div>
+			<div class="chatbot-input">
+				<input type="text" id="userMessage"
+					   placeholder="메시지를 입력하세요" maxlength="300" />
+				<button id="sendButton" onclick="sendMessage()">전송</button>
+			</div>
 		</div>
 	</div>
 
-
 	<script>
-		const startBtn = document.querySelector('.start-gpt');
-		const modal = document.getElementById('gptModal');
-		const closeBtn = modal.querySelector('.gpt-close-btn');
-		$(function() {
-			// 이벤트 위임: 문서에 바인딩 후 '.' 클래스 사용
-			$(document).on(
-					'click',
-					'.start-gpt',
-					function() {
-						console.log($._data(document, "events")); // click 이벤트 등록 확인
-						$('#gptModal').css("display","flex");
-						if (!$('#chatbotContainer').data('loaded')) {
-							$('#chatbotContainer').load(
-									'${cpath}/cfChatbot',
-									function() {
-										$('#chatbotContainer').data('loaded',
-												true);
-									});
-						}
-					});
+		const csrfToken = $("meta[name='_csrf']").attr("content");
+		const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+		const cpath = "${cpath}";
 
-			// 모달 외부 클릭, ESC 키 닫기
-			$('#gptModal').on('click', function(e) {
-				if (e.target === this)
-					$(this).hide();
+		let isProcessing = false;
+		let lastRecipeList = [];
+
+		// 모달 열기
+		$(document).on('click', '.start-gpt', function() {
+			$('#gptModal').addClass('active');
+		});
+		// 모달 닫기
+		$(document).on('click', '.gpt-close-btn', function() {
+			$('#gptModal').removeClass('active');
+		});
+		$('#gptModal').on('click', function(e) {
+			if (e.target === this) $(this).removeClass('active');
+		});
+		$(document).on('keydown', function(e) {
+			if (e.key === 'Escape') $('#gptModal').removeClass('active');
+		});
+
+		function sendMessage() {
+			if (isProcessing) return;
+			const msg = $("#userMessage").val().trim();
+			if (!msg) return;
+			addMessage('user', msg);
+			$("#userMessage").val('');
+			setProcessing(true);
+			showTypingIndicator();
+
+			$.ajax({
+				url: `${cpath}/chatbot/message`,
+				type: 'POST',
+				headers: { [csrfHeader]: csrfToken },
+				data: { message: msg },
+				success(data) {
+					hideTypingIndicator();
+					if (!data.success) {
+						addMessage('bot', data.message || '오류 발생', 'error');
+						return;
+					}
+
+					// 1) 리디렉션 URL이 있을 경우 즉시 이동
+					if (data.redirectUrl) {
+						window.location.href = cpath + data.redirectUrl;
+						return;
+					}
+
+					// 2) 정상 응답 처리
+					addMessage('bot', data.message, data.source);
+
+					// 3) 레시피 리스트 있으면 렌더링
+					if (data.recipes) {
+						lastRecipeList = data.recipes;
+						addRecipes(data.recipes);
+					}
+				},
+				error() {
+					hideTypingIndicator();
+					addMessage('bot', '일시적 오류 발생', 'error');
+				},
+				complete() {
+					setProcessing(false);
+				}
 			});
-			$(document).on('keydown', function(e) {
-				if (e.key === 'Escape')
-					$('#gptModal').hide();
+		}
+
+		function addMessage(sender, text, source) {
+			const avatarChar = sender === 'user' ? '👤' : '🤖';
+			const $msgDiv = $(`<div class="message ${sender}">`);
+			const $avatar = $('<div class="message-avatar"></div>').text(avatarChar);
+			const $bubble = $(`<div class="message-bubble"></div>`).html(
+					text.replace(/\n/g, '<br/>')
+			);
+			if (sender === 'bot' && source) {
+				const sourceText = {
+					openai: 'AI 답변',
+					stored: '학습된 답변',
+					rule: '기본 답변',
+					system: '시스템',
+					error: '오류'
+				}[source] || source;
+				$bubble.append(
+						`<div class="source-indicator source-${source}">${sourceText}</div>`
+				);
+			}
+			if (sender === 'user') {
+				$msgDiv.append($bubble).append($avatar);
+			} else {
+				$msgDiv.append($avatar).append($bubble);
+			}
+			const $chat = $("#chatMessages");
+			$chat.append($msgDiv).scrollTop($chat[0].scrollHeight);
+		}
+
+		function addRecipes(recipes) {
+			// 필요 시 구현
+		}
+
+		function showTypingIndicator() {
+			$("#typingIndicator").show();
+		}
+		function hideTypingIndicator() {
+			$("#typingIndicator").hide();
+		}
+		function setProcessing(flag) {
+			isProcessing = flag;
+			$("#sendButton, #userMessage").prop('disabled', flag)
+					.text(flag ? '전송중…' : '전송');
+		}
+		function resetChat() {
+			$("#chatMessages").empty();
+			addMessage('bot',
+					'안녕하세요! 알레르기에서 자유로운 레시피를 추천해드리는 쿠킹프리 봇입니다. 😊', 'system'
+			);
+		}
+		function goHome() {
+			location.href = `${cpath}/cfMain`;
+		}
+
+		$(function(){
+			$("#userMessage").keypress(e => {
+				if (e.key === 'Enter' && !isProcessing) {
+					e.preventDefault();
+					sendMessage();
+				}
 			});
 		});
 	</script>

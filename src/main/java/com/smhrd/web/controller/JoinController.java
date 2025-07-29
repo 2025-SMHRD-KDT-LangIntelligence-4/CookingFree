@@ -1,6 +1,11 @@
 package com.smhrd.web.controller;
 
 import java.sql.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +24,7 @@ public class JoinController {
     @Autowired
     private BoardMapper boardMapper;
 
+    private static final Logger log = LoggerFactory.getLogger(JoinController.class);
     // 회원가입 폼 보여주기(GET)
     @GetMapping("/cfJoinform")
     public String showJoinForm(HttpSession session, HttpServletRequest request, Model model, @RequestParam(required=false) String mode) {
@@ -47,6 +53,7 @@ public class JoinController {
             Model model) {
 
         // 이메일 중복 체크
+        log.debug("▶▶ 회원가입 진입");
         if (boardMapper.selectUserByEmail(userId) != null) {
             model.addAttribute("msg", "이미 사용 중인 이메일입니다.");
             return "cfJoinform";
