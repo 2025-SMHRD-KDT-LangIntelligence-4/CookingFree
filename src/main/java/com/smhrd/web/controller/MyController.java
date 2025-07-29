@@ -87,6 +87,10 @@ public class MyController {
     public String cf_recipe_insert() {
         return "cfRecipeinsert";
     }
+    @GetMapping("/cfRecipe")
+    public String cf_recipe() {
+        return "cfRecipe";
+    }
 
     @GetMapping({"/recipe/detail/{recipe_idx}", "/recipe/detail"})
     public String recipe_detail(
@@ -184,14 +188,14 @@ public class MyController {
         return "cfRecipeIndex";
     }
 
-    @PostMapping("/searchRecipe")
-    public String search_recipe(@RequestParam("searchText") String keyword, Model model) {
-        List<Integer> allergy_ids = java.util.Collections.emptyList();
-        List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, allergy_ids, 50);
-        model.addAttribute("searchResults", results);
-        model.addAttribute("searchText", keyword);
-        return "cfSearchRecipe";
-    }
+//    @PostMapping("/searchRecipe")
+//    public String search_recipe(@RequestParam("searchText") String keyword, Model model) {
+//        List<Integer> allergy_ids = java.util.Collections.emptyList();
+//        List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, allergy_ids, 50);
+//        model.addAttribute("searchResults", results);
+//        model.addAttribute("searchText", keyword);
+//        return "cfSearchRecipe";
+//    }
 
     @PostMapping("/recipe/review/add")
     @ResponseBody

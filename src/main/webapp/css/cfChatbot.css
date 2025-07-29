@@ -363,3 +363,23 @@ body {
 .chatbot-messages::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+ /* 레시피 리스트 스타일 (추가) */
+        .recipe-list-container {
+            margin-top: 10px;
+            padding-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .recipe-list-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            white-space: pre-line; /* 줄바꿈 적용 */
+            font-size: 0.95em;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .recipe-list-item:hover {
+            background-color: #f0f0f0;
+        }

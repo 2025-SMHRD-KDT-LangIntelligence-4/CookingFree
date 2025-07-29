@@ -2,20 +2,20 @@
 	pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="_csrf" content="${_csrf.token}"/>
-<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}" />
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>Document</title>
 <link rel="stylesheet" href="${cpath}/css/cfSearchRecipe.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body style="background-color:white;">
 	<!-- s -->
 	<jsp:include page="inc/header.jsp" />
 	<!---------------------------------------------------직접입력 검색창입니다.------------------------------------------------------------------------------->
@@ -23,40 +23,43 @@
 		<input type="hidden" name="${_csrf.parameterName}"
 			value="${_csrf.token}" />
 		<div class="logo-img-wrapper">
-			<img class="logo-img" src="${cpath}/upload/cookingfree로고.jpg">
+			<img class="logo-img" src="${cpath}/upload/cookingfree로고.jpg"
+				alt="쿠킹프리 로고">
 		</div>
 		<div class="searchBar">
-			<input id="searchtext" name="searchText" type="text" placeholder="검색어를 입력해주세요" required>
+			<input id="searchtext" name="searchText" type="text"
+				placeholder="검색어를 입력해주세요" required />
 			<button class="search-button" type="submit">검색</button>
 		</div>
 	</form>
-	  <c:if test="${not empty searchResults}">
-    <div class="results">
-      <h3>“${searchText}” 검색 결과 (${searchResults.size()}건)</h3>
-      <div class="results-grid">
-        <c:forEach var="recipe" items="${searchResults}">
-          <div class="result-card" onclick="location.href='${cpath}/recipe/detail/${recipe.recipe_idx}'">
-            <c:if test="${not empty recipe.recipe_img}">
-              <img src="${recipe.recipe_img}" alt="${recipe.recipe_name}" class="recipe-img"/>
-            </c:if>
-            <div class="recipe-info">
-              <h4 class="recipe-name">${recipe.recipe_name}</h4>
-              <p class="recipe-desc">
-                ${fn:length(recipe.recipe_desc) > 60
+	<c:if test="${not empty searchResults}">
+		<div class="results">
+			<h3>“${searchText}” 검색 결과 (${searchResults.size()}건)</h3>
+			<div class="results-grid">
+				<c:forEach var="recipe" items="${searchResults}">
+					<div class="result-card"
+						onclick="location.href='${cpath}/recipe/detail/${recipe.recipe_idx}'">
+						<c:if test="${not empty recipe.recipe_img}">
+							<img src="${recipe.recipe_img}" alt="${recipe.recipe_name}"
+								class="recipe-img" />
+						</c:if>
+						<div class="recipe-info">
+							<h4 class="recipe-name">${recipe.recipe_name}</h4>
+							<p class="recipe-desc">${fn:length(recipe.recipe_desc) > 60
                   ? fn:substring(recipe.recipe_desc, 0, 60).concat("...")
                   : recipe.recipe_desc}
-              </p>
-              <div class="recipe-meta">
-                <span>조회수: ${recipe.view_count}</span>
-                <span>난이도: ${recipe.recipe_difficulty}</span>
-                <span>⏱️ ${recipe.cooking_time}분</span>
-              </div>
-            </div>
-          </div>
-        </c:forEach>
-      </div>
-    </div>
-  </c:if>
+							</p>
+							<div class="recipe-meta">
+								<span>조회수: ${recipe.view_count}</span> <span>난이도:
+									${recipe.recipe_difficulty}</span> <span>⏱️
+									${recipe.cooking_time}분</span>
+							</div>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+	</c:if>
 
 
 

@@ -49,6 +49,23 @@ public class EnhancedChatbotController {
         logger.info("챗봇 페이지 접근");
         return "cfChatbot";
     }
+    
+    private List<Map<String, Object>> convertRecipesToDto(List<Board> recipes) {
+        return recipes.stream()
+            .map(r -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("recipe_idx", r.getRecipe_idx());
+                map.put("title", r.getRecipe_name());
+                map.put("category", r.getCook_type());
+                map.put("cooking_time", r.getCooking_time());
+                map.put("servings", r.getServings());
+                map.put("difficulty", r.getRecipe_difficulty());
+                map.put("view_count", r.getView_count());
+                map.put("description", r.getRecipe_desc());
+                return map;
+            })
+            .collect(Collectors.toList());
+    }
 
 
     @PostMapping("/chatbot/message")
@@ -119,12 +136,28 @@ public class EnhancedChatbotController {
 
     private Map<String, Object> processWithAdvancedAI(String message, Integer user_idx, String session_id) {
         logger.debug("AI 기반 응답 생성 - 사용자: {}, 메시지: {}", user_idx, message);
-        
+
         last_api_call_time = LocalDateTime.now();
-        String response = generateAdvancedRecipeRecommendation(message, user_idx);
-        saveChatMessage(session_id, user_idx, "bot", response, "openai", estimateTokens(response));
-        
-        return createSuccessResponse(response, "openai");
+        String responseMessage = generateAdvancedRecipeRecommendation(message, user_idx);
+
+        // 음식 키워드 추출, 알레르기 목록 조회
+        String foodKeyword = extractFoodKeyword(message);
+        List<Integer> allergyIds = getUserAllergyIds(user_idx);
+        List<Board> recipes = Collections.emptyList();
+
+        if (foodKeyword != null && !foodKeyword.isBlank()) {
+            recipes = boardMapper.searchAllergyFreeRecipes(foodKeyword, allergyIds, 5);
+        }
+
+        saveChatMessage(session_id, user_idx, "bot", responseMessage, "openai", estimateTokens(responseMessage));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", responseMessage);
+        result.put("source", "openai");
+        result.put("recipes", convertRecipesToDto(recipes)); // 레시피 리스트 포함
+
+        return result;
     }
 
     private Map<String, Object> processWithStoredData(String message, Integer user_idx, String session_id) {
