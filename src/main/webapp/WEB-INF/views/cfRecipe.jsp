@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,7 +10,7 @@
     <link rel="stylesheet" href="${cpath}/css/cfRecipe.css" />
 </head>
 <body>
-<!-- s -->
+<!-- s ㄴ-->
 <jsp:include page="inc/header.jsp" />
     <div class="title-container">
         <div class="title">레시피 상세</div>
