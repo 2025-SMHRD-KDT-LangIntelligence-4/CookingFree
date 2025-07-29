@@ -171,12 +171,12 @@
     .usernick{
         font-size: clamp(18px, 2vw, 25px);
     }
-    .joinform{
-        width: 100%;
-        gap: 20%;
-        display: flex;
-        justify-content: center;
-    }
+    .joinform {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  gap: 20px;             /* 행간 띄우기 */
+  align-items: center;   /* 가로 중앙 정렬(선택) */
+}
     .footer{
     	height:200px;
     }

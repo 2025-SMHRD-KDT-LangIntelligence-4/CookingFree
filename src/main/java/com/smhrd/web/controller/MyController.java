@@ -8,14 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 
 import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +28,8 @@ import java.util.UUID;
 
 @Controller
 public class MyController {
+	
+	
 
     private static final Logger logger = LoggerFactory.getLogger(MyController.class);
 
@@ -34,7 +40,8 @@ public class MyController {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
-
+    @Value("${app.upload.base-dir}")
+    private String appUploadBaseDir;
     public MyController(BoardMapper boardMapper) {
         this.boardMapper = boardMapper;
     }
@@ -155,31 +162,65 @@ public class MyController {
         return "cfMyPageUpdate";
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // profile_img 파라미터는 updated_user에 바인딩되지 않도록 설정
+        binder.setDisallowedFields("profile_img");
+    }
+
     @PostMapping("/mypageUpdate")
     public String mypage_update(
+            @RequestParam(value = "profile_img", required = false) MultipartFile profile_img,
             @ModelAttribute Board updated_user,
-            @RequestParam(value="profile_img", required=false) MultipartFile profile_img,
+            BindingResult bindingResult,
             HttpSession session) throws IOException {
 
+        // 세션 체크
         Integer user_idx = (Integer) session.getAttribute("user_idx");
         if (user_idx == null) {
             return "redirect:/login";
         }
 
-        if (profile_img != null && !profile_img.isEmpty()) {
-            String ext = StringUtils.getFilenameExtension(profile_img.getOriginalFilename());
-            String filename = UUID.randomUUID().toString();
-            if (ext != null && !ext.isEmpty()) filename += "." + ext;
-            File dest = new File(uploadDir, filename);
-            dest.getParentFile().mkdirs();
-            profile_img.transferTo(dest);
-            updated_user.setProfile_img(contextPath + "/upload/" + filename);
+        // 바인딩 오류 체크
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                         .forEach(err -> System.out.println("Binding error: " + err));
+            return "cfMyPageUpdate";
         }
 
+        // 파일 업로드 처리
+        if (profile_img != null && !profile_img.isEmpty()) {
+            // 1) 프로젝트 루트 기준으로 상대경로를 절대경로로 변환
+            Path projectRoot = Paths.get("").toAbsolutePath();
+            Path base = projectRoot.resolve(appUploadBaseDir).normalize();
+            File uploadDir = base.toFile();
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // 2) 저장할 파일명 생성
+            String ext = StringUtils.getFilenameExtension(profile_img.getOriginalFilename());
+            String filename = UUID.randomUUID().toString() + (ext != null && !ext.isEmpty() ? "." + ext : "");
+
+            // 3) 파일 저장
+            File dest = base.resolve(filename).toFile();
+            profile_img.transferTo(dest);
+
+            // 4) DB에 저장할 URL 세팅
+            String contextPath = session.getServletContext().getContextPath();
+            updated_user.setProfile_img(contextPath + "/upload/profile/" + filename);
+
+            System.out.println("파일 저장 경로: " + dest.getAbsolutePath());
+        }
+
+        // 나머지 필드 처리
         updated_user.setUser_idx(user_idx);
         boardMapper.updateUserInfo(updated_user);
-        return "redirect:/cfMyPage";
+
+        // 처리 완료 후 홈으로 리다이렉트
+        return "redirect:/";
     }
+
 
     @GetMapping("/cfRecipeIndex")
     public String cf_recipe_index(Model model) {

@@ -21,7 +21,7 @@
         </div>
         <div class="pr-img-container">
             <div class="pr-img" style="margin-left: 10px;">
-                <img>이미지 넣을거에요~
+                <img src="${cpath}${user.profile_img}" alt="프로필 이미지" />
             </div>
             <div class="name-container">
                 <div class="usernick">${user.nick}<div>등급</div></div>
