@@ -13,17 +13,20 @@
             border-bottom: 3px solid gray;
             padding: 2% 5%;
         }
-        .reipe-image{
-        	width:100%;
+        .recipe-image{
+        	width:40%;
         	aspect-ratio:1/1;
         }
         .profile{
         	width:10%;
         }
         .main-content{
-            width:40%;
-            aspect-ratio:1/1;
+            width:80%;
             padding: 3%;
+            display:flex;
+            justify-content:center;
+            flex-wrap:wrap;
+            gap:3%;
         }
         .side-panel{
         	width:40%;
@@ -42,7 +45,10 @@
             align-items: center; /* 선택 사항: 세로 중앙 정렬 */
             margin-bottom: 10%; /* 선택 사항: 각 행 사이에 간격 추가 */
             font-size: 2vw;
-            padding: 2%  10%;
+            margin:0% 5% 10% 5%;
+        }
+        .recipe-meta-info{
+        	width:100%;
         }
         .achievement-box{
             display: flex;
@@ -53,12 +59,22 @@
             padding: 2%;
         }
         .recipe-tags{
-            width: 40%;
+            width: 50%;
             display:flex;
             flex-wrap:wrap;
+            padding:5%;
         }
         .recipe-actions{
-            width: 40%;
+            width: 100%;
+            display:flex;
+            justify-content: center;
+            padding: 0 5%;
+            gap:5%;
+        }
+        .recipe-actions button{
+        	width:20%;
+        	aspect-ratio:2/1;
+        	font-size: 2vw;
         }
         .comment-section{
             width: 100%;
@@ -67,18 +83,27 @@
             flex-wrap: wrap;
         }
         .comment-sort, .comment-input-wrapper,.login-prompt,.comment-list{
-            width: 100%;
+            width: 80%;
         }
         .input-box{
         	width:100%;
         }
+        .input-box input{
+        	width:100%;
+        	margin: 0px 3%;
+        	text-align:left;
+        }
         #commentInput{
-        	width:70%;
+        	width:100%;
         }
         .comment-input-wrapper{
         	display:flex;
         	justify-content:center;
         	align-items:center;
+        	margin-bottom: 5%;
+        }
+        .comment-input-wrapper input{
+        	width:100%;
         }
         .recipe-description{
         	width:80%;
@@ -88,8 +113,20 @@
         .comment-sort{
         	display:flex;
         	justify-content:left;
+        	margin-bottom: 3%;
+        	border-bottom: 2px solid #ddd;
+        	align-items:center;
+        	padding:1% 5%;
         }
         .sort-dropdown{
         	display:flex;
         	justify-content:space-between;
+        }
+        .buttons{
+        	margin: 0px 3%;
+        }
+        .reply-form input{
+        	width:100%;
+        	margin-bottom: 1%;
+        	text-align:left;
         }

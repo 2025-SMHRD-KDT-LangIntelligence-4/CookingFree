@@ -164,8 +164,8 @@
 						</div>
 					</div>
 				</div>
-
-				<div class="achievement-box">
+			</div>
+			<div class="achievement-box">
 					<p class="recipe-description">${recipe.recipe_desc}</p>
 
 					<c:if test="${not empty recipe.tags}">
@@ -185,7 +185,6 @@
 						</c:if>
 					</div>
 				</div>
-			</div>
 		</div>
 	</div>
 
