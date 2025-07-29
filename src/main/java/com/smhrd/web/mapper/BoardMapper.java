@@ -302,5 +302,6 @@ public interface BoardMapper {
 	int getRecipeReviewCount(Integer recipeId);
 
 	void insertSocialUser(Board newUser);
+	
 
 }

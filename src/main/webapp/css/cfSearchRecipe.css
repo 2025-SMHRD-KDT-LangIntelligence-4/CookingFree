@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 @charset "UTF-8";
 body{
 	display:block !important;
 }
-=======
-@charset "UTF-8"; /* GNB */
->>>>>>> branch 'main' of https://github.com/2025-SMHRD-KDT-LangIntelligence-4/CookingFree.git
+
 /* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/

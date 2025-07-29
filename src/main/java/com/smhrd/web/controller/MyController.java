@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -54,6 +56,32 @@ public class MyController {
     public String cf_search_recipe() {
         return "cfSearchRecipe";
     }
+    @PostMapping("/searchRecipe")
+    public String searchRecipe(
+            @RequestParam("searchText") String keyword,
+            HttpSession session,
+            Model model) {
+        // 로그인 여부에 따른 알레르기 조회
+        Integer userIdx = (Integer) session.getAttribute("user_idx");
+        List<Integer> allergyIds = Collections.emptyList();
+        if (userIdx != null) {
+            Board user = boardMapper.selectUserByIdx(userIdx);
+            if (user != null && user.getAlg_code() != null) {
+                allergyIds = Arrays.stream(user.getAlg_code().split(","))
+                        .filter(s -> s.matches("\\d+"))
+                        .map(Integer::parseInt)
+                        .toList();
+            }
+        }
+
+        // Mapper를 통해 알레르기 제외 + 키워드 검색
+        List<Board> recipes = boardMapper.searchAllergyFreeRecipes(keyword, allergyIds, 50);
+
+        model.addAttribute("searchResults", recipes);
+        model.addAttribute("searchText", keyword);
+        return "cfSearchRecipe";
+    }
+
 
     @GetMapping("/cfRecipeinsert")
     public String cf_recipe_insert() {
