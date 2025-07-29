@@ -28,7 +28,8 @@ public class Board {
     private String cooking_skill;    // 요리 실력
     private Timestamp joined_at;     // 가입 일자
     private String profile_img; 	 // 프로필 이미지 URL
-
+    public String getProfile_img() { return profile_img; }
+    public void setProfile_img(String profile_img) { this.profile_img = profile_img; }
     // ================== 기존 레시피 관련 필드 (확장) ==================
     private Integer recipe_idx;      // 레시피 식별자
     private String recipe_name;      // 레시피 명

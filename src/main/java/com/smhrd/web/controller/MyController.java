@@ -161,7 +161,7 @@ public class MyController {
     @PostMapping("/mypageUpdate")
     public String updateUserInfo(
             @ModelAttribute Board updatedUser,
-            @RequestParam(required = false) MultipartFile profileImgFile,
+            @RequestParam(required = false) MultipartFile profile_img,
             HttpSession session) throws IOException {
 
         Integer userIdx = (Integer) session.getAttribute("user_idx");
@@ -170,12 +170,12 @@ public class MyController {
         }
 
         // 프로필 이미지 업로드
-        if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            String ext = StringUtils.getFilenameExtension(profileImgFile.getOriginalFilename());
+        if (profile_img != null && !profile_img.isEmpty()) {
+            String ext = StringUtils.getFilenameExtension(profile_img.getOriginalFilename());
             String filename = UUID.randomUUID().toString() + (ext != null ? "." + ext : "");
 			File dest = new File(uploadDir, filename);
             dest.getParentFile().mkdirs();
-            profileImgFile.transferTo(dest);
+            profile_img.transferTo(dest);
             String imgUrl = contextPath + "/upload/profile/" + filename;
             updatedUser.setProfile_img(imgUrl);
         }
