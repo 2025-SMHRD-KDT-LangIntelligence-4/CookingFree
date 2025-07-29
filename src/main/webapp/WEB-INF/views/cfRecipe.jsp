@@ -21,10 +21,15 @@
         </div>
         <div class="btn-container">
             <div class="voice-btn">
-                목소리로 말하기
+            	<div class="img-container">
+	                <img src="${cpath}/upload/mic.svg" />
+            	</div>
             </div>
             <div class="touch-btn">
-                터치로 입력하기
+            	<div class="img-container">
+	                <img src="${cpath}/upload/touch.svg" />
+            	</div>
+            </div>
             </div>
         </div>
     </div>

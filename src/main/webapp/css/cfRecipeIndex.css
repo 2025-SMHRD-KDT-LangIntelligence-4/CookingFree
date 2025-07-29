@@ -70,7 +70,7 @@
 }
 .recipe-index{
     max-width: 90%;
-    border: 3px solid rgb(161, 161, 161);
+    border: 3px solid #ddd;
     max-width: 200px;
     min-height: 300px; 
     flex-shrink: 0;
@@ -90,8 +90,12 @@
 .title-container{
     display: flex;
     justify-content: left;
-    margin-top: 100px;
-    margin-left: 100px;
+    margin:1% 5%;
+    padding-top: 10%;
+    padding-left: 5%;
+    padding-bottom:3%;
+    background-color:black;
+    color:white;
 }
 .title{
     font-size: 50px;

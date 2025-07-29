@@ -7,7 +7,6 @@ body{
 	background: #fff;
 	position: relative; /*화면이 유동적으로 반응할때*/
 	overflow: hidden; /*화면 줄어들때 오버되는 컨텐츠 자르기*/
-	max-width: 1200px; /* 전체 화면크기 제한*/
 	margin: 0 auto; /*화면 수평정렬*/
 	padding: 0 20px;
 }
@@ -148,7 +147,7 @@ body{
 }
 
 .search a {
-	background: #ffffff;
+	background: #ddd;
 	color: #000000;
 	padding: 16px 32px;
 	border-radius: 12px;

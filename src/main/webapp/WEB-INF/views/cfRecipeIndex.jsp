@@ -34,8 +34,8 @@
                     </c:otherwise>
                 </c:choose>
             </div>
-            <div class="recipe-name">
-                <c:out value="${recipe.recipe_name}" default="이름 없음" />
+            <div class="recipe-name" data-full-name="<c:out value='${recipe.recipe_name}' />"> <%-- data-full-name 속성을 추가 --%>
+                <c:out value="${recipe.recipe_name}" default="이름 없음" /> <%-- 일단 전체 이름을 출력 --%>
             </div>
             <div class="recipe-date">
                 <fmt:formatDate value="${recipe.created_at}" pattern="yyyy-MM-dd" />
@@ -72,6 +72,31 @@
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 
 <script>
+	//**새로운 부분: 페이지 로드 후 레시피 이름을 잘라 표시**
+	document.addEventListener('DOMContentLoaded', function() {
+	    const recipeNameElements = document.querySelectorAll('.recipe-name');
+	    const displayMaxLength = 15; // 메인 화면에 표시할 최대 글자 수
+	
+	    recipeNameElements.forEach(element => {
+	        const fullName = element.getAttribute('data-full-name');
+	        element.textContent = truncateText(fullName, displayMaxLength);
+	    });
+	});
+	function truncateText(text, maxLength) {
+	    if (text && text.length > maxLength) { // text가 null이 아닌 경우를 확인합니다.
+	        return text.substring(0, maxLength) + '...';
+	    }
+	    return text;
+	}
+	document.addEventListener('DOMContentLoaded', function() {
+	    const recipeNameElements = document.querySelectorAll('.recipe-name');
+	    const displayMaxLength = 10; // 메인 화면에 표시할 최대 글자 수
+
+	    recipeNameElements.forEach(element => {
+	        const fullName = element.getAttribute('data-full-name');
+	        element.textContent = truncateText(fullName, displayMaxLength);
+	    });
+	});
     // 모달과 버튼 요소 선택
     const modal = document.getElementById('recipeModal');
     const modalTitle = document.getElementById('modalTitle');

@@ -77,7 +77,62 @@
     .btn-secondary:hover {
         background-color: #5a6268;
     }
-     
+
+    /* 상세 레시피 단계에 대한 스타일 */
+    .detail-row {
+        align-items: flex-start; /* 아이템을 행의 시작 부분에 정렬 */
+        margin-bottom: 15px; /* 상세 단계 행 사이의 간격 */
+        gap: 10px; /* 텍스트 에어리어, 입력 필드, 버튼 사이의 간격 */
+    }
+
+    .detail-row textarea {
+        flex: 2; /* 텍스트 에어리어가 더 많은 공간을 차지하도록 */
+    }
+
+    .detail-row input[type="file"] {
+        flex: 1; /* 파일 입력이 사용 가능한 공간을 차지하도록 */
+        padding: 8px;
+        height: auto; /* 고정된 높이 제거 */
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .detail-row .remove-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        align-self: flex-start; /* 버튼을 시작 부분에 정렬 */
+    }
+
+    .detail-row .remove-btn:hover {
+        background-color: #c82333;
+    }
+
+    /* 추가하기 버튼을 위한 스타일 (별도의 행에 배치) */
+    .add-detail-btn-container {
+        display: flex; /* flexbox 사용 */
+        justify-content: flex-end; /* 오른쪽 정렬 */
+        margin-top: -10px; /* 위쪽 마진 조정 (원하는 만큼) */
+        margin-bottom: 15px; /* 아래쪽 마진 */
+        width: calc(100% - 150px); /* 라벨 너비만큼 제외하고 폭 조정 */
+        margin-left: 150px; /* 라벨 너비만큼 왼쪽 마진 */
+    }
+    .add-detail-btn-container button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .add-detail-btn-container button:hover {
+        background-color: #218838;
+    }
+
 </style>
 </head>
 <body>
@@ -136,32 +191,28 @@
             <textarea name="tags" rows="2"></textarea>
         </div>
 
-        
-     <div class="form-row" style="align-items: flex-start;">
-    <label>레시피 상세내용</label>
-    <div id="details-wrapper" style="flex: 1;">
-        <div class="detail-row">
-            <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
-            <input type="file" name="image">
-            <button type="button" class="remove-btn">삭제</button>
+        <div class="form-row" style="align-items: flex-start;">
+            <label>레시피 상세내용</label>
+            <div id="details-wrapper" style="flex: 1;">
+                <div class="detail-row">
+                    <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+                    <input type="file" name="image">
+                    <button type="button" class="remove-btn">삭제</button>
+                </div>
+            </div>
         </div>
-        <div>
+
+        <div class="add-detail-btn-container">
             <button type="button" class="add-btn" id="add-detail-btn">+추가하기</button>
         </div>
-    </div>
-</div>
 
-
-<div class="btn-group">
+        <div class="btn-group">
             <button type="submit">레시피 등록</button>
             <button type="reset" class="btn-secondary">취소</button>
         </div>
-        
-
     </form>
 </div>
 
-<!-- 자바스크립트 기능 추가 -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const wrapper = document.getElementById('details-wrapper');
@@ -171,9 +222,9 @@
             const div = document.createElement('div');
             div.className = 'detail-row';
             div.innerHTML = `
-                	<textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
-                	<input type="file" name="image">
-                	<button type="button" class="remove-btn">삭제</button>
+                <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+                <input type="file" name="image">
+                <button type="button" class="remove-btn">삭제</button>
             `;
             wrapper.appendChild(div);
         });
@@ -181,22 +232,9 @@
         wrapper.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-btn')) {
                 e.target.parentElement.remove();
-               
             }
         });
     });
-
-
-
 </script>
-
-
-        
-
-        
-
-    
-
-
 </body>
 </html>

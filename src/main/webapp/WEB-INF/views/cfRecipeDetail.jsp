@@ -206,7 +206,7 @@
 			<div class="comment-input-wrapper">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" /> <img class="profile"
-					src="${cpath}/upload/profile_default.jpg" />
+					src="${cpath}/upload/profileDefault.jpg" />
 				<div class="input-box">
 					<input type="text" placeholder="댓글 추가..." onfocus="showButtons()"
 						oninput="checkInput(this.value)"

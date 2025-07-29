@@ -3,7 +3,7 @@
             width: 400px;
             height: 317.2px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             
         }
@@ -11,7 +11,7 @@
             width: 200px;
             height: 150px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             margin-left: 10px;
             margin-bottom: 10px;
@@ -20,9 +20,20 @@
             width: 200px;
             height: 150px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             margin-left: 10px;
+        }
+        .img-container{
+        	width:100%;
+        	height:100%;
+        	display:flex;
+        	justify-content:center;
+        	align-items:center;
+        }
+        .img-container img{
+        	width:50%;
+        	height:70%;
         }
         .container{
             display: flex;
@@ -42,7 +53,7 @@
         .title{
             font-size: 30px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             display: flex;
             align-items: center;
@@ -54,7 +65,7 @@
             width: 200px;
             height: 150px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
         }
         .container2{
@@ -80,7 +91,7 @@
             margin-top:200px; 
             width: 100%;
             height: 50px;
-            background-color: gray;
+            background-color: #ddd;
         }
         .scroll img{
             width: 40px;
@@ -103,12 +114,12 @@
             width: 200px;
             height: 317.2px;
             background-color: white;
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             margin-left: 10px;
         }
         .ingre-container{
-            border: 3px solid gray;
+            border: 3px solid #ddd;
             border-radius : 10px;
             width: 600px;
             height: 300px;
