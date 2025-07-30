@@ -269,4 +269,10 @@
     ORDER BY inp.created_at
 </select>
 
+<select id="getAllAllergies" resultType="Board">
+  SELECT alergy_idx, alergy_name, alergy_info
+    FROM cf_alergy
+    ORDER BY alergy_idx;
+</select>
+
 </mapper>

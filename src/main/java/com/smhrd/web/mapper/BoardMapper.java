@@ -330,4 +330,7 @@ public interface BoardMapper {
     );
 
     void insertReview(Integer recipe_idx, Integer user_idx, String cmt_content, Integer rating);
+    
+//    알레르기 조회해놓기
+     List<Board> getAllAllergies(); 
 }

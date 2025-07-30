@@ -1,6 +1,8 @@
 package com.smhrd.web.controller;
 
 import java.sql.Timestamp;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +22,53 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class JoinController {
+	
+	private final BoardMapper boardMapper;
 
-    @Autowired
-    private BoardMapper boardMapper;
+    public JoinController(BoardMapper boardMapper) {
+        this.boardMapper = boardMapper;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(JoinController.class);
-    // 회원가입 폼 보여주기(GET)
+ // 회원가입 폼 보여주기(GET)
     @GetMapping("/cfJoinform")
-    public String showJoinForm(HttpSession session, HttpServletRequest request, Model model, @RequestParam(required=false) String mode) {
+    public String showJoinForm(
+            HttpSession session,
+            HttpServletRequest request,
+            Model model,
+            @RequestParam(required = false) String mode) {
+
+        // 로컬 가입 모드 처리
         if ("local".equals(mode)) {
             session.invalidate();
             session = request.getSession(true);
             session.setAttribute("authType", "L"); // 일반 회원가입 모드
         }
-        // 이하 모델 세팅 및 폼 리턴// 소셜 로그인 시 세션에 저장된 정보 모델에 담아서 JSP에 전달
-        model.addAttribute("socialId", session.getAttribute("socialId"));
-        model.addAttribute("authType", session.getAttribute("authType") != null ? session.getAttribute("authType") : "L");
-        model.addAttribute("email", session.getAttribute("email") != null ? session.getAttribute("email") : "");
-        model.addAttribute("nickname", session.getAttribute("nickname") != null ? session.getAttribute("nickname") : "");
+
+        // 알러지 목록 조회
+        List<Board> allergies = boardMapper.getAllAllergies();
+        model.addAttribute("allergies", allergies);
+
+        // 소셜 로그인 시 세션에 저장된 정보 모델에 담아서 JSP에 전달
+        model.addAttribute("socialId",
+                session.getAttribute("socialId") != null
+                        ? session.getAttribute("socialId")
+                        : "");
+        model.addAttribute("authType",
+                session.getAttribute("authType") != null
+                        ? session.getAttribute("authType")
+                        : "L");
+        model.addAttribute("email",
+                session.getAttribute("email") != null
+                        ? session.getAttribute("email")
+                        : "");
+        model.addAttribute("nickname",
+                session.getAttribute("nickname") != null
+                        ? session.getAttribute("nickname")
+                        : "");
+
         return "cfJoinform";
     }
-
     // 회원가입 처리(POST)
     @PostMapping("/cfjoinId")
     public String doJoin(
