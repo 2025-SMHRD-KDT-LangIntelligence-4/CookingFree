@@ -303,6 +303,14 @@ public interface BoardMapper {
 	int getRecipeReviewCount(Integer recipeId);
 
 	void insertSocialUser(Board newUser);
+	
+	/**
+	 * 레시피의 재료 목록 조회.
+	 * 
+	 * @param recipe_idx 레시피 ID
+	 * @return 재료 목록 (재료명, 투입량, 단위 포함)
+	 */
+	List<Board> getRecipeIngredients(@Param("recipe_idx") Integer recipe_idx);
 
 
     /** 레시피 단계 전체 조회 */

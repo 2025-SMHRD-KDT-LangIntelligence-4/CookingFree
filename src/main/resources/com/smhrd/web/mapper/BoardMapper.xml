@@ -257,5 +257,16 @@
     INSERT INTO cf_review (recipe_idx, user_idx, cmt_content, rating)
     VALUES (#{recipe_idx}, #{user_idx}, #{cmt_content}, #{rating})
   </insert>
+  
+  <select id="getRecipeIngredients" parameterType="Integer" resultType="Board">
+    SELECT 
+        i.ingre_name,
+        inp.input_amount,
+        i.ingre_unit
+    FROM cf_input inp
+    INNER JOIN cf_ingredient i ON inp.ingre_idx = i.ingre_idx
+    WHERE inp.recipe_idx = #{recipe_idx}
+    ORDER BY inp.created_at
+</select>
 
 </mapper>

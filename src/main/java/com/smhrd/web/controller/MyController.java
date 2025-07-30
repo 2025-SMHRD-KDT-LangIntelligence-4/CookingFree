@@ -113,6 +113,10 @@ public class MyController {
         // 2) 조리 단계 정보 (cf_recipe_detail 테이블)
         List<Board> steps = boardMapper.getRecipeSteps(recipe_idx);
         model.addAttribute("steps", steps);
+        
+        // 3) 재료 추가
+        List<Board> ingredients = boardMapper.getRecipeIngredients(recipe_idx);
+        model.addAttribute("ingredients", ingredients);
 
         return "cfRecipe";
     }

@@ -84,7 +84,7 @@
             </c:if>
             <ul>
                 <c:forEach var="ing" items="${ingredients}">
-                    <li>${ing.name} ${ing.quantity}</li>
+                     <li>${ing.ingre_name} ${ing.input_amount}${ing.ingre_unit}</li>
                 </c:forEach>
             </ul>
             <div class="nav-buttons">
