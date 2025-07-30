@@ -1,12 +1,22 @@
 @charset "UTF-8";/* GNB */
+@font-face {
+    font-family: 'HakgyoansimByeoljariTTF-B';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimByeoljariTTF-B.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-size: 50px;
+}
 body{
 	flex-wrap:wrap;
+	font-family: 'HakgyoansimByeoljariTTF-B',
+	sans-serif !important;
 }
 /* 기본 설정 */
 .container {
 	background: #fff;
 	position: relative; /*화면이 유동적으로 반응할때*/
 	overflow: hidden; /*화면 줄어들때 오버되는 컨텐츠 자르기*/
+	max-width: 1200px; /* 전체 화면크기 제한*/
 	margin: 0 auto; /*화면 수평정렬*/
 	padding: 0 20px;
 }
@@ -147,7 +157,7 @@ body{
 }
 
 .search a {
-	background: #ddd;
+	background: #ffffff;
 	color: #000000;
 	padding: 16px 32px;
 	border-radius: 12px;
