@@ -47,8 +47,7 @@
 }
 
 body {
-	font-family: 'HakgyoansimByeoljariTTF-B',
-	sans-serif !important;
+	font-family: 'HakgyoansimByeoljariTTF-B',sans-serif !important;
 	background: #fff;
 	min-height: 100vh;
 	display: flex;
@@ -73,11 +72,12 @@ body {
 	align-items: center;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
+.login-form button{
+	width: 100%;
+}
 .login-title {
 	font-size: clamp(24px, 5vw, 60px);
 	font-weight: 700;
-	font-style: italic;
 	margin-bottom: 2rem;
 	color: #000;
 	text-align: center;
@@ -86,7 +86,6 @@ body {
 .login-form input {
 	width: 100%;
 	padding: 1rem;
-	margin-bottom: 1.5rem;
 	font-size: 1.1rem;
 	border: 3px solid #bababa;
 	border-radius: 8px;
@@ -94,12 +93,11 @@ body {
 
 .login-links {
 	display: flex;
-	justify-content: space-between;
 	width: 100%;
+	margin-top: 1rem;
 	margin-bottom: 2rem;
-	font-size: clamp(10px, 3vw, 15px);
+	font-size: clamp(10px, 3vw, 30px);
 	font-weight: bold;
-	font-style: italic;
 	color: #000;
 }
 
