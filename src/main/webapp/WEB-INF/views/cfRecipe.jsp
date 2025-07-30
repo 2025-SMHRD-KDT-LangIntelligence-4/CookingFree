@@ -4,6 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var="cpath" value="${pageContext.request.contextPath}" />
+<%
+	// ────────── (1) 이 헤더를 반드시 추가 ──────────
+	response.setHeader("X-Frame-Options","SAMEORIGIN");
+%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -754,11 +758,19 @@ h3 {
         min-width: 40px;
         flex-grow: 0; 
     }
+
+	/* 모달 스타일 */
+	.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+		background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
+	.modal-content { background: #fff; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; }
+	.modal .close { float: right; cursor: pointer; font-size: 1.5em; }
+
 }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+
 	<jsp:include page="inc/header.jsp" />
 
 	<div id="cookMode">
@@ -851,8 +863,7 @@ h3 {
 						</div>
 					</c:forEach>
 				</div>
-				<div id="cookfree-text" style="display: none;">쿠킹프리 첫번째
-					레시피입니다. 다음 명령어를 말씀해주세요.</div>
+				<div id="cookfree-text" style="display: none;"></div>
 				<div class="nav-buttons">
 					<button class="btnPrev">← 이전</button>
 				</div>
@@ -860,221 +871,279 @@ h3 {
 
 		</div>
 	</div>
+	<!-- 타이머 모달 -->
+	<div id="timerModal" class="modal">
+		<div class="modal-content">
+			<span id="closeTimerModal" class="close-button" onclick="closeTimerModal()">&times;</span>
+			<!-- ────────── (2) src는 '/timer?duration=' 매핑 URL로 열도록 둠 ────────── -->
+			<iframe id="timerFrame"
+					src="about:blank"
+					style="width:100%; height:300px; border:none;">
+			</iframe>
+		</div>
+	</div>
 
+	<!-- kor-to-number 라이브러리 (한글 수사 → 숫자) -->
+	<script src="https://unpkg.com/kor-to-number@1.1.5/dist/kor-to-number.umd.js"></script>
 	<script>
-    $(function(){
-        let isRecognizing = false;
-        let currentStage = 0, totalStages = 3;
-        let stepIdx = 0;
-        const $steps = $('.step');
-        const $items = $('#stepItems .step-item');
-        const lastIdx = $items.length - 1;
+		// ──────────────────────────────────────────────────────────────────────────────
+		// 1) TTS(음성 합성) 준비
+		//    - 페이지 로드 시 시스템 음성 목록을 불러와 한국어 음성 선택
+		//    - speak(text) 호출로 언제든 음성 재생 가능
+		// ──────────────────────────────────────────────────────────────────────────────
+		let koreanVoice = null;
 
-        // Levenshtein 거리 함수
-        function levenshtein(a, b) {
-            const dp = Array(a.length + 1).fill(null).map(() => Array(b.length + 1).fill(0));
-            for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-            for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-            for (let i = 1; i <= a.length; i++) {
-                for (let j = 1; j <= b.length; j++) {
-                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                    dp[i][j] = Math.min(
-                        dp[i - 1][j] + 1,
-                        dp[i][j - 1] + 1,
-                        dp[i - 1][j - 1] + cost
-                    );
-                }
-            }
-            return dp[a.length][b.length];
-        }
+		function loadVoices() {
+			const voices = speechSynthesis.getVoices();
+			// 한국어 음성(ko) 중 첫 번째 선택
+			koreanVoice = voices.find(v => v.lang.startsWith('ko'));
+		}
 
-        // TTS 음성 로드
-        let koreanVoice = null;
-        function loadVoices() {
-            const voices = speechSynthesis.getVoices();
-            koreanVoice = voices.find(v =>
-                v.lang === 'ko-KR' || v.lang.startsWith('ko') || v.name.includes('한국')
-            );
-        }
-        speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
+		// 음성 목록 변경 시 다시 로드
+		speechSynthesis.onvoiceschanged = loadVoices;
+		loadVoices();
 
-        // 텍스트 읽기 함수
-        function speak(text) {
-            if (!text || !koreanVoice) return;
-            const u = new SpeechSynthesisUtterance(text.trim());
-            u.lang = 'ko-KR';
-            u.voice = koreanVoice;
-            u.rate = 0.9;
-            speechSynthesis.cancel();
-            speechSynthesis.speak(u);
-        }
+		// 텍스트를 한국어 음성으로 읽음
+		function speak(text) {
+			if (!text || !koreanVoice) return;
+			const utter = new SpeechSynthesisUtterance(text);
+			utter.lang = 'ko-KR';
+			utter.voice = koreanVoice;
+			utter.rate = 0.9;
+			speechSynthesis.cancel();
+			speechSynthesis.speak(utter);
+		}
 
-        // 섹션 표시 함수
-        function showStage(idx) {
-            currentStage = Math.min(Math.max(0, idx), totalStages);
-            $steps.each((i, el) => {
-                const $el = $(el);
-                if (i === currentStage) $el.addClass('active').show();
-                else $el.removeClass('active').hide();
-            });
-            if (currentStage === 2) {
-                stepIdx = 0;
-                $items.removeClass('active').hide()
-                    .eq(0).addClass('active').show();
-                speak($items.eq(0).find('.step-text').text());
-            }
-            bindNavButtons();
-            $('#stepContainer').css('overflow-y', currentStage === 0 ? 'hidden' : 'auto');
-        }
-        function bindNavButtons() {
-            $('.nav-buttons').hide();
+		// ──────────────────────────────────────────────────────────────────────────────
+		// 2) 타이머 모달 제어
+		//    openTimerModal(duration) 호출 시:
+		//      - iframe에 timer.jsp?duration=<초> 로딩
+		//      - duration 초 뒤에 “타이머가 종료되었습니다” 음성 알람 자동 실행
+		//    closeTimerModal() 호출 시:
+		//      - 모달 닫기, iframe src 초기화
+		// ──────────────────────────────────────────────────────────────────────────────
+		function openTimerModal(duration) {
+			// iframe에 timer.jsp 로딩
+			const url = window.location.origin
+					+ '<%= request.getContextPath() %>'
+					+ '/timer?duration=' + duration;
+			console.log('[Timer] iframe URL →', url);
+			$('#timerFrame').attr('src', url);
+			$('#timerModal').fadeIn(200);
 
-            if (currentStage === 2) {                      // 조리 단계 화면
-              const $nav = $('#btnPrevStep, #btnNextStep').closest('.nav-buttons').show();
+			// duration(초) 후 음성 알람 예약
+			setTimeout(() => {
+				speak('타이머가 종료되었습니다');
+			}, duration * 1000);
+		}
 
-              // 1) 버튼 라벨 동적 변경
-              const $nextBtn = $('#btnNextStep');
-              $nextBtn.text(stepIdx === lastIdx ? '요리 완료' : '다음 단계 →');
+		function closeTimerModal() {
+			$('#timerModal').fadeOut(200);
+			$('#timerFrame').attr('src', 'about:blank');
+		}
 
-              // 2) 이벤트 재바인딩
-              $nextBtn.off('click').on('click', () => {
-                if (stepIdx < lastIdx) {                   // 아직 남은 단계가 있을 때
-                  $items.eq(stepIdx).removeClass('active').hide();
-                  stepIdx++;
-                  $items.eq(stepIdx).addClass('active').show();
-                  speak($items.eq(stepIdx).find('.step-text').text());
-                  // 라벨 갱신
-                  $nextBtn.text(stepIdx === lastIdx ? '요리 완료' : '다음 단계 →');
-                } else {                                   // 마지막 단계 → cfReview 이동
-                  const ridx = ${recipe.recipe_idx};
-                  window.location.href = '${cpath}/cfReview?recipe_idx=' + ridx;
-                }
-              });
-
-              $('#btnPrevStep').off('click').on('click', () => {
-                if (stepIdx > 0) {
-                  $items.eq(stepIdx).removeClass('active').hide();
-                  stepIdx--;
-                  $items.eq(stepIdx).addClass('active').show();
-                  speak($items.eq(stepIdx).find('.step-text').text());
-                  // 라벨 갱신
-                  $nextBtn.text('다음 단계 →');
-                }
-              });
-
-            } else {                                       // Overview·Ingredients
-              const $nav = $steps.eq(currentStage).find('.nav-buttons').show();
-              $nav.find('.btnNext').off().on('click', () => showStage(currentStage + 1));
-              $nav.find('.btnPrev').off().on('click', () => showStage(currentStage - 1));
-            }
-          };
-
-          // ====== showStage 진입 시 라벨 초기화 보강 ======
-          function showStage(idx) {
-            currentStage = Math.min(Math.max(0, idx), totalStages);
-            $steps.hide().removeClass('active').eq(currentStage).addClass('active').show();
-
-            if (currentStage === 2) {
-              stepIdx = 0;
-              $items.hide().removeClass('active').eq(0).addClass('active').show();
-              speak($items.eq(0).find('.step-text').text());
-            }
-            bindNavButtons();
-            $('#stepContainer').css('overflow-y', currentStage === 0 ? 'hidden' : 'auto');
-          }
+		// 모달 닫기 버튼 클릭 시
+		$('#closeTimerModal').off().on('click', closeTimerModal);
 
 
-        // 초기 표시
-        showStage(0);
+		// ──────────────────────────────────────────────────────────────────────────────
+		// 3) 한글 수사 → 초 변환 유틸
+		//    “1분 30초” 같은 문자열을 초 단위 숫자로 파싱
+		// ──────────────────────────────────────────────────────────────────────────────
+		function parseTimeStringToSeconds(str) {
+			const extract = window.korToNumber.extractNumber;
+			const parts = str.match(/([가-힣0-9]+)\s*(시간|시|분|초)/g) || [];
+			let total = 0;
 
-        // 터치 모드 버튼
-        $('#btnTouchMode').on('click', () => showStage(1));
+			parts.forEach(p => {
+				const m = p.match(/([가-힣0-9]+)\s*(시간|시|분|초)/);
+				if (!m) return;
+				const num = extract(m[1])[0];
+				if (isNaN(num)) return;
+				if (m[2].includes('시'))   total += num * 3600;
+				else if (m[2].includes('분')) total += num * 60;
+				else if (m[2].includes('초')) total += num;
+			});
 
-        // 음성 인식 설정
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'ko-KR';
-        recognition.continuous = true;
-        recognition.interimResults = false;
+			return total;
+		}
 
-        // 음성 모드 버튼
-        $('#btnVoiceMode').on('click', () => {
-            if (!isRecognizing) recognition.start();
-        });
 
-        recognition.onstart = () => {
-            isRecognizing = true;
-            $('#btnVoiceMode').prop('disabled', true).text('음성 제어 중…');
-        };
+		// ──────────────────────────────────────────────────────────────────────────────
+		// 4) 음성 명령으로 타이머 시작
+		//    invokeTimerCommand("1분 30초") 형태로 호출
+		//    - 파싱 성공 시 openTimerModal(sec)
+		//    - 실패 시 콘솔에 오류 표시
+		// ──────────────────────────────────────────────────────────────────────────────
+		function invokeTimerCommand(timeStr) {
+			const sec = parseTimeStringToSeconds(timeStr);
+			if (sec > 0) {
+				console.log('Timer start:', sec);
+				openTimerModal(sec);
+			} else {
+				console.log('타이머 파싱 실패:', timeStr);
+			}
+		}
 
-        recognition.onresult = e => {
-            let raw = e.results[e.results.length - 1][0].transcript;
-            let txt = raw.toLowerCase().trim().replace(/[^가-힣]/g, '');
-            // 정규화: '쿠킹프리' 합치기
-            txt = txt.replace(/쿠킹프리/g, '쿠킹프리');
 
-            console.log('인식 원본:', raw, '정규화:', txt);
+		// ──────────────────────────────────────────────────────────────────────────────
+		// 5) 화면 단계 표시 & 내비게이션
+		//    - Overview → Ingredients → Steps → Review 총 4단계
+		//    - Steps 단계에서 각 조리 단계별로 TTS 재생
+		// ──────────────────────────────────────────────────────────────────────────────
+		$(function() {
+			// 상태 변수
+			let isRecognizing = false;
+			let currentStage = 0;
+			let stepIdx = 0;
+			const totalStages = 3;
+			const $steps = $('.step');
+			const $items = $('#stepItems .step-item');
+			const lastIdx = $items.length - 1;
 
-            const cmds = [
-                { key: '쿠킹프리다음', action: () => currentStage === 2 ? $('#btnNextStep').click() : showStage(currentStage + 1) },
-                { key: '쿠킹프리이전', action: () => currentStage === 2 ? $('#btnPrevStep').click() : showStage(currentStage - 1) },
-                { key: '쿠킹프리처음', action: () => showStage(2) },
-                { key: '쿠킹프리다시읽어', action: () => { currentStage === 2 ? speak($items.eq(stepIdx).find('.step-text').text()) : speak($('#cookfree-text').text()); } }
-            ];
+			// 레벨스테인 거리 계산 (퍼지 매칭)
+			function levenshtein(a, b) {
+				const dp = Array(a.length + 1).fill().map(() => Array(b.length + 1).fill(0));
+				for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+				for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+				for (let i = 1; i <= a.length; i++) {
+					for (let j = 1; j <= b.length; j++) {
+						const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+						dp[i][j] = Math.min(
+								dp[i - 1][j] + 1,
+								dp[i][j - 1] + 1,
+								dp[i - 1][j - 1] + cost
+						);
+					}
+				}
+				return dp[a.length][b.length];
+			}
 
-            cmds.forEach(cmd => {
-                const dist = levenshtein(txt, cmd.key);
-                if (dist <= 2) {
-                    console.log(`명령 인식: ${cmd.key} (거리 ${dist})`);
-                    cmd.action();
-                }
-            });
-        };
+			// 단계 표시 함수
+			function showStage(idx) {
+				currentStage = Math.max(0, Math.min(idx, totalStages));
+				$steps.hide().eq(currentStage).addClass('active').show();
 
-        recognition.onerror = () => {
-            if (isRecognizing) recognition.stop();
-        };
+				// Steps(2) 단계 진입 시 첫 번째 조리 단계 TTS
+				if (currentStage === 2) {
+					stepIdx = 0;
+					$items.hide().eq(0).addClass('active').show();
+					speak($items.eq(0).find('.step-text').text());
+				}
+				bindNavButtons();
+			}
 
-        recognition.onend = () => {
-            if (isRecognizing) {
-                try { recognition.start(); } catch {}
-            } else {
-                $('#btnVoiceMode').prop('disabled', false).text('🎤');
-                bindNavButtons();
-            }
-        };
+			// 내비게이션 바인딩
+			function bindNavButtons() {
+				$('.nav-buttons').hide();
 
-        // 읽기 버튼
-        $('#btnSpeakStep').on('click', () => {
-            if (currentStage === 2) {
-                speak($items.eq(stepIdx).find('.step-text').text());
-            }
-        });
+				if (currentStage === 2) {
+					// 조리 단계: 이전/다음/음성 버튼
+					$('#btnPrevStep, #btnNextStep').closest('.nav-buttons').show();
 
-        // review submit
-        $('#btnSubmitReview').on('click', function(){
-            const content=$('#reviewContent').val().trim();
-            const rating=$('#reviewRating').val();
-            if(!content){ alert('리뷰 내용을 입력해주세요.'); return; }
-            $.ajax({
-                url:'${cpath}/recipe/review/add', type:'POST',
-                beforeSend:x=>x.setRequestHeader('${_csrf.headerName}','${_csrf.token}'),
-                data:{recipe_idx:${recipe.recipe_idx},cmt_content:content,rating},
-                success(res){
-                    if(res.success){
-                        $('#commentList').prepend(`
-<div class="comment-item">
-  <div class="meta">${res.nick} • ${res.created_at} • ★${res.rating}</div>
-  <div class="content">${res.cmt_content}</div>
-</div>`);
-                        $('#reviewContent').val('');$('#reviewRating').val('5');
-                    } else alert(res.message);
-                },
-                error(){ alert('리뷰 등록 중 오류'); }
-            });
-        });
-    });
-</script>
+					$('#btnPrevStep').off().on('click', () => {
+						if (stepIdx > 0) {
+							$items.eq(stepIdx--).hide();
+							$items.eq(stepIdx).show();
+							speak($items.eq(stepIdx).find('.step-text').text());
+						}
+					});
+
+					$('#btnNextStep').off().on('click', () => {
+						if (stepIdx < lastIdx) {
+							$items.eq(stepIdx++).hide();
+							$items.eq(stepIdx).show();
+							speak($items.eq(stepIdx).find('.step-text').text());
+						} else {
+							// 리뷰 페이지로 이동
+							window.location.href =
+									'${cpath}/cfReview?recipe_idx=${recipe.recipe_idx}';
+						}
+					});
+
+				} else {
+					// Overview, Ingredients, Review 단계: 이전/다음 버튼
+					$steps
+							.eq(currentStage)
+							.find('.btnPrev')
+							.off()
+							.on('click', () => showStage(currentStage - 1));
+
+					$steps
+							.eq(currentStage)
+							.find('.btnNext')
+							.off()
+							.on('click', () => showStage(currentStage + 1));
+				}
+			}
+
+			// ──────────────────────────────────────────────────────────────────────────
+			// 6) 음성 인식 설정
+			//    - “쿠킹프리타이머 1분 30초” → invokeTimerCommand()
+			//    - “쿠킹프리다음/이전/처음/다시읽어” 명령 지원
+			// ──────────────────────────────────────────────────────────────────────────
+			const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+			const recog = new SR();
+			recog.lang = 'ko-KR';
+			recog.continuous = true;
+			recog.interimResults = false;
+
+			recog.onstart = () => {
+				isRecognizing = true;
+				$('#btnVoiceMode').prop('disabled', true).text('음성 제어 중…');
+			};
+
+			recog.onend = () => recog.start();
+
+			recog.onresult = e => {
+				const raw = e.results[e.results.length - 1][0].transcript;
+				const txt = raw
+						.toLowerCase()
+						.replace(/[^가-힣0-9]/g, '')
+						.replace(/쿠킹프리|쿠키프리|부킹프리/g, '쿠킹프리')
+						.replace(/쿠킹프리타임어|쿠키프리타임어|부킹프리타이어/g, '쿠킹프리타이머');
+
+				console.log('Voice:', raw, '→', txt);
+
+				// 타이머 명령
+				if (txt.includes('쿠킹프리타이머')) {
+					invokeTimerCommand(txt.replace('쿠킹프리타이머', ''));
+					return;
+				}
+
+				// 조리 단계 및 기타 명령
+				const cmds = [
+					['쿠킹프리다음', () => showStage(currentStage + 1)],
+					['쿠킹프리이전', () => showStage(currentStage - 1)],
+					['쿠킹프리처음', () => showStage(0)],
+					[
+						'쿠킹프리다시읽어',
+						() => {
+							if (currentStage === 2)
+								speak($items.eq(stepIdx).find('.step-text').text());
+							else speak($('#cookfree-text').text());
+						}
+					]
+				];
+
+				cmds.forEach(([keyword, fn]) => {
+					if (levenshtein(txt, keyword) <= 4) fn();
+				});
+			};
+
+			// 음성 제어 버튼 클릭 시 인식 시작
+			$('#btnVoiceMode').on('click', () => {
+				if (!isRecognizing) recog.start();
+			});
+
+			// 터치 모드 버튼 클릭 시 1단계로 이동
+			$('#btnTouchMode').on('click', () => showStage(1));
+
+			// 초기 화면 설정
+			showStage(0);
+		});
+	</script>
+
+
 </body>
 </html>

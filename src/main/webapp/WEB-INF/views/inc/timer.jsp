@@ -1,3 +1,9 @@
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
+         isELIgnored="true"%>
+
+<% response.setHeader("X-Frame-Options","SAMEORIGIN"); %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -100,133 +106,136 @@
 </head>
 <body>
 
-    <button id="openTimerModalButton" onclick="openTimerModal()">타이머 열기</button>
+<button id="openTimerModalButton">타이머 열기</button>
 
-    <div id="fullTimerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeTimerModal()">&times;</span>
-            <div class="timer-container">
-                <h3>쿠킹프리 타이머</h3>
-                <div>
-                    <input type="number" id="minInput" value="0" min="0" placeholder="분"> 분
-                    <input type="number" id="secInput" value="0" min="0" max="59" placeholder="초"> 초
-                </div>
-                <div id="timerDisplay">00분 00초</div>
-                <button id="startButton" onclick="startCountdown()">시작</button>
-                <button id="resetButton" onclick="resetCountdown()" disabled>초기화</button>
-                <button id="stopButton" onclick="stopCountdown()" disabled>정지</button>
-            </div>
+<div id="timerModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeTimerModal()">&times;</span>
+        <h3>쿠킹프리 타이머</h3>
+
+        <div id="inputSection" class="timer-container">
+            <input type="number" id="minInput" value="0" min="0" placeholder="분"> 분
+            <input type="number" id="secInput" value="0" min="0" max="59" placeholder="초"> 초
+        </div>
+
+        <div id="timerDisplay">00분 00초</div>
+
+        <div class="timer-container">
+            <button id="startTimer" class="timer-btn">시작</button>
+            <button id="stopTimer"  class="timer-btn" disabled>정지</button>
+            <button id="resetTimer" class="timer-btn" disabled>초기화</button>
+        </div>
+
+        <div id="timeUpMessage" style="display:none;" onclick="closeTimerModal()">
+            <h4>⏰ 시간 종료!</h4>
+            <p>클릭하면 모달이 닫힙니다.</p>
         </div>
     </div>
+</div>
 
-    <div id="timeUpModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeTimeUpModal()">&times;</span>
-            <h2>시간 종료!</h2>
-            <p>설정한 시간이 경과하였습니다.</p>
-        </div>
-    </div>
+<script>
+    const openBtn      = document.getElementById('openTimerModalButton');
+    const modal        = document.getElementById('timerModal');
+    const inputSection = document.getElementById('inputSection');
+    const displayEl    = document.getElementById('timerDisplay');
+    const startBtn     = document.getElementById('startTimer');
+    const stopBtn      = document.getElementById('stopTimer');
+    const resetBtn     = document.getElementById('resetTimer');
+    const timeUpMsg    = document.getElementById('timeUpMessage');
 
-    <script>
-        let countdownTimer;
-        let totalSeconds;
+    let countdownTimer = null;
+    let seconds        = 0;
+    let voiceMode      = false;
 
-        // 초기화 후 버튼 상태 설정
-        document.addEventListener('DOMContentLoaded', (event) => {
-            updateButtonStates(false); // 초기엔 시작 버튼만 활성화
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        const dur = parseInt(new URLSearchParams(window.location.search).get('duration')||'0', 10);
+        if (dur > 0) openTimerModal(dur);
+    });
+    openBtn.addEventListener('click', () => openTimerModal(0));
 
-        function formatTime(sec) {
-            const minutes = Math.floor(sec / 60);
-            const seconds = sec % 60;
-            return `${minutes.toString().padStart(2, '0')}분 ${seconds.toString().padStart(2, '0')}초`;
-        }
+    function openTimerModal(duration) {
+        voiceMode = duration > 0;
+        seconds   = duration;
+        inputSection.style.display  = voiceMode ? 'none' : 'block';
+        displayEl.innerText         = formatTime(seconds);
+        timeUpMsg.style.display     = 'none';
+        startBtn.disabled = false;
+        stopBtn.disabled  = true;
+        resetBtn.disabled = true;
+        openBtn.style.display = 'none';
+        modal.style.display   = 'flex';
+        if (voiceMode) startCountdown();
+    }
 
-        function updateButtonStates(isTimerRunning) {
-            document.getElementById('startButton').disabled = isTimerRunning;
-            // 타이머가 작동중이 아니고, totalSeconds가 undefined면 초기화 버튼 비활성화
-            document.getElementById('resetButton').disabled = !isTimerRunning && totalSeconds === undefined;
-            document.getElementById('stopButton').disabled = !isTimerRunning;
-        }
+    startBtn.addEventListener('click', () => {
+        const m = parseInt(document.getElementById('minInput').value,10);
+        const s = parseInt(document.getElementById('secInput').value,10);
+        seconds = m*60 + s;
+        if (seconds <= 0) return alert('0초 이상 설정해주세요.');
+        inputSection.style.display = 'none';
+        startCountdown();
+    });
 
-        function startCountdown() {
-            if (countdownTimer) return; // 이미 타이머 작동 중이면 중복 실행 방지
-
-            const min = parseInt(document.getElementById('minInput').value);
-            const sec = parseInt(document.getElementById('secInput').value);
-
-            if (isNaN(min) || isNaN(sec) || min < 0 || sec < 0) {
-                alert("분 또는 초를 올바르게 입력해주세요.");
-                return;
-            }
-
-            if (totalSeconds === undefined || totalSeconds === 0) {
-                totalSeconds = (min * 60) + sec;
-                if (totalSeconds <= 0) {
-                    alert("0초 이상으로 타이머를 설정해주세요.");
-                    return;
+    function startCountdown() {
+        startBtn.disabled = true; stopBtn.disabled = false; resetBtn.disabled = false;
+        countdownTimer = setInterval(() => {
+            seconds--;
+            displayEl.innerText = formatTime(seconds);
+            if (seconds <= 0) {
+                clearInterval(countdownTimer);
+                stopBtn.disabled = true;
+                if (voiceMode) {
+                    closeTimerModal();
+                    const u = new SpeechSynthesisUtterance('타이머가 종료되었습니다.');
+                    u.lang = 'ko-KR'; u.rate = 0.9;
+                    speechSynthesis.speak(u);
+                } else {
+                    timeUpMsg.style.display = 'block';
                 }
             }
+        }, 1000);
+    }
 
-            updateButtonStates(true); // 버튼 상태 갱신 (시작 중)
+    stopBtn.addEventListener('click', () => {
+        clearInterval(countdownTimer);
+        startBtn.disabled = false; stopBtn.disabled = true;
+    });
 
-            document.getElementById("timerDisplay").innerText = formatTime(totalSeconds);
+    resetBtn.addEventListener('click', () => {
+        clearInterval(countdownTimer);
+        seconds = 0;
+        displayEl.innerText = '00분 00초';
+        inputSection.style.display = 'block';
+        startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = true;
+        timeUpMsg.style.display = 'none';
+    });
 
-            countdownTimer = setInterval(() => {
-                totalSeconds--;
-
-                document.getElementById("timerDisplay").innerText = formatTime(totalSeconds);
-
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownTimer);
-                    countdownTimer = null;
-                    document.getElementById("timerDisplay").innerText = "00분 00초";
-                    showTimeUpModal(); // 타이머 종료 알림 띄우기
-                    updateButtonStates(false);
-                    document.getElementById('resetButton').disabled = false; // 초기화 버튼 활성화
-                }
-            }, 1000);
+    function closeTimerModal() {
+        // 1. 부모 페이지의 모달 닫기
+        if (window.parent && typeof window.parent.closeTimerModal === 'function') {
+            window.parent.closeTimerModal();
         }
+        // 2. iframe 내부 화면 초기화 (옵션)
+        document.body.innerHTML = '';
+    }
 
-        function stopCountdown() {
-            clearInterval(countdownTimer);
-            countdownTimer = null;
-            updateButtonStates(false); // 버튼 상태 갱신 (정지 상태)
-            document.getElementById('startButton').disabled = false; // 다시 시작 버튼 활성화
-            document.getElementById('resetButton').disabled = false; // 초기화 버튼 활성화
+    // 시간 종료 시 닫기 호출
+    function onTimeUp() {
+        // 기존 TTS 로직 이후
+        if (window.parent && window.parent.closeTimerModal) {
+            window.parent.closeTimerModal();
         }
+        // 1초 뒤 닫기
+        setTimeout(closeTimerModal, 200);
+    }
 
-        function resetCountdown() {
-            clearInterval(countdownTimer);
-            countdownTimer = null;
-            totalSeconds = undefined; // 타이머 초기값 제거
-            document.getElementById("timerDisplay").innerText = "00분 00초";
-            document.getElementById('minInput').value = 0; // 입력창 초기화
-            document.getElementById('secInput').value = 0;
-            updateButtonStates(false); // 버튼 상태 초기화
-        }
+    function formatTime(sec) {
+        const m = String(Math.floor(sec/60)).padStart(2,'0');
+        const s = String(sec%60).padStart(2,'0');
+        return `${m}분 ${s}초`;
+    }
+</script>
 
-        // 타이머 모달 열기
-        function openTimerModal() {
-            document.getElementById('fullTimerModal').style.display = 'flex';
-        }
 
-        // 타이머 모달 닫기
-        function closeTimerModal() {
-            // 필요하다면 닫기 시 타이머 초기화 여부 결정 가능
-            // resetCountdown();
-            document.getElementById('fullTimerModal').style.display = 'none';
-        }
-
-        // 타이머 종료 모달 열기
-        function showTimeUpModal() {
-            document.getElementById('timeUpModal').style.display = 'flex';
-        }
-
-        // 타이머 종료 모달 닫기
-        function closeTimeUpModal() {
-            document.getElementById('timeUpModal').style.display = 'none';
-        }
-    </script>
 </body>
 </html>

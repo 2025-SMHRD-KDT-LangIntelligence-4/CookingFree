@@ -363,4 +363,14 @@ public class MyController {
         
         return result;
     }
+
+    // 타이머 모달창
+    @GetMapping("/timer")
+    public String timerView(
+            @RequestParam(name="duration", required=false, defaultValue="0") int duration,
+            Model model
+    ) {
+        model.addAttribute("duration", duration);
+        return "inc/timer";
+    }
 }

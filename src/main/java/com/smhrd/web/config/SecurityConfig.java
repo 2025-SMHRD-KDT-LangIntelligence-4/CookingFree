@@ -143,6 +143,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())    // ← 추가: SAMEORIGIN 허용
+                )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/cfMain", "/css/**", "/js/**", "/upload/**", "/login", "/oauth2/**", "/cfMyPage/**","/cfjoinId", "/cfJoinform/**","/recipe/detail/**", "/recipe/detail","/recipe/**","/error","/error/**", "/cfChatbot", "/cfChatbot/**").permitAll()
                 .anyRequest().authenticated()
