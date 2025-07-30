@@ -23,10 +23,6 @@
 					type="password" name="password" placeholder="비밀번호" required />
 				<button class="loginBtn" type="submit">로그인</button>
 			</form>
-	    <div class="login-links">
-	      <div class="searchIdPw">아이디/비밀번호 찾기</div>
-	      <a href="${cpath}/cfJoinform?mode=local" class="createUser">회원가입</a>
-	    </div>
 	    <div class="sns-icons">
 	      <div class="sns-icon" title="연동1">
 	      	<a href="${cpath}/oauth2/authorization/google"><img src="${cpath}/upload/Google.png"/></a>

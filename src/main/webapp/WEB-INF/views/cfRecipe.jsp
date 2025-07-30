@@ -14,9 +14,8 @@
 
 <style>
 .gnb {
-	display: flex; /*íë©´ì ë¥ëì¼ë¡ ë°°ì¹í ë*/
+	display: flex;
 	flex-wrap: nowrap;
-	/*ìì§ì ë ¬ì ì íí¨ ê·¼ë° ê¸°ë¥ êµ¬íì´ ì¤í¨íë¯í¨*/
 	justify-content: space-between;
 	align-items: center;
 	padding: 20px 20px;
@@ -27,7 +26,6 @@
 	gap: 12px;
 }
 
-/* ì¼ìª½/ì¤ë¥¸ìª½ ìì´ì½ ë§í¬ */
 .gnb-left a, .gnb-right a {
 	display: flex;
 	align-items: center;
@@ -35,29 +33,26 @@
 	text-decoration: none;
 }
 
-/* ê°ì´ë° ë¡ê³  */
 .gnb-center {
-	flex: 0 1 auto; /* ê¸°ë³¸ê° auto ì ì§ + íìì ì¤ì´ë¬ */
-	min-width: 80px; /* ìµì ëì´ íë³´ */
+	flex: 0 1 auto; 
+	min-width: 80px;
 	left: 50%;
 	transform: translateX(-50%);
 	position: absolute;
 }
 
 .logo {
-	font-size: clamp(18px, 4vw, 32px); /* ë°ìí í¬ê¸° */
+	font-size: clamp(18px, 4vw, 32px); 
 	font-weight: bold;
 	font-family: 'Inter', sans-serif;
 	color: #000;
 }
 
-/* ì¤ë¥¸ìª½ ìì´ì½ë¤ */
 .gnb-right {
 	display: flex;
 	gap: 12px;
 }
 
-/* ìì´ì½ ì ë í¬ê¸° + ìµìíì ë³´ì¥ */
 .icon {
 	width: clamp(18px, 5vw, 36px);
 	height: clamp(18px, 5vw, 36px);
@@ -65,7 +60,6 @@
 	min-height: 18px;
 	object-fit: contain;
 }
-/* ëª¨ë°ì¼ ëì */
 @media ( max-width : 768px) {
 	.gnb {
 		padding: 12px;
@@ -94,7 +88,6 @@ input{
 	position: relative;
 	justify-content: center;
 	display: flex;
-	margin-top: 5%;
 }
 
 #stepContainer {
@@ -129,8 +122,8 @@ h2 {
 }
 
 h3 {
-	margin-top: 0 !important; /* h3의 위쪽 마진을 없애거나 아주 작게 (예: 10px) 조절 */
-	margin-bottom: 20px !important; /* h3 아래 간격 조절 */
+	margin-top: 0 !important;
+	margin-bottom: 20px !important;
 }
 
 .overview .layout {
@@ -196,21 +189,20 @@ h3 {
 	justify-content: center;
 	position: relative;
 	flex-direction: column;
-	/* step-item들이 세로로 쌓이도록 유지 (각 step-item 내부에서 좌우 배치) */
 	padding-bottom: 20px;
 }
 
 .step-item {
-	display: none; /* 기존 값 유지 */
+	display: none; 
 	flex-direction: row;
-	align-items: center; /* step-item 내의 자식 요소(이미지, 텍스트)를 수평 중앙 정렬 */
-	text-align: center; /* 텍스트 자체를 중앙 정렬 */
+	align-items: center;
+	text-align: center;
 	justify-content: center;
-	width: 100%; /* 부모 요소의 전체 너비를 차지하게 하여 중앙 정렬이 잘 작동하도록 함 */
+	width: 100%;
 	flex: 1;
 	padding: 10px 0;
-	gap: 20px; /* ★★★ 추가: 이미지와 텍스트 사이의 간격 ★★★ */
-	box-sizing: border-box; /* 패딩이 너비 계산에 포함되도록 */
+	gap: 20px;
+	box-sizing: border-box;
 }
 
 .step-item.active {
@@ -218,7 +210,7 @@ h3 {
 }
 
 .step-item img {
-	max-width: 40%; /* 기존 값 유지 */
+	max-width: 40%;
 	height: auto;
 	max-height: 30vh;
 	border: 3px solid #ddd;
@@ -233,8 +225,8 @@ h3 {
 	color: #333;
 	width: 80%;
 	max-width: 55%;
-	text-align: left; /* 텍스트는 왼쪽 정렬이 더 읽기 편할 수 있습니다. 필요시 center로 변경 */
-	flex-grow: 1; /* 남은 공간을 채우도록 */
+	text-align: left; 
+	flex-grow: 1; 
 }
 
 .review .comment-input {
@@ -288,7 +280,7 @@ h3 {
 	display: flex;
 	justify-content: space-between;
 	margin-top: auto;
-	padding: 20px 0; /* 버튼 상하 패딩 */
+	padding: 20px 0;
 	box-sizing: border-box;
 }
 
@@ -317,19 +309,451 @@ h3 {
 	position: relative;
 	display: flex;
 	justify-content: center;
-	/* margin-top은 필요에 따라 조절. 만약 헤더 때문에 밀린다면 줄이거나 없애보세요. */
-	margin-top: 0; /* 헤더가 GNB로 상단에 고정되어 있다면 이 여백은 줄이거나 없애는 게 좋습니다. */
 }
 
 #stepContainer {
 	width: 80%;
-	/* height: 100vh;  이것 대신 flex-grow를 사용하거나,
-                         step.active가 height: 60%를 사용하고 있으므로,
-                         이 컨테이너 자체는 유연하게 두는 것이 좋습니다. */
-	overflow-y: hidden; /* 스크롤바를 없앱니다 */
+	overflow-y: hidden;
 	display: flex;
 	flex-direction: column;
-	/* margin-top: 5%; /* 여기에 margin-top이 있어서 #cookMode의 margin-top과 중복될 수 있습니다. */
+}
+.gnb {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background: #fff;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.gnb-left a, .gnb-right a {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.gnb-center {
+    flex: 0 1 auto;
+    min-width: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+}
+
+.logo {
+    font-size: clamp(18px, 4vw, 32px);
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    color: #000;
+}
+
+.gnb-right {
+    display: flex;
+    gap: 12px;
+}
+
+.icon {
+    width: clamp(18px, 5vw, 36px);
+    height: clamp(18px, 5vw, 36px);
+    min-width: 18px;
+    min-height: 18px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .gnb {
+        padding: 12px;
+        gap: 8px;
+    }
+    .gnb-right a {
+        margin-left: 6px;
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'HakgyoansimByeoljariTTF-B', sans-serif !important;
+}
+input {
+    font-family: 'HakgyoansimByeoljariTTF-B', sans-serif !important;
+}
+
+#cookMode {
+    height: 100vh; 
+    overflow: hidden; 
+    position: relative;
+    justify-content: center;
+    display: flex;
+}
+
+#stepContainer {
+    width: 80%;
+    height: 100vh; 
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.step {
+    display: none;
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.step.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    height: auto;
+    max-height: calc(100vh - 120px); 
+}
+
+h2 {
+    border-bottom: 3px solid #ddd;
+    margin-top: 5%;
+}
+
+h3 {
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+}
+
+/* Overview 섹션 스타일 - 기존 코드 유지 */
+.overview .layout {
+    flex: 1;
+    display: flex;
+}
+
+.overview .left {
+    flex: 2;
+    padding: 1% 3% 1% 0%;
+}
+
+.overview .left img {
+    width: 100%;
+    max-height: 70%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+}
+
+.overview .left p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.overview .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-mode {
+    width: 100%;
+    height: 90%;
+    background: #fff;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.ingredients ul {
+    list-style: none;
+    padding: 0;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    padding: 5%;
+    overflow-y: auto;
+}
+
+.ingredients li {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+#stepItems {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
+
+.step-item {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+    padding: 10px 0;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.step-item.active {
+    display: flex;
+}
+
+.step-item img {
+    max-width: 40%;
+    height: auto;
+    max-height: 30vh;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    object-fit: contain;
+    margin: 0;
+}
+
+.step-text {
+    font-size: 16px;
+    color: #333;
+    width: 80%;
+    max-width: 55%; 
+    text-align: left; 
+    flex-grow: 1;
+}
+
+.review .comment-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.review textarea {
+    flex: 1;
+    padding: 8px;
+    resize: none;
+}
+
+.review select {
+    width: 80px;
+}
+
+.review button {
+    padding: 8px 16px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-list {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.comment-item {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.comment-item .meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.comment-item .content {
+    font-size: 16px;
+}
+
+.nav-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+.nav-buttons button {
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#btnSpeakStep {
+    width: 10%;
+    color: black;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    html, body {
+        font-size: 14px; 
+    }
+
+    #cookMode {
+        margin-top: 0; 
+        overflow: visible;
+        padding: 10px;
+    }
+
+    #stepContainer {
+        width: 100%;
+        height: auto;
+        margin-top: 0;
+        padding: 0 5px;
+    }
+
+    .step.active {
+        padding: 10px; 
+        max-height: none;
+    }
+
+    h2 {
+        font-size: 1.8em;
+        margin-top: 3%;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 1.3em;
+        margin-bottom: 15px !important;
+    }
+
+    .overview .layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .overview .left,
+    .overview .right {
+        flex: none;
+        width: 100%; 
+        padding: 0;
+    }
+
+    .overview .left img {
+        max-height: 250px; 
+        object-fit: contain;
+    }
+
+    .overview .btn-mode {
+        height: 80px; 
+        font-size: 20px; 
+        margin-bottom: 10px;
+    }
+
+    .ingredients ul {
+        padding: 15px;
+        max-height: 300px;
+        font-size: 15px;
+    }
+
+    .ingredients li {
+        margin: 6px 0;
+        font-size: 15px;
+    }
+
+    #stepItems {
+        padding-bottom: 10px;
+    }
+
+    .step-item {
+        flex-direction: column;
+        gap: 10px; 
+        padding: 5px 0; 
+        text-align: center; 
+    }
+
+    .step-item img {
+        max-width: 80%;
+        max-height: 20vh; 
+        margin: 0 auto; 
+    }
+
+    .step-text {
+        width: 90%; 
+        max-width: 90%;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    .review .comment-input {
+        flex-direction: column; 
+        gap: 10px; 
+    }
+
+    .review textarea {
+        min-height: 60px;
+    }
+
+    .review select {
+        width: 100%; 
+        height: 40px;
+    }
+
+    .review button {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .comment-list {
+        width: 100%; 
+        padding: 0 5px;
+    }
+
+    .comment-item {
+        padding: 10px 0;
+    }
+
+    .comment-item .meta {
+        font-size: 13px;
+    }
+
+    .comment-item .content {
+        font-size: 15px;
+    }
+
+    .nav-buttons {
+        padding: 10px 0;
+        flex-wrap: wrap; 
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .nav-buttons button {
+        padding: 8px 15px; 
+        font-size: 14px;
+        flex-grow: 1; 
+        min-width: 120px; 
+    }
+
+    #btnSpeakStep {
+        width: auto;
+        min-width: 40px;
+        flex-grow: 0; 
+    }
 }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -395,7 +819,7 @@ h3 {
 				</div>
 				<div class="nav-buttons">
 					<button id="btnPrevStep">← 이전 단계</button>
-					<button id="btnSpeakStep">🔊 읽기</button>
+					<button id="btnSpeakStep">🔊</button>
 					<button id="btnNextStep">다음 단계 →</button>
 				</div>
 			</section>
