@@ -49,12 +49,19 @@ public class MyController {
     private String multipartLocation;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Value("${app.upload.base-dir}")
-    private String uploadDir;      // physical path
-
+    
     @Value("${server.servlet.context-path}")
     private String contextPath;    // “/web”
+    
+    @Value("${app.upload.profile-dir}")
+    private String profileSubDir;
+
+    @Value("${app.upload.review-dir}")
+    private String reviewSubDir;
+    
+    @Value("${app.upload.base-dir}")
+    private String uploadBaseDir;            // "src/main/webapp/upload"
+
 
     // OpenAI API 사용 가능 여부 추적
     private boolean openAIAvailable = true;
@@ -88,10 +95,7 @@ public class MyController {
     public String cfRecipeinsert() {
         return "cfRecipeinsert";
     }
-    @GetMapping("/cfReview")
-    public String cfReview() {
-        return "cfReview";
-    }
+
 
     @GetMapping("/cfRecipe")
     public String cfRecipe() {
@@ -186,46 +190,45 @@ public class MyController {
         return "cfMyPageUpdate";
     }
 
+    
+    // 공통 파일 저장 메서드
+    private String saveFile(MultipartFile file, String subDir) throws IOException {
+        // 1) 프로젝트 루트 경로
+        String projectRoot = System.getProperty("user.dir");
+        File dir = new File(projectRoot, subDir);
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IOException("업로드 디렉터리 생성 실패: " + dir.getAbsolutePath());
+        }
+        // 2) 파일명 랜덤 생성
+        String ext = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        String newName = UUID.randomUUID().toString() + (ext != null ? "." + ext : "");
+        // 3) 실제 쓰기
+        File dest = new File(dir, newName);
+        file.transferTo(dest);
+        // 4) 클라이언트에서 사용할 상대 URL
+        //    예: /upload/profile/xxxxx.png 또는 /upload/reviews/yyyy.jpg
+        String folder = new File(subDir).getName();
+        return "/upload/" + folder + "/" + newName;
+    }
 
     @PostMapping("/mypageUpdate")
     public String updateUserInfo(
             @ModelAttribute Board updatedUser,
             @RequestParam(name = "profileImgFile", required = false) MultipartFile profileImgFile,
             HttpSession session) throws IOException {
-
-        System.out.println("Working directory(user.dir): " + System.getProperty("user.dir"));
-        System.out.println("uploadDir (원본): " + uploadDir);
-        System.out.println("uploadDir 절대경로: " + new File(uploadDir).getAbsolutePath());
-
+        
         Integer userIdx = (Integer) session.getAttribute("user_idx");
         if (userIdx == null) {
             return "redirect:/login";
         }
 
-        File uploadPath = new File(uploadDir).getAbsoluteFile();
-        if (!uploadPath.exists()) {
-            if (!uploadPath.mkdirs()) {
-                throw new IOException("업로드 디렉토리 생성 실패: " + uploadPath.getAbsolutePath());
-            }
-        }
-
         if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            String ext = org.springframework.util.StringUtils.getFilenameExtension(profileImgFile.getOriginalFilename());
-            String filename = java.util.UUID.randomUUID().toString() + (ext != null ? "." + ext : "");
-            File dest = new File(uploadPath, filename);
-
-            System.out.println("파일 저장 위치 (절대경로): " + dest.getAbsolutePath());
-
-            profileImgFile.transferTo(dest);
-
-            // 웹에서 접근 가능한 이미지 URL (컨텍스트 경로 포함)
-            String imgUrl = contextPath + "/upload/profile/" + filename;
+            // saveFile 호출 시 subDir에 profileSubDir 사용
+            String imgUrl = saveFile(profileImgFile, profileSubDir);
             updatedUser.setProfile_img(imgUrl);
         }
-
         updatedUser.setUser_idx(userIdx);
         boardMapper.updateUserInfo(updatedUser);
-
         return "redirect:/cfMyPage";
     }
 
@@ -257,146 +260,94 @@ public class MyController {
 
     // ================== 리뷰 시스템 ==================
 
-    @PostMapping("/recipe/review/add")
+    // --------------------------------------------------
+    //  리뷰 작성 (이미지 포함, AJAX)
+    // --------------------------------------------------
+    @PostMapping("/cfReview/addReview")
     @ResponseBody
-    public Map<String, Object> addReview(
-            @RequestParam("recipe_idx") Integer recipe_idx,
-            @RequestParam("cmt_content") String cmt_content,
-            @RequestParam("rating") Integer rating,
-            HttpSession session) {
-        Integer userIdx = (Integer) session.getAttribute("user_idx");
-        boardMapper.insertReview(recipe_idx, userIdx, cmt_content, rating);
-        Board user = boardMapper.selectUserByIdx(userIdx);
+    public Map<String, Object> addCookingReview(
+            @RequestParam("recipe_idx") Integer recipeIdx,
+            @RequestParam("content") String content,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            HttpSession session) throws IOException {
 
-        Map<String, Object> res = new HashMap<>();
-        res.put("success", true);
-        res.put("nick", user.getNick());
-        res.put("created_at", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
-        res.put("cmt_content", cmt_content);
-        res.put("rating", rating);
-        return res;
+        Map<String, Object> result = new HashMap<>();
+        Integer userIdx = (Integer) session.getAttribute("user_idx");
+        if (userIdx == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        String imagePath = null;
+        if (image != null && !image.isEmpty()) {
+            // saveFile 호출 시 subDir에 reviewSubDir 사용
+            imagePath = saveFile(image, reviewSubDir);
+        }
+
+        boardMapper.insertRecipeReview(recipeIdx, userIdx, content, imagePath, null);
+        result.put("success", true);
+        result.put("imagePath", imagePath);
+        return result;
+    }
+    
+    // cfReview 페이지 매핑
+    @GetMapping("/cfReview")
+    public String cfReview(
+            @RequestParam("recipe_idx") Integer recipeIdx,
+            Model model, HttpSession session) {
+
+        Board recipe = boardMapper.getRecipeDetailWithViewCount(recipeIdx);
+        List<Board> steps   = boardMapper.getRecipeSteps(recipeIdx);
+        List<Board> reviews = boardMapper.getRecipeReviews(recipeIdx, 10, 0);
+        Integer userIdx     = (Integer) session.getAttribute("user_idx");
+
+        model.addAttribute("recipe", recipe);
+        model.addAttribute("steps", steps);
+        model.addAttribute("totalSteps", steps.size());
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("userIdx", userIdx);
+        model.addAttribute("achievementRate", 100);
+
+        return "cfReview";
     }
 
-//
-//    @PostMapping("/recipe/review/add")
-//    @ResponseBody
-//    public Map<String, Object> addRecipeReview(@RequestParam Integer recipeIdx,
-//                                              @RequestParam String cmtContent,
-//                                              @RequestParam(required = false) Integer superIdx,
-//                                              HttpSession session) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//
-//        try {
-//            Integer userIdx = (Integer) session.getAttribute("user_idx");
-//            if (userIdx == null) {
-//                response.put("success", false);
-//                response.put("message", "로그인이 필요합니다.");
-//                return response;
-//            }
-//
-//            if (cmtContent == null || cmtContent.trim().isEmpty()) {
-//                response.put("success", false);
-//                response.put("message", "리뷰 내용을 입력해주세요.");
-//                return response;
-//            }
-//
-//            // 리뷰 저장
-//            boardMapper.insertRecipeReview(recipeIdx, userIdx, cmtContent.trim(), superIdx);
-//
-//            response.put("success", true);
-//            response.put("message", "리뷰가 등록되었습니다.");
-//            logger.info("리뷰 등록: recipeIdx={}, userIdx={}", recipeIdx, userIdx);
-//
-//        } catch (Exception e) {
-//            logger.error("리뷰 등록 중 오류 발생", e);
-//            response.put("success", false);
-//            response.put("message", "리뷰 등록 중 오류가 발생했습니다.");
-//        }
-//
-//        return response;
-//    }
-//
-//    @PostMapping("/recipe/review/delete")
-//    @ResponseBody
-//    public Map<String, Object> deleteRecipeReview(@RequestParam Integer reviewIdx,
-//                                                 HttpSession session) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//
-//        try {
-//            Integer userIdx = (Integer) session.getAttribute("user_idx");
-//            if (userIdx == null) {
-//                response.put("success", false);
-//                response.put("message", "로그인이 필요합니다.");
-//                return response;
-//            }
-//
-//            // 리뷰 삭제 (작성자만 삭제 가능)
-//            int deletedRows = boardMapper.deleteRecipeReview(reviewIdx, userIdx);
-//
-//            if (deletedRows > 0) {
-//                response.put("success", true);
-//                response.put("message", "리뷰가 삭제되었습니다.");
-//                logger.info("리뷰 삭제: reviewIdx={}, userIdx={}", reviewIdx, userIdx);
-//            } else {
-//                response.put("success", false);
-//                response.put("message", "삭제 권한이 없거나 존재하지 않는 리뷰입니다.");
-//            }
-//
-//        } catch (Exception e) {
-//            logger.error("리뷰 삭제 중 오류 발생", e);
-//            response.put("success", false);
-//            response.put("message", "리뷰 삭제 중 오류가 발생했습니다.");
-//        }
-//
-//        return response;
-//    }
-//
-//    @PostMapping("/recipe/review/update")
-//    @ResponseBody
-//    public Map<String, Object> updateRecipeReview(@RequestParam Integer reviewIdx,
-//                                                 @RequestParam String cmtContent,
-//                                                 HttpSession session) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//
-//        try {
-//            Integer userIdx = (Integer) session.getAttribute("user_idx");
-//            if (userIdx == null) {
-//                response.put("success", false);
-//                response.put("message", "로그인이 필요합니다.");
-//                return response;
-//            }
-//
-//            if (cmtContent == null || cmtContent.trim().isEmpty()) {
-//                response.put("success", false);
-//                response.put("message", "리뷰 내용을 입력해주세요.");
-//                return response;
-//            }
-//
-//            // 리뷰 수정 (작성자만 수정 가능)
-//            int updatedRows = boardMapper.updateRecipeReview(reviewIdx, userIdx, cmtContent.trim());
-//
-//            if (updatedRows > 0) {
-//                response.put("success", true);
-//                response.put("message", "리뷰가 수정되었습니다.");
-//                logger.info("리뷰 수정: reviewIdx={}, userIdx={}", reviewIdx, userIdx);
-//            } else {
-//                response.put("success", false);
-//                response.put("message", "수정 권한이 없거나 존재하지 않는 리뷰입니다.");
-//            }
-//
-//        } catch (Exception e) {
-//            logger.error("리뷰 수정 중 오류 발생", e);
-//            response.put("success", false);
-//            response.put("message", "리뷰 수정 중 오류가 발생했습니다.");
-//        }
-//
-//        return response;
-//    }
-
-    // ================== 챗봇 기능 ==================
-
-
+    
+ 
+   
+    
+    // 후기 삭제 (기존과 동일)
+    @PostMapping("/cfReview/deleteReview")
+    @ResponseBody
+    public Map<String, Object> deleteCookingReview(
+            @RequestParam("review_idx") Integer review_idx,
+            HttpSession session) {
+        
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            Integer userIdx = (Integer) session.getAttribute("user_idx");
+            if (userIdx == null) {
+                result.put("success", false);
+                result.put("message", "로그인이 필요합니다.");
+                return result;
+            }
+            
+            int deletedRows = boardMapper.deleteRecipeReview(review_idx, userIdx);
+            
+            if (deletedRows > 0) {
+                result.put("success", true);
+                result.put("message", "후기가 삭제되었습니다.");
+            } else {
+                result.put("success", false);
+                result.put("message", "삭제 권한이 없거나 후기를 찾을 수 없습니다.");
+            }
+            
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "후기 삭제 중 오류가 발생했습니다.");
+        }
+        
+        return result;
+    }
 }

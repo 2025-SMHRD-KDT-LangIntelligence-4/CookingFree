@@ -131,6 +131,7 @@ public interface BoardMapper {
     void insertRecipeReview(@Param("recipe_idx") Integer recipe_idx,
                            @Param("user_idx") Integer user_idx,
                            @Param("cmt_content") String cmt_content,
+                           @Param("review_img") String review_img,
                            @Param("super_idx") Integer super_idx);
     
     /**

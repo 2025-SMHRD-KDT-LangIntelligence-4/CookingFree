@@ -10,13 +10,19 @@ import java.io.File;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.upload.base-dir}")
-    private String uploadDir;
+	@Value("${app.upload.profile-dir}")
+    private String profileSubDir;
+
+    @Value("${app.upload.review-dir}")
+    private String reviewSubDir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String absoluteUploadPath = new File(uploadDir).getAbsolutePath() + "/";
+        String projectRoot = System.getProperty("user.dir");
         registry.addResourceHandler("/upload/profile/**")
-                .addResourceLocations("file:" + absoluteUploadPath);
+                .addResourceLocations("file:" + projectRoot + "/" + profileSubDir + "/");
+        registry.addResourceHandler("/upload/reviews/**")
+                .addResourceLocations("file:" + projectRoot + "/" + reviewSubDir + "/");
     }
+    
 }

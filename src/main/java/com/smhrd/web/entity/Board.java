@@ -69,7 +69,7 @@ public class Board {
     private String cmt_content;      // 댓글 내용 ✅ NEW
     private Integer super_idx;       // 상위 댓글 (대댓글용) ✅ NEW
     private Integer review_count;    // 리뷰 개수 ✅ NEW
-    private Double avg_rating;       // 평균 평점 (향후 확장용) ✅ NEW
+    private String review_img;       // 리뷰 이미지 ✅ NEW
     
     // ================== 기존 즐겨찾기/보상 관련 필드 (유지) ==================
     private Integer fav_idx;         // 즐찾 식별자

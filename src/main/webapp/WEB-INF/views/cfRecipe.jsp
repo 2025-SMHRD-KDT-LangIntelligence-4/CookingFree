@@ -209,37 +209,63 @@
             bindNavButtons();
             $('#stepContainer').css('overflow-y', currentStage === 0 ? 'hidden' : 'auto');
         }
-
-        // 네비게이션 바인딩
         function bindNavButtons() {
             $('.nav-buttons').hide();
-            if (currentStage === 2) {
-                $('#btnPrevStep, #btnNextStep').closest('.nav-buttons').show();
-                $('#btnNextStep').off().on('click', () => {
-                    if (stepIdx < lastIdx) {
-                        $items.eq(stepIdx).removeClass('active').hide();
-                        stepIdx++;
-                        $items.eq(stepIdx).addClass('active').show();
-                        speak($items.eq(stepIdx).find('.step-text').text());
-                    } else {
-                        showStage(3);
-                    }
-                });
-                $('#btnPrevStep').off().on('click', () => {
-                    if (stepIdx > 0) {
-                        $items.eq(stepIdx).removeClass('active').hide();
-                        stepIdx--;
-                        $items.eq(stepIdx).addClass('active').show();
-                        speak($items.eq(stepIdx).find('.step-text').text());
-                    }
-                });
-            } else {
-                const $nav = $steps.eq(currentStage).find('.nav-buttons');
-                $nav.show();
-                $nav.find('.btnNext').off().on('click', () => showStage(currentStage + 1));
-                $nav.find('.btnPrev').off().on('click', () => showStage(currentStage - 1));
+
+            if (currentStage === 2) {                      // 조리 단계 화면
+              const $nav = $('#btnPrevStep, #btnNextStep').closest('.nav-buttons').show();
+
+              // 1) 버튼 라벨 동적 변경
+              const $nextBtn = $('#btnNextStep');
+              $nextBtn.text(stepIdx === lastIdx ? '요리 완료' : '다음 단계 →');
+
+              // 2) 이벤트 재바인딩
+              $nextBtn.off('click').on('click', () => {
+                if (stepIdx < lastIdx) {                   // 아직 남은 단계가 있을 때
+                  $items.eq(stepIdx).removeClass('active').hide();
+                  stepIdx++;
+                  $items.eq(stepIdx).addClass('active').show();
+                  speak($items.eq(stepIdx).find('.step-text').text());
+                  // 라벨 갱신
+                  $nextBtn.text(stepIdx === lastIdx ? '요리 완료' : '다음 단계 →');
+                } else {                                   // 마지막 단계 → cfReview 이동
+                  const ridx = ${recipe.recipe_idx};
+                  window.location.href = '${cpath}/cfReview?recipe_idx=' + ridx;
+                }
+              });
+
+              $('#btnPrevStep').off('click').on('click', () => {
+                if (stepIdx > 0) {
+                  $items.eq(stepIdx).removeClass('active').hide();
+                  stepIdx--;
+                  $items.eq(stepIdx).addClass('active').show();
+                  speak($items.eq(stepIdx).find('.step-text').text());
+                  // 라벨 갱신
+                  $nextBtn.text('다음 단계 →');
+                }
+              });
+
+            } else {                                       // Overview·Ingredients
+              const $nav = $steps.eq(currentStage).find('.nav-buttons').show();
+              $nav.find('.btnNext').off().on('click', () => showStage(currentStage + 1));
+              $nav.find('.btnPrev').off().on('click', () => showStage(currentStage - 1));
             }
-        }
+          };
+
+          // ====== showStage 진입 시 라벨 초기화 보강 ======
+          function showStage(idx) {
+            currentStage = Math.min(Math.max(0, idx), totalStages);
+            $steps.hide().removeClass('active').eq(currentStage).addClass('active').show();
+
+            if (currentStage === 2) {
+              stepIdx = 0;
+              $items.hide().removeClass('active').eq(0).addClass('active').show();
+              speak($items.eq(0).find('.step-text').text());
+            }
+            bindNavButtons();
+            $('#stepContainer').css('overflow-y', currentStage === 0 ? 'hidden' : 'auto');
+          }
+
 
         // 초기 표시
         showStage(0);
