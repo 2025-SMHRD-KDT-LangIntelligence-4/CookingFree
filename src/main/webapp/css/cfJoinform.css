@@ -26,7 +26,7 @@
 	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
 	min-width: 80px; /* 최소 넓이 확보 */
 	margin-left: 30vw;
-	left: 50%;
+	left: 20%;
 	transform: translateX(-50%);
 	position: absolute;
 }
@@ -64,8 +64,8 @@
 }
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
 .join-container {
-	width: 500px;
-	height: 500px;
+	width: 60%;
+	height: 100%;
 	border: 3px solid rgb(131, 131, 131);
 	border-radius: 10px;
 	box-sizing: border-box;
@@ -75,14 +75,16 @@
 }
 
 .joinform {
-	margin-top: 50px;
+	width:100%;
+	margin: 4%;
 }
 
 .create-user {
 	display: flex;
 	justify-content: space-between;
-	padding: 10px;
-	gap: 20px;
+	padding: 5% 5%;
+	gap: 1%;
+	align-items:center;
 }
 
 .title-name {
@@ -111,16 +113,220 @@
 	padding: 0 20px;
 	margin-top: 80px;
 }
-
-input {
-	border: none;
-	border-bottom: 3px solid #919191;
+label{
+	width: 30% !important;
+	background-color: lightblue !important;
+	color: black !important; font-size: 20px !important;
 }
 
+input {
+	width:40% !important; 
+	border: none;
+	border-bottom: 3px solid #919191;
+	margin:0 !important;
+}
+.joinbutton{
+	margin-left:40%;
+}
 button {
-	margin-top: 30px;
+	margin-top: 4%;
 }
 
 .footer {
 	height: 300px;
+}
+span.allergy-info{
+	color: darkgray !important; font-size: 15px !important;
+}
+/*--------------------------------------------------------------------------------------------------*/
+/* 기본 모달 스타일 */
+.modal {
+    display: none; /* JavaScript에서 flex로 변경 */
+    position: fixed;
+    z-index: 1000; /* 다른 요소들 위에 확실히 오도록 z-index를 높입니다. */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+
+    /* flexbox 속성 추가: 모달 콘텐츠를 중앙에 배치 */
+    display: flex; /* JS에서 block 대신 flex로 설정했으므로, CSS도 flex 정렬을 대비 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center;   /* 세로 중앙 정렬 */
+}
+
+/* 모달 내용 상자 스타일 */
+.modal-content {
+    background-color: #fefefe;
+    /* margin: 15% auto; /* 이 부분은 flex 컨테이너에서 중앙 정렬 시 필요 없을 수 있음 */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* 그림자 추가로 입체감 */
+
+    /* 모달 내용이 화면을 넘어갈 경우를 대비한 최대 높이 및 스크롤 */
+    max-height: 90vh; /* 화면 높이의 90%를 넘지 않도록 설정 */
+    overflow-y: auto; /* 내용이 넘치면 스크롤바 생성 */
+}
+
+/* 닫기 버튼 (X 표시) 스타일 - HTML에 span 태그만 있었으니 추가해줍니다. */
+/* 현재 HTML에 이 부분이 빠져있으니 HTML에도 추가하거나, 이 CSS를 적용할 수 있도록 HTML을 수정해야합니다. */
+/* HTML: <span class="close-button">&times;</span> */
+.modal-content h2 { /* 제목과 닫기 버튼을 한 줄에 배치하고 싶다면 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0; /* 기본 마진 제거 */
+    margin-bottom: 20px;
+}
+
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1; /* 글자 세로 정렬 */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* 알러지 검색 입력 필드 */
+.allergy-search-box {
+    margin-bottom: 15px;
+}
+.allergy-search-box input[type="text"] {
+    /* 이 부분의 width를 calc(100% - 20px)로 설정했는데,
+       input 태그에 전역적으로 width:40% !important; 가 적용되고 있어서 충돌할 수 있습니다.
+       명시적으로 이 input에만 필요한 width를 설정해야 합니다. */
+    width: 100% !important; /* 모달 내 검색창의 너비를 100%로 강제 */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 알러지 체크박스 컨테이너 스크롤 */
+.allergy-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    /* display: block; /* 명시적으로 block 레벨 요소임을 지정 (기본값) */
+}
+
+/* 개별 체크박스 항목 스타일 */
+.allergy-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+.allergy-item:last-child {
+    border-bottom: none;
+}
+
+.allergy-item input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    flex-shrink: 0; /* 체크박스 크기가 줄어들지 않도록 */
+}
+
+.allergy-item label {
+    font-size: 16px;
+    cursor: pointer;
+    flex-grow: 1;
+    white-space: nowrap; /* 레이블 텍스트가 줄바꿈되지 않도록 (필요시) */
+}
+
+.allergy-item .allergy-info {
+    font-size: 13px;
+    color: #666;
+    margin-left: 15px;
+    flex-shrink: 1; /* 정보 텍스트는 필요시 줄어들도록 */
+    text-align: right; /* 오른쪽에 붙도록 */
+    padding-left: 10px; /* 레이블과의 간격 */
+}
+
+/* 모달 하단 버튼 그룹 */
+.modal-buttons {
+    text-align: right;
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-left: 10px;
+}
+
+#selectDoneBtn {
+    background-color: #007bff;
+    color: white;
+}
+
+#selectDoneBtn:hover {
+    background-color: #0056b3;
+}
+
+#cancelSelectionBtn {
+    background-color: #6c757d;
+    color: white;
+}
+
+#cancelSelectionBtn:hover {
+    background-color: #5a6268;
+}
+/* 개별 체크박스 항목 스타일 */
+.allergy-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+.allergy-item input[type="checkbox"] {
+    /* 이 부분이 핵심입니다: 높이를 강제로 지정하고, 불필요한 전역 스타일 제거 */
+    width: 18px !important;    /* 체크박스 기본 너비 지정 */
+    height: 18px !important;   /* 체크박스 기본 높이 지정 (여기서 0이 아니어야 함) */
+    min-width: 18px !important; /* 최소 너비 보장 */
+    min-height: 18px !important;/* 최소 높이 보장 */
+    margin-right: 10px !important; /* 레이블과의 간격 */
+    border: initial !important;    /* 기존 input의 border 제거 */
+    background-color: transparent !important; /* 혹시 배경색 때문에 안보일까봐 투명 설정 */
+    -webkit-appearance: checkbox !important; /* 웹킷 브라우저에서 체크박스 외형 강제 */
+    -moz-appearance: checkbox !important;    /* 모질라 브라우저에서 체크박스 외형 강제 */
+    appearance: checkbox !important;         /* 표준 외형 강제 */
+    transform: scale(1.2); /* 기존 크기 확대 유지 */
+    box-sizing: border-box; /* 패딩, 보더 포함 */
+}
+
+.allergy-item label {
+    font-size: 16px;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.allergy-item .allergy-info {
+    font-size: 13px;
+    color: #666;
+    margin-left: 15px;
+    flex-shrink: 0;
 }
