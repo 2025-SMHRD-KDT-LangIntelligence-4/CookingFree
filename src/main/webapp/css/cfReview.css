@@ -1,4 +1,11 @@
-@charset "UTF-8"; /* GNB */
+@charset "UTF-8";
+@font-face {
+    font-family: 'HakgyoansimByeoljariTTF-B';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimByeoljariTTF-B.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-size: 50px;
+}
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -11,6 +18,8 @@ body {
 	color: #333;
 	width: 100%;
 	margin-left: 10%;
+	font-family: 'HakgyoansimByeoljariTTF-B',
+	sans-serif !important;
 }
 
 header {

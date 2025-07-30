@@ -1,4 +1,12 @@
-@charset "UTF-8";/* GNB */
+@charset "UTF-8";
+@font-face {
+    font-family: 'HakgyoansimByeoljariTTF-B';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimByeoljariTTF-B.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-size: 50px;
+}
+/* GNB */
 .div, .div * {
 	box-sizing: border-box;
 }
@@ -39,7 +47,8 @@
 }
 
 body {
-	font-family: 'Inter', sans-serif;
+	font-family: 'HakgyoansimByeoljariTTF-B',
+	sans-serif !important;
 	background: #fff;
 	min-height: 100vh;
 	display: flex;

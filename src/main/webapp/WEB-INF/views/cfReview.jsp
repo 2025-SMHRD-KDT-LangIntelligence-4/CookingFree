@@ -38,7 +38,7 @@
         <h2>${recipe.recipe_name}</h2>
         <p>${recipe.recipe_desc}</p>
         <div class="author-info">
-            <img src="${cpath}/upload/profile/default.jpg" alt="Author" style="width:100px;height:100px;">
+            <img src="${cpath}/upload/profileDefault.jpg" alt="Author" style="width:50px;height:50px;">
             <div class="author-details">
                 <div class="name">${recipe.author_nick}</div>
                 <div class="date"><fmt:formatDate value="${recipe.created_at}" pattern="yyyy.MM.dd"/></div>

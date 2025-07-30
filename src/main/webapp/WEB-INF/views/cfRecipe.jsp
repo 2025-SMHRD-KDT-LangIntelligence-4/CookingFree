@@ -81,9 +81,13 @@ html, body {
 	padding: 0;
 	width: 100%;
 	height: 100%;
-	font-family: 'Noto Sans KR';
+	font-family: 'HakgyoansimByeoljariTTF-B',
+	sans-serif !important;
 }
-
+input{
+	font-family: 'HakgyoansimByeoljariTTF-B',
+	sans-serif !important;
+	}
 #cookMode {
 	height: 100vh;
 	overflow: hidden;
