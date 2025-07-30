@@ -69,13 +69,19 @@
 				<div class="create-user">
 					<label for="userPreferTaste">선호하는 맛</label> <input type="text"
 						id="userPreferTaste" class="userPreferTaste"
-						name="userPreferTaste" />
+						name="userPreferTaste" placeholder="예: 매운맛, 한식, 치킨" />
 				</div>
 
 				<div class="create-user">
-					<label for="userCookingSkill">요리실력</label> <input type="text"
-						id="userCookingSkill" class="userCookingSkill"
-						name="userCookingSkill" />
+				  <label>요리실력</label> 
+				  <input type="radio" id="skill_beginner" name="userCookingSkill" value="초급" checked />
+				  <label for="skill_beginner">초급</label>
+				
+				  <input type="radio" id="skill_intermediate" name="userCookingSkill" value="중급" />
+				  <label for="skill_intermediate">중급</label>
+				
+				  <input type="radio" id="skill_advanced" name="userCookingSkill" value="고급" />
+				  <label for="skill_advanced">고급</label>
 				</div>
 
 				<button type="submit" class="joinbutton">생성하기</button>

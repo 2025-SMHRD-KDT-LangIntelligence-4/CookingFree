@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
+import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 public class MyController {
@@ -49,6 +53,7 @@ public class MyController {
     private String multipartLocation;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    
     
     @Value("${server.servlet.context-path}")
     private String contextPath;    // “/web”
@@ -72,7 +77,11 @@ public class MyController {
 
 
     @GetMapping({ "/", "/cfMain" })
-    public String mainPage(Model model) {
+    public String mainPage(Model model,HttpServletRequest request) {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        HttpSession session = request.getSession(false);
+        logger.debug("[cfMain] Session ID: {}", session != null ? session.getId() : "null");
+        logger.debug("[cfMain] Authentication: {}, authenticated={}", auth, auth != null ? auth.isAuthenticated() : "null");
         // 조회수 기준 상위 레시피 3개 조회
         List<Board> hotRecipes = boardMapper.getTopRecipesByViewCount(3);
         model.addAttribute("hotRecipes", hotRecipes);

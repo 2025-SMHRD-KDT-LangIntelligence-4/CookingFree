@@ -164,6 +164,12 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
             )
+            .sessionManagement(session -> 
+            session
+                .sessionFixation(fixation -> fixation.migrateSession()) // 세션 고정 보호 기본 정책
+                .maximumSessions(1)                                    // 최대 1개 세션만 허용
+                .maxSessionsPreventsLogin(false)                       // 초과 세션 시 새 로그인 허용, 이전 세션 만료
+            		)
             .csrf(csrf -> csrf.ignoringRequestMatchers("/cfjoinId"));
 
         return http.build();

@@ -302,7 +302,7 @@ public interface BoardMapper {
 
 	int getRecipeReviewCount(Integer recipeId);
 
-	void insertSocialUser(Board newUser);
+	int insertSocialUser(Board newUser);
 	
 	/**
 	 * 레시피의 재료 목록 조회.
@@ -333,4 +333,11 @@ public interface BoardMapper {
     
 //    알레르기 조회해놓기
      List<Board> getAllAllergies(); 
+     
+
+     // 3) 알러지 이름 목록으로 alergy_idx 리스트 조회
+     List<Integer> getAllergyIdxListByNames(@Param("names") List<String> names);
+
+     // 4) 사용자-알러지 매핑 테이블에 다중 insert
+     int insertUserAllergies(@Param("user_idx") Integer userIdx, @Param("alergy_idx_list") List<Integer> alergyIdxList);
 }
