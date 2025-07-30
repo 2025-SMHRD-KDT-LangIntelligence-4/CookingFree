@@ -9,7 +9,7 @@
 body {
 	background-color: #f5f5f5;
 	color: #333;
-	width: 80%;
+	width: 100%;
 	margin-left: 10%;
 }
 
@@ -215,7 +215,58 @@ header {
 	max-width: 50%;
 	border-radius: 5px;
 }
+.gnb {
+	display: flex; /*íë©´ì ë¥ëì¼ë¡ ë°°ì¹í ë*/
+	flex-wrap: nowrap;
+	/*ìì§ì ë ¬ì ì íí¨ ê·¼ë° ê¸°ë¥ êµ¬íì´ ì¤í¨íë¯í¨*/
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 20px;
+	background: #fff;
+	overflow-x: auto;
+	border-bottom: 1px solid #ddd;
+	box-sizing: border-box;
+	gap: 12px;
+}
 
+/* ì¼ìª½/ì¤ë¥¸ìª½ ìì´ì½ ë§í¬ */
+.gnb-left a, .gnb-right a {
+	display: flex;
+	align-items: center;
+	margin-left: 10px;
+	text-decoration: none;
+}
+
+/* ê°ì´ë° ë¡ê³  */
+.gnb-center {
+	flex: 0 1 auto; /* ê¸°ë³¸ê° auto ì ì§ + íìì ì¤ì´ë¬ */
+	min-width: 80px; /* ìµì ëì´ íë³´ */
+	left: 50%;
+	transform: translateX(-50%);
+	position: absolute;
+}
+
+.logo {
+	font-size: clamp(18px, 4vw, 32px); /* ë°ìí í¬ê¸° */
+	font-weight: bold;
+	font-family: 'Inter', sans-serif;
+	color: #000;
+}
+
+/* ì¤ë¥¸ìª½ ìì´ì½ë¤ */
+.gnb-right {
+	display: flex;
+	gap: 12px;
+}
+
+/* ìì´ì½ ì ë í¬ê¸° + ìµìíì ë³´ì¥ */
+.icon {
+	width: clamp(18px, 5vw, 36px);
+	height: clamp(18px, 5vw, 36px);
+	min-width: 18px;
+	min-height: 18px;
+	object-fit: contain;
+}
 /* 모바일 대응 */
 @media ( max-width : 768px) {
 	.gnb {
