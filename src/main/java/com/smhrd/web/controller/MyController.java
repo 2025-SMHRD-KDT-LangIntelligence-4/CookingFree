@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.servlet.ServletContext;
@@ -84,11 +86,11 @@ public class MyController {
 
 
     @GetMapping({ "/", "/cfMain" })
-    public String mainPage(Model model, HttpServletRequest request, HttpSession session) {
+    public String mainPage(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("[cfMain] Session ID: {}", session != null ? session.getId() : "null");
-        logger.debug("[cfMain] Authentication: {}, authenticated={}", auth,
-            auth != null ? auth.isAuthenticated() : "null");
+        boolean isAnonymous = auth == null
+                || auth instanceof AnonymousAuthenticationToken
+                || "anonymousUser".equals(auth.getPrincipal());
 
         // 1) 모든 알러지 키워드 조회
         List<String> allergyKeywords = boardMapper.selectAllAllergyKeywords();
@@ -96,17 +98,26 @@ public class MyController {
         // 2) 조회수 기준 상위 레시피 3개 조회
         List<Board> hotRecipes = boardMapper.getTopRecipesByViewCount(3);
 
-        // 3) 알러지 키워드 필터링
-        List<Board> filtered = hotRecipes.stream()
-            .filter(r -> allergyKeywords.stream().noneMatch(kw ->
-                (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
-                (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
-                (r.getTags()        != null && r.getTags().contains(kw))
-            ))
-            .collect(Collectors.toList());
+        // 3) 로그인 상태일 때만 알러지 키워드로 필터링
+        List<Board> filtered;
+        if (isAnonymous) {
+            // 익명 사용자면 필터링 없이 원본 리스트 사용
+            filtered = hotRecipes;
+            logger.info("메인 페이지 (익명) - HOT 레시피 개수: {}", filtered.size());
+        }
+        else {
+            // 로그인 사용자면 알러지 키워드 필터링
+            filtered = hotRecipes.stream()
+                    .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                            (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                                    (r.getTags()        != null && r.getTags().contains(kw))
+                    ))
+                    .collect(Collectors.toList());
+            logger.info("메인 페이지 (로그인) - 필터링 후 HOT 레시피 개수: {}", filtered.size());
+        }
 
         model.addAttribute("hotRecipes", filtered);
-        logger.info("메인 페이지 - 필터링 후 HOT 레시피 개수: {}", filtered.size());
         return "cfMain";
     }
 
