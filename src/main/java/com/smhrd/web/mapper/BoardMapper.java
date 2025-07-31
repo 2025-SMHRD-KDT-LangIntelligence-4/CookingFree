@@ -1,8 +1,11 @@
 package com.smhrd.web.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -351,4 +354,28 @@ public interface BoardMapper {
 
      // 2) allergy_idx 리스트로 동의어 키워드 조회
      List<String> selectKeywordsByAlergyIdxs(@Param("alergyIdxs") List<Integer> alergyIdxs);
+     
+     // 레시피 삽입
+     
+  // 레시피 insert (useGeneratedKeys)
+     @Insert("INSERT INTO cf_recipe (recipe_name, cook_type, recipe_difficulty, servings, recipe_img, recipe_desc, tags, created_at) "
+           + "VALUES (#{recipe_name}, #{cook_type}, #{recipe_difficulty}, #{servings}, #{recipe_img}, #{recipe_desc}, #{tags}, NOW())")
+     @Options(useGeneratedKeys=true, keyProperty="recipe_idx", keyColumn="recipe_idx")
+     void insertRecipe(Board recipe);
+
+     // 식재료 이름으로 조회
+     @Select("SELECT ingre_idx FROM cf_ingredient WHERE ingre_name = #{ingreName}")
+     Integer getIngreIdxByName(@Param("ingreName") String ingreName);
+
+     // 신규 식재료 insert
+     @Insert("INSERT INTO cf_ingredient (ingre_name, created_at) VALUES (#{ingreName}, NOW())")
+     void insertIngredient(@Param("ingreName") String ingreName);
+
+     // cf_input 매핑 insert
+     @Insert("INSERT INTO cf_input (recipe_idx, ingre_idx, input_amount, created_at) "
+           + "VALUES (#{recipeIdx}, #{ingreIdx}, #{inputAmount}, NOW())")
+     void insertRecipeInput(@Param("recipeIdx") Integer recipeIdx,
+                            @Param("ingreIdx") Integer ingreIdx,
+                            @Param("inputAmount") BigDecimal inputAmount);
+
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -445,5 +446,60 @@ public class MyController {
     ) {
         model.addAttribute("duration", duration);
         return "inc/timer";
+    }
+    
+    // 레시피등록
+    
+    @PostMapping("/cfRecipeinsert")
+    public String insertRecipe(
+            @RequestParam String title,
+            @RequestParam String writer,
+            @RequestParam String difficulty,
+            @RequestParam Integer servings,
+            @RequestParam("image") MultipartFile imageFile,
+            @RequestParam String description,
+            @RequestParam String ingredients,
+            @RequestParam String tags
+    ) throws IOException {
+        // 1) 이미지 업로드 (예시: upload 폴더에 저장)
+        String imgPath = "";
+        if (!imageFile.isEmpty()) {
+            String filename = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            File dest = new File("src/main/webapp/upload/" + filename);
+            imageFile.transferTo(dest);
+            imgPath = "/upload/" + filename;
+        }
+
+        // 2) Board 객체에 레시피 정보 설정
+        Board recipe = Board.builder()
+            .recipe_name(title)
+            .cook_type(writer)
+            .recipe_difficulty(difficulty)
+            .servings(servings)
+            .recipe_img(imgPath)
+            .recipe_desc(description)
+            .tags(tags)
+            .build();
+
+        // 3) 레시피 저장 (자동 생성된 recipe_idx 반환)
+        boardMapper.insertRecipe(recipe);
+        Integer recipeIdx = recipe.getRecipe_idx();
+
+        // 4) 재료 저장: textarea 줄 단위 분리, 투입량 1로 고정
+        String[] lines = ingredients.split("\\r?\\n");
+        for (String line : lines) {
+            String ingreName = line.trim();
+            if (ingreName.isEmpty()) continue;
+            // 4-1) 식재료 이름으로 ingre_idx 조회(없으면 insert)
+            Integer ingreIdx = boardMapper.getIngreIdxByName(ingreName);
+            if (ingreIdx == null) {
+                boardMapper.insertIngredient(ingreName);
+                ingreIdx = boardMapper.getIngreIdxByName(ingreName);
+            }
+            // 4-2) cf_input 테이블에 매핑
+            boardMapper.insertRecipeInput(recipeIdx, ingreIdx, BigDecimal.ONE);
+        }
+
+        return "redirect:/cfRecipe?recipe_idx=" + recipeIdx;
     }
 }

@@ -194,8 +194,8 @@
 <body>
 
 <div class="form-container">
-    <form action="register2" method="post">
-
+    <form action="cfRecipeinsert" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="${_csrf.parameterName}"value="${_csrf.token}" />
         <div class="form-row">
             <label>레시피명</label>
             <input type="text" name="title">
@@ -237,7 +237,10 @@
 
         <div class="form-row">
             <label>식재료</label>
-            <textarea name="ingredients" rows="3"></textarea>
+            <textarea name="ingredients" rows="3"> 줄단위로 
+            돼지고기 500G 
+            당근 1개 이런식으로 입력</textarea>
+            
         </div>
 
         <div class="form-row">
@@ -266,6 +269,7 @@
         </div>
     </form>
 </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

@@ -1027,56 +1027,52 @@ h3 {
 
 				// Steps(2) 단계 진입 시 첫 번째 조리 단계 TTS
 				if (currentStage === 2) {
-					stepIdx = 0;
-					$items.hide().eq(0).addClass('active').show();
-					speak($items.eq(0).find('.step-text').text());
+					 stepIdx = 0;
+				      $items.hide().removeClass('active');
+				      $items.eq(0).show().addClass('active');
+				      speak($items.eq(0).find('.step-text').text());
 				}
 				bindNavButtons();
 			}
 
 			// 내비게이션 바인딩
 			function bindNavButtons() {
-				$('.nav-buttons').show();
+  // 우선 모든 단계의 nav-buttons 숨김
+  $('.step .nav-buttons').hide();
 
-				if (currentStage === 2) {
-					// 조리 단계: 이전/다음/음성 버튼
-					$('#btnPrevStep, #btnNextStep').closest('.nav-buttons').show();
+  if (currentStage === 2) {
+    // 조리 단계일 때
+    $('#steps .nav-buttons').show();
 
-					$('#btnPrevStep').off().on('click', () => {
-						if (stepIdx > 0) {
-							$items.eq(stepIdx--).hide();
-							$items.eq(stepIdx).show();
-							speak($items.eq(stepIdx).find('.step-text').text());
-						}
-					});
+    $('#btnPrevStep').off('click').on('click', () => {
+      if (stepIdx > 0) {
+        $items.eq(stepIdx).hide().removeClass('active');
+        stepIdx--;
+        $items.eq(stepIdx).show().addClass('active');
+        speak($items.eq(stepIdx).find('.step-text').text());
+      }
+    });
 
-					$('#btnNextStep').off().on('click', () => {
-						if (stepIdx < lastIdx) {
-							$items.eq(stepIdx++).hide();
-							$items.eq(stepIdx).show();
-							speak($items.eq(stepIdx).find('.step-text').text());
-						} else {
-							// 리뷰 페이지로 이동
-							window.location.href =
-									'${cpath}/cfReview?recipe_idx=${recipe.recipe_idx}';
-						}
-					});
+    $('#btnNextStep').off('click').on('click', () => {
+      if (stepIdx < lastIdx) {
+        $items.eq(stepIdx).hide().removeClass('active');
+        stepIdx++;
+        $items.eq(stepIdx).show().addClass('active');
+        speak($items.eq(stepIdx).find('.step-text').text());
+      } else {
+        // 마지막 스텝 이후 리뷰로
+        window.location.href = `${cpath}/cfReview?recipe_idx=${recipe.recipe_idx}`;
+      }
+    });
 
-				} else {
-					// Overview, Ingredients, Review 단계: 이전/다음 버튼
-					$steps
-							.eq(currentStage)
-							.find('.btnPrev')
-							.off()
-							.on('click', () => showStage(currentStage - 1));
-
-					$steps
-							.eq(currentStage)
-							.find('.btnNext')
-							.off()
-							.on('click', () => showStage(currentStage + 1));
-				}
-			}
+  } else {
+    // Overview, Ingredients, Review 단계일 때
+    const $nav = $steps.eq(currentStage).find('.nav-buttons');
+    $nav.show();
+    $nav.find('.btnPrev').off('click').on('click', () => showStage(currentStage - 1));
+    $nav.find('.btnNext').off('click').on('click', () => showStage(currentStage + 1));
+  }
+}
 
 			// ──────────────────────────────────────────────────────────────────────────
 			// 6) 음성 인식 설정
@@ -1097,39 +1093,72 @@ h3 {
 			recog.onend = () => recog.start();
 
 			recog.onresult = e => {
-				const raw = e.results[e.results.length - 1][0].transcript;
-				const txt = raw
-						.toLowerCase()
-						.replace(/[^가-힣0-9]/g, '')
-						.replace(/쿠킹프리|쿠키프리|부킹프리/g, '쿠킹프리')
-						.replace(/쿠킹프리타임어|쿠키프리타임어|부킹프리타이어/g, '쿠킹프리타이머');
+				  const raw = e.results[e.results.length - 1][0].transcript;
+				  const txt = raw.toLowerCase()
+				    .replace(/[^가-힣0-9]/g, '')
+				    .replace(/쿠킹프리|쿠키프리|부킹프리/g, '쿠킹프리')
+				    .replace(/쿠킹프리타임어|쿠키프리타이어|부킹프리타임어|쿠키프리타임어/g, '쿠킹프리타이머');
 
-				console.log('Voice:', raw, '→', txt);
+				  console.log('Voice:', raw, '→', txt);
 
 				// 타이머 명령
 				if (txt.includes('쿠킹프리타이머')) {
-					invokeTimerCommand(txt.replace('쿠킹프리타이머', ''));
-					return;
+				invokeTimerCommand(txt.replace('쿠킹프리타이머', ''));
+				return;
 				}
 
-				// 조리 단계 및 기타 명령
-				const cmds = [
-					['쿠킹프리다음', () => showStage(currentStage + 1)],
-					['쿠킹프리이전', () => showStage(currentStage - 1)],
-					['쿠킹프리처음', () => showStage(0)],
-					[
-						'쿠킹프리다시읽어',
-						() => {
-							if (currentStage === 2)
-								speak($items.eq(stepIdx).find('.step-text').text());
-							else speak($('#cookfree-text').text());
-						}
-					]
-				];
+				  // “다음” 명령
+				  if (txt.includes('쿠킹프리다음')) {
+				    if (currentStage === 2) {
+				      // 조리 단계 내부 다음 스텝
+				      if (stepIdx < lastIdx) {
+				        $items.eq(stepIdx).hide().removeClass('active');
+				        stepIdx++;
+				        $items.eq(stepIdx).show().addClass('active');
+				        speak($items.eq(stepIdx).find('.step-text').text());
+				      } else {
+				        // 마지막 스텝 이후 리뷰 섹션으로 전환
+				        showStage(3);
+				      }
+				    } else {
+				      // Overview, Ingredients, Review 단계: 섹션 전환
+				      showStage(currentStage + 1);
+				    }
+				    return;
+				  }
 
-				cmds.forEach(([keyword, fn]) => {
-					if (levenshtein(txt, keyword) <= 4) fn();
-				});
+				  // “이전” 명령
+				  if (txt.includes('쿠킹프리이전')) {
+				    if (currentStage === 2) {
+				      // 조리 단계 내부 이전 스텝
+				      if (stepIdx > 0) {
+				        $items.eq(stepIdx).hide().removeClass('active');
+				        stepIdx--;
+				        $items.eq(stepIdx).show().addClass('active');
+				        speak($items.eq(stepIdx).find('.step-text').text());
+				      }
+				    } else {
+				      showStage(currentStage - 1);
+				    }
+				    return;
+				  }
+
+				  // “처음” 명령
+				  if (txt.includes('쿠킹프리처음')) {
+				    showStage(0);
+				    return;
+				  }
+
+				  // “다시읽어” 명령
+				  if (txt.includes('쿠킹프리다시읽어')) {
+				    if (currentStage === 2) {
+				      speak($items.eq(stepIdx).find('.step-text').text());
+				    } else {
+				      speak($('#cookfree-text').text());
+				    }
+				    return;
+				  }
+
 			};
 
 			// 음성 제어 버튼 클릭 시 인식 시작
