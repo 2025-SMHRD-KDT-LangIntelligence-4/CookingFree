@@ -1,7 +1,10 @@
 package com.smhrd.web.controller;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -92,34 +88,55 @@ public class MyController {
                 || auth instanceof AnonymousAuthenticationToken
                 || "anonymousUser".equals(auth.getPrincipal());
 
-        // 1) 모든 알러지 키워드 조회
-        List<String> allergyKeywords = boardMapper.selectAllAllergyKeywords();
-
-        // 2) 조회수 기준 상위 레시피 3개 조회
         List<Board> hotRecipes = boardMapper.getTopRecipesByViewCount(3);
-
-        // 3) 로그인 상태일 때만 알러지 키워드로 필터링
-        List<Board> filtered;
         if (isAnonymous) {
-            // 익명 사용자면 필터링 없이 원본 리스트 사용
-            filtered = hotRecipes;
-            logger.info("메인 페이지 (익명) - HOT 레시피 개수: {}", filtered.size());
+            model.addAttribute("hotRecipes", hotRecipes);
+            return "cfMain";
         }
-        else {
-            // 로그인 사용자면 알러지 키워드 필터링
-            filtered = hotRecipes.stream()
-                    .filter(r -> allergyKeywords.stream().noneMatch(kw ->
-                            (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
-                                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
-                                    (r.getTags()        != null && r.getTags().contains(kw))
-                    ))
-                    .collect(Collectors.toList());
-            logger.info("메인 페이지 (로그인) - 필터링 후 HOT 레시피 개수: {}", filtered.size());
+
+        // 로그인 사용자 조회
+        Board user;
+        if (auth instanceof OAuth2AuthenticationToken oauth2) {
+            // OAuth2 로그인
+            String provider = oauth2.getAuthorizedClientRegistrationId();
+            String authType = provider.substring(0,1).toUpperCase();
+            Map<String,Object> attrs = oauth2.getPrincipal().getAttributes();
+
+            // socialId 추출
+            String socialId;
+            if ("google".equals(provider)) {
+                socialId = (String) attrs.get("sub");
+            } else if ("naver".equals(provider)) {
+                socialId = (String) ((Map<?,?>)attrs.get("response")).get("id");
+            } else { // kakao
+                socialId = String.valueOf(attrs.get("id"));
+            }
+            user = boardMapper.selectUserBySocialId(socialId, authType);
+        } else {
+            // 로컬 로그인
+            String email = auth.getName();
+            user = boardMapper.selectUserByEmail(email);
         }
+
+        // 알러지 키워드 분리
+        List<String> allergyKeywords = Optional.ofNullable(user.getAlg_code())
+                .filter(s -> !s.isBlank())
+                .map(s -> Arrays.asList(s.split(",\\s*")))
+                .orElse(Collections.emptyList());
+
+        // 필터링
+        List<Board> filtered = hotRecipes.stream()
+                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                        Optional.ofNullable(r.getRecipe_name()).orElse("").contains(kw) ||
+                                Optional.ofNullable(r.getRecipe_desc()).orElse("").contains(kw) ||
+                                Optional.ofNullable(r.getTags()).orElse("").contains(kw)
+                ))
+                .collect(Collectors.toList());
 
         model.addAttribute("hotRecipes", filtered);
         return "cfMain";
     }
+
 
     @GetMapping("/login")
     public String loginPage() {

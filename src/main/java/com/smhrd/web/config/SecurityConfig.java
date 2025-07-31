@@ -87,9 +87,10 @@ public class SecurityConfig {
 
                 // 신규 회원인 경우 회원가입 폼으로 이동
                 if (existingUser == null) {
+                    String sessionEmail = (email != null && !email.isBlank()) ? email : socialId;
                     session.setAttribute("socialId", socialId);
                     session.setAttribute("authType", authType);
-                    session.setAttribute("email", email != null ? email : "");
+                    session.setAttribute("email", sessionEmail);
 
                     System.out.println("[AuthSuccessHandler] 신규 회원정보 세션저장, /cfJoinform으로 리다이렉트");
                     response.sendRedirect(request.getContextPath() + "/cfJoinform");

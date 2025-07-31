@@ -179,6 +179,9 @@ public class JoinController {
         // 세션이 변경될 수 있으니, 명시적으로 세션에 SecurityContext 저장
         request.getSession(true).setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
         // 8) 회원가입 성공 시 메인 페이지로 리다이렉트
+        session.removeAttribute("socialId");
+        session.removeAttribute("authType");
+        session.removeAttribute("email");
         return "redirect:/cfMain";
     }
 }

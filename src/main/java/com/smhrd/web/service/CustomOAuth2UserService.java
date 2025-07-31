@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -65,7 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (existingUser == null) {
             // 신규 회원은 DB 등록은 성공 핸들러에서 하므로 여기서는 넘어갑니다.
-            System.out.println("[OAuth2UserService] 신규 회원 (DB 등록 성공은 성공핸들러에서)");
+            System.out.println("[OAuth2UserService] 신규 회원정보 세션저장");
         } else {
             System.out.println("[OAuth2UserService] 기존 회원 로그인 socialId=" + socialId);
         }
