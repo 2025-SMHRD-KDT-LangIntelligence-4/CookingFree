@@ -69,11 +69,17 @@
 						<input class="userInfo" type="text" name="prefer_taste"
 							value="${user.prefer_taste}" />
 					</div>
-					<div class="myPage-container">
-						<div class="div1">요리 실력</div>
-						<input class="userInfo" type="text" name="cooking_skill"
-							value="${user.cooking_skill}" />
-					</div>
+						<div class="myPage-container">
+						  	<label style="padding-right: 10%;">요리실력</label> 
+							<input type="radio" id="skill_beginner" name="userCookingSkill" value="초급" checked />
+							<label for="skill_beginner">초급</label>
+							
+							<input type="radio" id="skill_intermediate" name="userCookingSkill" value="중급" />
+							<label for="skill_intermediate">중급</label>
+							
+							<input type="radio" id="skill_advanced" name="userCookingSkill" value="고급" />
+							<label for="skill_advanced">고급</label>
+						</div>
 					<div class="myPage-container">
 						<label for="userAlgCode">보유 알러지</label> <input type="text"
 							id="userAlgCode" class="userAlgCode" name="userAlgCode" readonly />
