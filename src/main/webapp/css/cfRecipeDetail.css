@@ -26,6 +26,10 @@ body{
 	border-bottom: 3px solid gray;
 	padding: 2% 5%;
 }
+.footer{
+    height:200px;
+    background-color: white; /* 푸터가 잘 보이도록 배경색 추가 */
+}
 
 .recipe-image {
 	width: 40%;

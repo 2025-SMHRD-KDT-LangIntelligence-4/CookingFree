@@ -48,9 +48,6 @@
 					<!-- 회원정보 수정 폼 링크 -->
 					<div class="info-container">
 						<div>회원정보</div>
-						<div>
-							<a href="${cpath}/cfMyPageUpdate">회원정보 수정</a>
-						</div>
 					</div>
 
 					<!-- 회원정보 입력 필드들 -->

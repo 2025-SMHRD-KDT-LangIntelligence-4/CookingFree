@@ -488,5 +488,6 @@
 
 
 </script>
+<footer class="footer"></footer>
 </body>
 </html>
