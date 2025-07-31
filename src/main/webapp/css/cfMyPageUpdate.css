@@ -149,11 +149,10 @@ body {
     width: 100%;
     height: 100%; /* 최신 코드 반영 */
     display: flex;
-    justify-content: left;
-    gap: 20%;
     text-align: center;
     align-items: center;
 }
+
 
 @media (max-width: 768px) {
     .myPage-container {
@@ -179,7 +178,13 @@ body {
     width: 30%;
     font-size: 25px;
 }
-
+.myPage-container label {
+    width: 30%;
+    font-size: 25px;
+}
+.myPage-container input {
+	margin:0;	
+}
 .body {
     display: flex;
     justify-content: center;
@@ -221,4 +226,135 @@ button {
     font-size: 3vw;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+/* 알러지 모달 공통 */
+.modal {
+  display: none;               /* 숨김 상태 */
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+.close-button:hover {
+  color: #000;
+}
+
+
+/* 알러지 검색박스 */
+.allergy-search-box {
+  margin-bottom: 15px;
+}
+.allergy-search-box input[type="text"] {
+  all: initial;
+  width: 100% !important;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+
+/* 모달 내부 input 리셋 */
+#allergyModal input {
+  all: unset;
+  box-sizing: border-box;
+}
+
+
+/* 체크박스 컨테이너 */
+.allergy-list-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* 체크박스 아이템 */
+.allergy-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 5px;
+  border-bottom: 1px dashed #eee;
+}
+.allergy-item:last-child {
+  border-bottom: none;
+}
+.allergy-item input[type="checkbox"] {
+  all: initial;
+  width: 18px !important;
+  height: 18px !important;
+  margin-right: 10px !important;
+  appearance: checkbox !important;
+  transform: scale(1.2);
+  box-sizing: border-box;
+}
+.allergy-item label {
+  font-size: 16px;
+  cursor: pointer;
+  flex-grow: 1;
+  white-space: nowrap;
+}
+.allergy-item .allergy-info {
+  font-size: 13px;
+  color: #666;
+  margin-left: 15px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-left: 10px;
+}
+
+
+/* 모달 버튼 그룹 */
+.modal-buttons {
+  text-align: right;
+  margin-top: 15px;
+}
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-left: 10px;
+}
+#selectDoneBtn {
+  background-color: #007bff;
+  color: white;
+}
+#selectDoneBtn:hover {
+  background-color: #0056b3;
+}
+#cancelSelectionBtn {
+  background-color: #6c757d;
+  color: white;
+}
+#cancelSelectionBtn:hover {
+  background-color: #5a6268;
 }

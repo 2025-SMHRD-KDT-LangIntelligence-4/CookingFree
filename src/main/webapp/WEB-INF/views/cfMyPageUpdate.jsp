@@ -75,9 +75,9 @@
 							value="${user.cooking_skill}" />
 					</div>
 					<div class="myPage-container">
-						<div class="div1">보유 알러지</div>
-						<input class="userInfo" type="text" name="alg_code"
-							value="${user.alg_code}" />
+						<label for="userAlgCode">보유 알러지</label> <input type="text"
+							id="userAlgCode" class="userAlgCode" name="userAlgCode" readonly />
+						<button type="button" id="searchAllergyBtn">검색하기</button>
 					</div>
 
 					<!-- 저장 버튼 -->
@@ -93,6 +93,33 @@
 			</div>
 		</div>
 	</div>
+	 <div id="allergyModal" class="modal">
+    <div class="modal-content">
+      <h2>알러지 검색</h2>
+      <div class="allergy-search-box">
+        <input type="text" id="allergySearchInput" placeholder="알러지 검색...">
+      </div>
+      <div id="allergyCheckboxes" class="allergy-list-container">
+        <c:forEach var="alg" items="${allergies}">
+          <div class="allergy-item">
+            <input
+              type="checkbox"
+              id="allergy_${alg.alergy_idx}"
+              name="allergy"
+              value="${alg.alergy_name}"
+              data-allergy-idx="${alg.alergy_idx}"
+              <c:if test="${fn:contains(userAlgCode, alg.alergy_name)}">checked</c:if> />
+            <label for="allergy_${alg.alergy_idx}">${alg.alergy_name}</label>
+            <span class="allergy-info">${alg.alergy_info}</span>
+          </div>
+        </c:forEach>
+      </div>
+      <div class="modal-buttons">
+        <button type="button" id="selectDoneBtn">선택 완료</button>
+        <button type="button" id="cancelSelectionBtn" class="secondary-button">취소</button>
+      </div>
+    </div>
+  </div>
 	<footer class="footer"></footer>
 </body>
 <script>
@@ -100,5 +127,53 @@
 	document.getElementById('logoutBtn').addEventListener('click', function() {
 		document.getElementById('logoutForm').submit();
 	});
+	(function() {
+		  // 1) 요소 참조
+		  var modal          = document.getElementById('allergyModal');
+		  var openBtn        = document.getElementById('searchAllergyBtn');
+		  var cancelBtn      = document.getElementById('cancelSelectionBtn');
+		  var doneBtn        = document.getElementById('selectDoneBtn');
+		  var inputField     = document.getElementById('userAlgCode');
+		  var checkContainer = document.getElementById('allergyCheckboxes');
+		  var searchInput    = document.getElementById('allergySearchInput');
+
+		  // 2) 모달 열고 닫기 핸들러 등록
+		  openBtn.addEventListener('click', function() {
+		    modal.style.display = 'flex';  // CSS에 flex 레이아웃 설정 시
+		    searchInput.value = '';
+		    filterList('');
+		  });
+
+		  cancelBtn.addEventListener('click', function() {
+		    modal.style.display = 'none';
+		  });
+
+		  window.addEventListener('click', function(e) {
+		    if (e.target === modal) {
+		      modal.style.display = 'none';
+		    }
+		  });
+
+		  // 3) 선택 완료
+		  doneBtn.addEventListener('click', function() {
+		    var checked = checkContainer.querySelectorAll('input[type="checkbox"]:checked');
+		    var names = Array.from(checked).map(function(cb) { return cb.value; });
+		    inputField.value = names.join(', ');
+		    modal.style.display = 'none';
+		  });
+
+		  // 4) 검색 필터
+		  searchInput.addEventListener('input', function() {
+		    filterList(this.value.trim().toLowerCase());
+		  });
+
+		  function filterList(term) {
+		    var items = checkContainer.querySelectorAll('.allergy-item');
+		    items.forEach(function(item) {
+		      var text = item.querySelector('label').textContent.toLowerCase();
+		      item.style.display = text.includes(term) ? '' : 'none';
+		    });
+		  }
+		})();
 </script>
 </html>
