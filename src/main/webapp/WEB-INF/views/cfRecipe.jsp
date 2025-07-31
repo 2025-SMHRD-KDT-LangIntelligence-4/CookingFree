@@ -701,6 +701,7 @@ h3 {
         max-width: 90%;
         text-align: center;
         font-size: 15px;
+        left:0 !important;
     }
 
     .review .comment-input {
@@ -825,8 +826,9 @@ h3 {
 							<h3>STEP ${step.step_order}/${steps.size()}</h3>
 							<img
 								src="${not empty step.img ? step.img : cpath + '/upload/default-step.jpg'}"
-								alt="step" />
-							<p class="step-text">${step.cooking_desc}</p>
+								alt="step" 
+								style="width:600px; height:600px; object-fit:cover;"/>
+							<p class="step-text" style="position:relative; left:20%; text-align:center;">${step.cooking_desc}</p>
 						</div>
 					</c:forEach>
 				</div>
