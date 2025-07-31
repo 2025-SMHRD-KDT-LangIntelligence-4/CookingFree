@@ -8,18 +8,17 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        background-color: #f7f7f7;
+        background-color:white;
         margin: 0;
-        padding: 40px;
     }
 
     .form-container {
-        width: 600px;
-        margin: 0 auto;
-        background-color: #ffffff;
+        width: 70%;
+        margin: 5% auto;
         padding: 30px;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background-color:white;
     }
 
     .form-row {
@@ -132,11 +131,67 @@
     .add-detail-btn-container button:hover {
         background-color: #218838;
     }
+    .form-row input{
+ 		width:50% !important;
+    }
+/* GNB */
+.gnb {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #fff;
+  overflow-x: auto;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  gap: 12px;
+}
+.gnb-left a, .gnb-right a {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  text-decoration: none;
+}
+.gnb-center {
+  flex: 0 1 auto;
+  min-width: 80px;
+  margin-left: 30vw;
+  left: 20%;
+  transform: translateX(-50%);
+  position: absolute;
+}
+.logo {
+  font-size: clamp(18px, 4vw, 32px);
+  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  color: #000;
+}
+.gnb-right {
+  display: flex;
+  gap: 12px;
+}
+.icon {
+  width: clamp(18px, 5vw, 36px);
+  height: clamp(18px, 5vw, 36px);
+  min-width: 18px;
+  min-height: 18px;
+  object-fit: contain;
+}
+@media (max-width: 768px) {
+  .gnb {
+    padding: 12px;
+    gap: 8px;
+  }
+  .gnb-right a {
+    margin-left: 6px;
+  }
+}
 
 </style>
 </head>
+<jsp:include page="inc/header.jsp" />
 <body>
-
 
 <div class="form-container">
     <form action="register2" method="post">
@@ -157,7 +212,6 @@
                 <label><input type="radio" name="difficulty" value="high"> 상</label>
                 <label><input type="radio" name="difficulty" value="middle"> 중</label>
                 <label><input type="radio" name="difficulty" value="low"> 하</label>
-                <label><input type="radio" name="difficulty" value="none"> 상관없음</label>
             </div>
         </div>
 
