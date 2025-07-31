@@ -213,6 +213,14 @@
                 <label><input type="radio" name="difficulty" value="middle"> 중</label>
                 <label><input type="radio" name="difficulty" value="low" checked> 하</label>
             </div>
+            <!-- 인라인 요리시간 필드 -->
+            <label for="cookingTime" style="margin: 0 8px 0 0; font-weight: normal;">요리시간</label>
+            <input type="text"
+                   id="cooking_time"
+                   name="cooking_time"
+                   placeholder="예: 30"
+                   style="width: 10px; display: inline-block; margin-right: 4px;" />
+            <span>분</span>
         </div>
 
         <div class="form-row">

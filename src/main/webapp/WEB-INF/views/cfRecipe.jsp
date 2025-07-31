@@ -889,6 +889,35 @@ h3 {
 	<!-- kor-to-number 라이브러리 (한글 수사 → 숫자) -->
 	<script src="https://unpkg.com/kor-to-number@1.1.5/dist/kor-to-number.umd.js"></script>
 	<script>
+
+		// wakelock
+		let wakeLock = null;
+
+		// 화면 꺼짐 방지 요청 함수
+		async function requestWakeLock() {
+			try {
+				wakeLock = await navigator.wakeLock.request("screen");
+				console.log("Wake Lock 획득됨");
+				// 해제 이벤트 리스너 등록
+				wakeLock.addEventListener("release", () => {
+					console.log("Wake Lock 해제됨");
+				});
+			} catch (err) {
+				console.error(`웨이크락 요청 실패: ${err.name}, ${err.message}`);
+			}
+		}
+
+		// 페이지가 보일 때마다 웨이크락 재요청
+		document.addEventListener("visibilitychange", () => {
+			if (document.visibilityState === "visible") {
+				requestWakeLock();
+			}
+		});
+
+		// 페이지 로드 직후 자동 요청
+		window.addEventListener("load", () => {
+			requestWakeLock();
+		});
 		// ──────────────────────────────────────────────────────────────────────────────
 		// 1) TTS(음성 합성) 준비
 		//    - 페이지 로드 시 시스템 음성 목록을 불러와 한국어 음성 선택

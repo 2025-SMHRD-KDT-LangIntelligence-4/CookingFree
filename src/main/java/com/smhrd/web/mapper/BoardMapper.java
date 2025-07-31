@@ -358,8 +358,8 @@ public interface BoardMapper {
      // 레시피 삽입
      
   // 레시피 insert (useGeneratedKeys)
-     @Insert("INSERT INTO cf_recipe (recipe_name, cook_type, recipe_difficulty, servings, recipe_img, recipe_desc, tags, created_at) "
-           + "VALUES (#{recipe_name}, #{cook_type}, #{recipe_difficulty}, #{servings}, #{recipe_img}, #{recipe_desc}, #{tags}, NOW())")
+     @Insert("INSERT INTO cf_recipe (recipe_name, cook_type,user_idx ,recipe_difficulty, servings, recipe_img, cooking_time,recipe_desc, tags, created_at) "
+           + "VALUES (#{recipe_name}, #{cook_type}, #{user_idx}, #{recipe_difficulty}, #{servings}, #{recipe_img},#{cooking_time}, #{recipe_desc}, #{tags}, NOW())")
      @Options(useGeneratedKeys=true, keyProperty="recipe_idx", keyColumn="recipe_idx")
      void insertRecipe(Board recipe);
 

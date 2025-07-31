@@ -493,13 +493,17 @@ public class MyController {
             @RequestParam String writer,
             @RequestParam String difficulty,
             @RequestParam Integer servings,
+            @RequestParam Integer cooking_time,
             @RequestParam("image") MultipartFile imageFile,
             @RequestParam String description,
             @RequestParam String ingredients,
             @RequestParam String tags,
             @RequestParam("details") List<String> details,
-            @RequestParam(value = "stepImages", required = false) List<MultipartFile> stepImages
+            @RequestParam(value = "stepImages", required = false) List<MultipartFile> stepImages,
+            HttpSession session
     ) throws IOException {
+        Integer user_idx = (Integer) session.getAttribute("user_idx");
+
 
         // 1) 업로드 폴더 절대경로 보정 및 생성
         File uploadFolder = new File(baseDir);
@@ -521,6 +525,8 @@ public class MyController {
 
         // 3) 레시피 기본 정보 저장
         Board recipe = Board.builder()
+                .user_idx(user_idx)
+                .cooking_time(cooking_time)
                 .recipe_name(title)
                 .cook_type(writer)
                 .recipe_difficulty(difficulty)
