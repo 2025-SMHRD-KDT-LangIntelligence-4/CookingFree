@@ -8,15 +8,13 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import com.smhrd.web.entity.Board;
-import com.smhrd.web.entity.SearchCriteria;
 
 @Mapper
 public interface BoardMapper {
 	
-	/**
+	/*
 	 * BoardMapper 인터페이스
 	 * 
 	 * MyBatis를 사용한 데이터 액세스 레이어
@@ -38,7 +36,7 @@ public interface BoardMapper {
     
     // ================== 사용자 관리 메서드 ==================
     
-    /**
+    /*
      * 사용자 ID로 사용자 정보를 조회합니다.
      * 
      * 반환되는 Board 객체의 사용자 관련 필드들:
@@ -56,15 +54,15 @@ public interface BoardMapper {
      */
     Board selectUserByIdx(@Param("user_idx") Integer user_idx);
     
-    /**
+    /*
      * 이메일로 사용자를 조회합니다.
      * 
      * @param email 사용자 이메일 주소
      * @return 사용자 정보 (user_idx, auth_type 등 필드 포함)
      */
-    public Board selectUserByEmail(@Param("email") String email);
+     Board selectUserByEmail(@Param("email") String email);
     
-    /**
+    /*
      * 소셜 ID로 사용자를 조회합니다.
      * 
      * @param social_id 소셜 플랫폼에서 제공하는 사용자 고유 ID
@@ -76,7 +74,7 @@ public interface BoardMapper {
 
     // ================== 레시피 관련 메서드==================
     
-    /**
+    /*
      * 레시피 조회수를 1 증가시킵니다.
      * 
      * Board 엔티티의 view_count 필드와 직접 매핑
@@ -85,7 +83,7 @@ public interface BoardMapper {
      */
     void updateRecipeViewCount(@Param("recipe_idx") Integer recipe_idx);
     
-    /**
+    /*
      * 조회수 기준 인기 레시피를 조회합니다.
      * 
      * 반환되는 Board 객체의 레시피 관련 필드들:
@@ -105,17 +103,11 @@ public interface BoardMapper {
      */
     List<Board> getTopRecipesByViewCount(@Param("limit") Integer limit);
     
-    /**
-     * 레시피 ID 목록으로 레시피들을 조회합니다.
-     * 
-     * @param recipe_idx_list 조회할 레시피 ID 목록
-     * @return 해당하는 레시피 목록
-     */
-    List<Board> selectRecipesByIds(@Param("recipe_idx_list") List<Integer> recipe_idx_list);
+
 
     // ================== 리뷰/댓글 시스템 메서드 ==================
     
-    /**
+    /*
      * 레시피에 리뷰(댓글)를 작성합니다.
      * 
      * Board 엔티티의 리뷰 관련 필드들과 매핑:
@@ -137,7 +129,7 @@ public interface BoardMapper {
                            @Param("review_img") String review_img,
                            @Param("super_idx") Integer super_idx);
     
-    /**
+    /*
      * 특정 레시피의 리뷰 목록을 조회합니다.
      * 
      * @param recipe_idx 레시피 ID
@@ -149,7 +141,7 @@ public interface BoardMapper {
                                 @Param("limit") Integer limit,
                                 @Param("offset") Integer offset);
     
-    /**
+    /*
      * 리뷰를 삭제합니다.
      * 
      * @param review_idx 삭제할 리뷰 ID
@@ -158,22 +150,10 @@ public interface BoardMapper {
      */
     int deleteRecipeReview(@Param("review_idx") Integer review_idx,
                           @Param("user_idx") Integer user_idx);
-    
-    /**
-     * 리뷰를 수정합니다.
-     * 
-     * @param review_idx 수정할 리뷰 ID
-     * @param user_idx 수정 요청자 ID (권한 검증용)
-     * @param cmt_content 수정된 리뷰 내용
-     * @return 수정된 행 수
-     */
-    int updateRecipeReview(@Param("review_idx") Integer review_idx,
-                          @Param("user_idx") Integer user_idx,
-                          @Param("cmt_content") String cmt_content);
 
     // ================== 챗봇 시스템 메서드==================
     
-    /**
+    /*
      * 새로운 챗봇 대화 세션을 생성합니다.
      * 
      * Board 엔티티의 챗봇 관련 필드들:
@@ -190,7 +170,7 @@ public interface BoardMapper {
                           @Param("user_idx") Integer user_idx, 
                           @Param("session_type") String session_type);
     
-    /**
+    /*
      * 대화 메시지를 저장합니다.
      * 
      * Board 엔티티의 메시지 관련 필드들:
@@ -217,7 +197,7 @@ public interface BoardMapper {
                           @Param("response_source") String response_source,
                           @Param("message_tokens") Integer message_tokens);
     
-    /**
+    /*
      * 키워드와 유사한 과거 대화를 검색합니다.
      * 
      * 반환되는 Board 객체들에는 다음 필드들이 포함됩니다:
@@ -236,7 +216,7 @@ public interface BoardMapper {
                                         @Param("user_idx") Integer user_idx,
                                         @Param("limit") Integer limit);
     
-    /**
+    /*
      * 사용자별 대화 기록을 조회합니다.
      * 
      * @param user_idx 사용자 ID 
@@ -246,7 +226,7 @@ public interface BoardMapper {
     List<Board> getUserConversationHistory(@Param("user_idx") Integer user_idx,
                                           @Param("limit") Integer limit);
     
-    /**
+    /*
      * 오늘의 OpenAI API 사용량을 조회합니다.
      * 
      * @param date 조회 날짜 (YYYY-MM-DD 형식)
@@ -254,7 +234,7 @@ public interface BoardMapper {
      */
     Integer getTodayApiUsage(@Param("date") String date);
     
-    /**
+    /*
      * 알레르기 정보를 고려한 안전한 레시피를 조회합니다.
      * 
      * 반환되는 Board 객체들의 레시피 필드들:
@@ -270,7 +250,7 @@ public interface BoardMapper {
     List<Board> getAllergyFreeRecipes(@Param("allergy_ids") List<Integer> allergy_ids, 
                                       @Param("limit") Integer limit);
     
-    /**
+    /*
      * 키워드 기반으로 알레르기 안전 레시피를 검색합니다.
      * 
      * 검색 대상 필드들 :
@@ -287,15 +267,7 @@ public interface BoardMapper {
     List<Board> searchAllergyFreeRecipes(@Param("keyword") String keyword,
                                          @Param("allergy_ids") List<Integer> allergy_ids,
                                          @Param("limit") Integer limit);
-    
-    /**
-     * 오래된 대화 메시지를 삭제합니다.
-     * 
-     * message_tokens, created_at 등 필드 기준으로 삭제
-     * 
-     * @param days 보존할 일수 (예: 90일 이전 데이터 삭제)
-     */
-    void deleteOldChatMessages(@Param("days") Integer days);
+
 
 	void updateUserInfo(Board updatedUser);
 
@@ -321,19 +293,9 @@ public interface BoardMapper {
             @Param("recipe_idx") Integer recipe_idx
     );
 
-    /** 특정 단계 조회 */
-    Board getRecipeStep(
-            @Param("recipe_idx") Integer recipe_idx,
-            @Param("step_no")   Integer step_no
-    );
 
-    /** 단계 개수 조회 */
-    int countRecipeSteps(
-            @Param("recipe_idx") Integer recipe_idx
-    );
 
-    void insertReview(Integer recipe_idx, Integer user_idx, String cmt_content, Integer rating);
-    
+
 //    알레르기 조회해놓기
      List<Board> getAllAllergies(); 
      
@@ -343,14 +305,11 @@ public interface BoardMapper {
 
      // 4) 사용자-알러지 매핑 테이블에 다중 insert
      int insertUserAllergies(@Param("user_idx") Integer userIdx, @Param("alergy_idx_list") List<Integer> alergyIdxList);
-     
-     // 위에껀 개쳐망함. 그냥 키워드기반 알레르기 걸러내기용 코드
-     @Select("SELECT keyword FROM allergy_keywords")
-     List<String> selectAllAllergyKeywords();
+
      
   // 1) 사용자별 alergy_idx 리스트 조회
-     @Select("SELECT alergy_idx FROM cf_user_alergy WHERE user_idx = #{userIdx}")
-     List<Integer> getUserAllergyIdxs(@Param("userIdx") Integer userIdx);
+     @Select("SELECT alergy_idx FROM cf_user_alergy WHERE user_idx = #{user_idx}")
+     List<Integer> getUserAllergyIdxs(@Param("user_idx") Integer user_idx);
 
      // 2) allergy_idx 리스트로 동의어 키워드 조회
      List<String> selectKeywordsByAlergyIdxs(@Param("alergyIdxs") List<Integer> alergyIdxs);

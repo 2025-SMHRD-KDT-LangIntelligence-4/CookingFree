@@ -83,7 +83,7 @@
 					<div class="message-bubble">
 						안녕하세요! 알레르기에서 자유로운 레시피를 추천해드리는 쿠킹프리 봇입니다. 😊<br/><br/>
 						• "레시피 추천해줘"<br/>
-						• "/timer" 타이머 기능 이용 가능<br/>
+						• "한식요리" "양식요리"<br/>
 						<div class="source-indicator">시스템</div>
 					</div>
 				</div>

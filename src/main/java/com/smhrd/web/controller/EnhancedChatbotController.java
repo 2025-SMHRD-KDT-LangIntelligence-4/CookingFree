@@ -51,13 +51,13 @@ public class EnhancedChatbotController {
         logger.info("챗봇 페이지 접근");
         return "cfChatbot";
     }
-    
     private List<String> getUserAllergyKeywords(Integer userIdx) {
         if (userIdx == null) return Collections.emptyList();
+        // cf_user_alergy에서 사용자 알러지 인덱스 조회
         List<Integer> idxs = boardMapper.getUserAllergyIdxs(userIdx);
-        return idxs.isEmpty()
-            ? Collections.emptyList()
-            : boardMapper.selectKeywordsByAlergyIdxs(idxs);
+        if (idxs.isEmpty()) return Collections.emptyList();
+        // allergy_keywords 테이블에서 키워드 조회
+        return boardMapper.selectKeywordsByAlergyIdxs(idxs);
     }
     
     private List<Map<String, Object>> convertRecipesToDto(List<Board> recipes) {
@@ -85,102 +85,110 @@ public class EnhancedChatbotController {
             @RequestParam @NotBlank @Size(max = 500) String message,
             HttpSession session) {
 
-        logger.info("챗봇 메시지 처리 시작 - 메시지: {}", message);
+        // 1) 입력 전처리
+        String trimmed = message.trim();
+        System.out.println("DEBUG: trimmed='" + trimmed + "'");
 
-        Integer user_idx = (Integer) session.getAttribute("user_idx");
-        if (user_idx == null) {
-            user_idx = 1;  // 비로그인 기본값
-            logger.warn("비로그인 사용자, 기본 user_idx 사용: {}", user_idx);
+        // 2) 세션에 저장된 마지막 추천 리스트 조회
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> lastRecipes =
+                (List<Map<String, Object>>) session.getAttribute("lastRecipes");
+
+        // 3) 숫자 선택 처리 (가장 먼저)
+        if (trimmed.matches("\\d+") && lastRecipes != null && !lastRecipes.isEmpty()) {
+            int idx = Integer.parseInt(trimmed) - 1;
+            System.out.println("DEBUG: numeric branch idx=" + idx + ", lastRecipes=" + lastRecipes.size());
+            if (idx >= 0 && idx < lastRecipes.size()) {
+                return Map.of(
+                        "success", true,
+                        "redirectUrl", "/recipe/detail/" + lastRecipes.get(idx).get("recipe_idx"),
+                        "source", "selection"
+                );
+            }
         }
 
-        String chat_session_id = ensureSession(session, user_idx);
-        saveChatMessage(chat_session_id, user_idx, "user", message, null, 0);
+        // 4) 챗봇 세션 보장 (최초 한 번만)
+        Integer userIdx = (Integer) session.getAttribute("user_idx");
+        if (userIdx == null) userIdx = 1;
+        String chatSessionId = getOrCreateChatSession(session, userIdx);
 
-        try {
-            Map<String, Object> response;
-            // AI/저장/룰 기반 응답 처리
-            if (canUseOpenAI()) {
-                logger.info("OpenAI 기반 응답 생성 시도");
-                response = processWithAdvancedAI(message, user_idx, chat_session_id);
-            } else {
-                logger.info("AI 호출 불가, 저장된 대화 기반 응답 시도");
-                response = processWithStoredData(message, user_idx, chat_session_id);
-                if (response == null || isFallbackResponse(response)) {
-                    logger.info("저장된 대화 기반 응답 없거나 규칙 기반 폴백");
-                    response = processWithEnhancedRules(message, user_idx, chat_session_id);
-                }
+        // 5) 사용자 메시지 저장
+        saveChatMessage(chatSessionId, userIdx, "user", trimmed, null, 0);
+
+        // 6) AI / 저장대화 / 룰 기반 응답 생성
+        Map<String, Object> response;
+        if (canUseOpenAI()) {
+            response = processWithAdvancedAI(trimmed, userIdx, chatSessionId);
+        } else {
+            response = processWithStoredData(trimmed, userIdx, chatSessionId);
+            if (response == null || isFallbackResponse(response)) {
+                response = processWithEnhancedRules(trimmed, userIdx, chatSessionId);
             }
+        }
 
-            // 세션에 마지막 추천 레시피 리스트 저장
+        // 7) 룰 기반 응답이면 즉시 반환
+        String src = (String) response.get("source");
+        if ("rule".equals(src)) {
+            return response;
+        }
+
+        // 8) 추천 리스트만 세션에 저장 (AI 검색 및 인기추천)
+        if ("openai".equals(src) || "recipe_search".equals(src) || "popular_recipe".equals(src)) {
             @SuppressWarnings("unchecked")
-            List<Map<String,Object>> lastRecipes = null;
-            if (response.containsKey("recipes")) {
-                @SuppressWarnings("unchecked")
-                List<Map<String,Object>> recipes =
-                        (List<Map<String,Object>>) response.get("recipes");
+            List<Map<String,Object>> recipes = (List<Map<String,Object>>) response.get("recipes");
+            if (recipes != null) {
                 session.setAttribute("lastRecipes", recipes);
                 lastRecipes = recipes;
+                System.out.println("DEBUG: saved lastRecipes size=" + recipes.size() + " for source=" + src);
             } else {
-                @SuppressWarnings("unchecked")
-                List<Map<String,Object>> stored =
-                        (List<Map<String,Object>>) session.getAttribute("lastRecipes");
-                if (stored != null) {
-                    lastRecipes = stored;
-                }
+                System.out.println("WARN: response.recipes is null for source=" + src);
             }
-
-            String trimmed = message.trim();
-
-            // 1) 숫자 선택 처리
-            Matcher numberMatcher = Pattern.compile("^(\\d+)(번?)?$").matcher(trimmed);
-            if (numberMatcher.matches() && lastRecipes != null) {
-                int idx = Integer.parseInt(numberMatcher.group(1)) - 1;
-                if (idx >= 0 && idx < lastRecipes.size()) {
-                    Integer ridx = (Integer) lastRecipes.get(idx).get("recipe_idx");
-                    response.put("redirectUrl", "/recipe/detail/" + ridx);
-                    logger.info("숫자 선택으로 리다이렉트 설정: {}", ridx);
-                    return response;
-                }
-            }
-
-            // 2) 이름 일부 매칭 처리
-            if (lastRecipes != null) {
-                List<Map<String,Object>> matches = lastRecipes.stream()
-                        .filter(item -> {
-                            String title = ((String)item.get("title")).toLowerCase();
-                            return title.contains(trimmed.toLowerCase());
-                        })
-                        .collect(Collectors.toList());
-
-                if (matches.size() == 1) {
-                    Integer ridx = (Integer) matches.get(0).get("recipe_idx");
-                    response.put("redirectUrl", "/web/recipe/detail/" + ridx);
-                    logger.info("이름 매칭으로 리다이렉트 설정: {}", ridx);
-                    return response;
-                } else if (matches.size() > 1) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("다음과 같이 \"").append(trimmed)
-                            .append("\"가 포함된 레시피가 있습니다. 번호 또는 정확한 이름을 입력해주세요.\n\n");
-                    for (int i = 0; i < matches.size(); i++) {
-                        sb.append(i + 1).append(". ").append(matches.get(i).get("title")).append("\n");
-                    }
-                    Map<String,Object> disamb = new HashMap<>();
-                    disamb.put("success", true);
-                    disamb.put("message", sb.toString());
-                    disamb.put("source", response.get("source"));
-                    logger.info("이름 중복 매칭 후보 제시: {}개", matches.size());
-                    return disamb;
-                }
-            }
-
-            logger.info("챗봇 응답 생성 완료 - 소스: {}", response.get("source"));
-            return response;
-
-        } catch (Exception e) {
-            logger.error("챗봇 메시지 처리 중 오류", e);
-            return createErrorResponse("죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.");
         }
+
+        // 9) 이름 매칭 처리 (numbers 불일치 시)
+        if (lastRecipes != null && !lastRecipes.isEmpty()
+                && trimmed.matches(".*[가-힣a-zA-Z].*")) {
+            List<Map<String, Object>> matches = lastRecipes.stream()
+                    .filter(item -> ((String)item.get("title"))
+                            .toLowerCase().contains(trimmed.toLowerCase()))
+                    .collect(Collectors.toList());
+            if (matches.size() == 1) {
+                response.put("redirectUrl",
+                        "/recipe/detail/" + matches.get(0).get("recipe_idx"));
+                return response;
+            } else if (matches.size() > 1) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("다음과 같이 \"").append(trimmed)
+                        .append("\"가 포함된 레시피가 있습니다. 번호 또는 정확한 이름을 입력해주세요.\n\n");
+                for (int i = 0; i < matches.size(); i++) {
+                    sb.append(i+1).append(". ")
+                            .append(matches.get(i).get("title")).append("\n");
+                }
+                System.out.println("DEBUG: ambiguous titles=" + matches.size());
+                Map<String, Object> disamb = new HashMap<>();
+                disamb.put("success", true);
+                disamb.put("message", sb.toString());
+                disamb.put("source", src);
+                return disamb;
+            }
+        }
+
+        // 10) 최종 응답 반환
+        return response;
     }
+
+    // 챗봇 세션을 최초 한 번만 생성하는 헬퍼
+    private String getOrCreateChatSession(HttpSession session, Integer userIdx) {
+        String chatSessionId = (String) session.getAttribute("chatSessionId");
+        if (chatSessionId == null) {
+            chatSessionId = UUID.randomUUID().toString();
+            session.setAttribute("chatSessionId", chatSessionId);
+            boardMapper.insertChatSession(chatSessionId, userIdx, "enhanced");
+            System.out.println("DEBUG: created new chatSessionId=" + chatSessionId);
+        }
+        return chatSessionId;
+    }
+
 
 
 
@@ -209,6 +217,12 @@ public class EnhancedChatbotController {
 
     private Map<String, Object> processWithAdvancedAI(String message, Integer user_idx, String session_id) {
         logger.debug("AI 기반 응답 생성 - 사용자: {}, 메시지: {}", user_idx, message);
+
+        if (message.contains("도움") || message.contains("사용법") ||
+                message.contains("안녕") || message.contains("반가")) {
+            // 룰 기반 응답으로 위임
+            return processWithEnhancedRules(message, user_idx, session_id);
+        }
 
         // 1) API 호출 시간 업데이트
         last_api_call_time = LocalDateTime.now();
@@ -592,8 +606,7 @@ public class EnhancedChatbotController {
         }
         
         return "잘 이해하지 못했어요. 😅\n" +
-               "'레시피 추천해줘', '라면 요리법' 등으로 말씀해주세요!\n\n" +
-               "타이머가 필요하시면 '/timer'라고 말씀해주세요! ⏰";
+               "'레시피 추천해줘', '라면 요리법' 등으로 말씀해주세요!\n";
     }
 
     private boolean containsRecipeKeywords(String message) {
