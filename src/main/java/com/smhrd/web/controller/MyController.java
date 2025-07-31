@@ -229,17 +229,25 @@ public class MyController {
             @ModelAttribute Board updatedUser,
             @RequestParam(name = "profileImgFile", required = false) MultipartFile profileImgFile,
             HttpSession session) throws IOException {
-        
+
         Integer userIdx = (Integer) session.getAttribute("user_idx");
         if (userIdx == null) {
             return "redirect:/login";
         }
 
+        // 1) 기존 사용자 정보 조회
+        Board existingUser = boardMapper.selectUserByIdx(userIdx);
+
+        // 2) 새 파일 업로드 여부 판단
         if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            // saveFile 호출 시 subDir에 profileSubDir 사용
+            // 새 이미지 저장
             String imgUrl = saveFile(profileImgFile, profileSubDir);
             updatedUser.setProfile_img(imgUrl);
+        } else {
+            // 파일 미선택 시 기존 이미지 유지
+            updatedUser.setProfile_img(existingUser.getProfile_img());
         }
+
         updatedUser.setUser_idx(userIdx);
         boardMapper.updateUserInfo(updatedUser);
         return "redirect:/cfMyPage";

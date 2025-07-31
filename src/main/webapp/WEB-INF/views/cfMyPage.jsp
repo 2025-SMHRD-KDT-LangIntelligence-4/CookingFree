@@ -20,7 +20,7 @@
         </div>
         <div class="pr-img-container">
             <div class="pr-img" style="margin-left: 10px;" >
-                <img src="${user.profile_img}" onerror="this.onerror=null; this.src='${cpath}/upload/profileDefault.jpg';"/>
+                <img src="${cpath }${user.profile_img}" onerror="this.onerror=null; this.src='${cpath}/upload/profileDefault.jpg';"/>
             </div>
             <div class="name-container">
                 <div class="usernick">${user.nick}<div>등급</div></div>
