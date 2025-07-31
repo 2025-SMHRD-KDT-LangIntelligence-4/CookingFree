@@ -265,7 +265,7 @@
 
         <div class="btn-group">
             <button type="submit">레시피 등록</button>
-            <button type="reset" class="btn-secondary">취소</button>
+           <button type="button" class="btn-secondary" onclick="history.back()">취소</button>
         </div>
     </form>
 </div>
