@@ -195,7 +195,7 @@
 
 <div class="form-container">
     <form action="cfRecipeinsert" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="${_csrf.parameterName}"value="${_csrf.token}" />
+		  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <div class="form-row">
             <label>레시피명</label>
             <input type="text" name="title">
@@ -211,7 +211,7 @@
             <div class="radio-group">
                 <label><input type="radio" name="difficulty" value="high"> 상</label>
                 <label><input type="radio" name="difficulty" value="middle"> 중</label>
-                <label><input type="radio" name="difficulty" value="low"> 하</label>
+                <label><input type="radio" name="difficulty" value="low" checked> 하</label>
             </div>
         </div>
 
@@ -250,13 +250,13 @@
 
         <div class="form-row" style="align-items: flex-start;">
             <label>레시피 상세내용</label>
-            <div id="details-wrapper" style="flex: 1;">
-                <div class="detail-row">
-                    <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
-                    <input type="file" name="image">
-                    <button type="button" class="remove-btn">삭제</button>
-                </div>
-            </div>
+            <div id="details-wrapper">
+			  <div class="detail-row">
+  <textarea name="details" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+  <input type="file" name="stepImages" accept="image/*">
+  <button type="button" class="remove-btn">삭제</button>
+</div>
+			</div>
         </div>
 
         <div class="add-detail-btn-container">
@@ -280,9 +280,9 @@
             const div = document.createElement('div');
             div.className = 'detail-row';
             div.innerHTML = `
-                <textarea name="details[]" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
-                <input type="file" name="image">
-                <button type="button" class="remove-btn">삭제</button>
+            	  <textarea name="details" cols="52" rows="10" placeholder="다음 단계를 입력하세요."></textarea>
+            	  <input type="file" name="stepImages" accept="image/*">
+            	  <button type="button" class="remove-btn">삭제</button>
             `;
             wrapper.appendChild(div);
         });

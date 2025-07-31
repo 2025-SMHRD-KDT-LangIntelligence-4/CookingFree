@@ -144,40 +144,33 @@ public class MyController {
         return "cfRecipe";
     }
 
-    @GetMapping({"/recipe/detail/{recipeIdx}", "/recipe/detail"})
+    @GetMapping("/recipe/detail/{recipeIdx}")
     public String recipeDetail(
-            @PathVariable(value = "recipeIdx", required = false) Integer pathIdx,
-            @RequestParam(value = "recipe_idx", required = false) Integer queryIdx,
+            @PathVariable Integer recipeIdx,
             @RequestParam(defaultValue = "1") int page,
             HttpSession session,
             Model model) {
 
-        // PathVariable 값이 우선, 없으면 queryParam 사용
-        Integer recipeId = (pathIdx != null ? pathIdx : queryIdx);
-        if (recipeId == null) {
-            return "redirect:/cfRecipeIndex";
-        }
-
         // 조회수 증가 (세션 중복 방지)
-        String viewKey = "recipe_view_" + recipeId;
+        String viewKey = "recipe_view_" + recipeIdx;
         if (session.getAttribute(viewKey) == null) {
-            boardMapper.updateRecipeViewCount(recipeId);
+            boardMapper.updateRecipeViewCount(recipeIdx);
             session.setAttribute(viewKey, true);
             session.setMaxInactiveInterval(24 * 60 * 60);
         }
 
         // 레시피 상세 정보 조회
-        Board recipe = boardMapper.getRecipeDetailWithViewCount(recipeId);
+        Board recipe = boardMapper.getRecipeDetailWithViewCount(recipeIdx);
         if (recipe == null) {
             return "redirect:/cfRecipeIndex";
         }
 
         // 리뷰 페이징 처리
         int pageSize = 10;
-        int totalReviews = boardMapper.getRecipeReviewCount(recipeId);
+        int totalReviews = boardMapper.getRecipeReviewCount(recipeIdx);
         int totalPages = (totalReviews + pageSize - 1) / pageSize;
         int offset = (page - 1) * pageSize;
-        List<Board> reviews = boardMapper.getRecipeReviews(recipeId, pageSize, offset);
+        List<Board> reviews = boardMapper.getRecipeReviews(recipeIdx, pageSize, offset);
 
         // 모델에 데이터 바인딩
         model.addAttribute("recipe", recipe);
@@ -189,6 +182,7 @@ public class MyController {
 
         return "cfRecipeDetail";
     }
+
 
 
 
@@ -459,9 +453,12 @@ public class MyController {
             @RequestParam("image") MultipartFile imageFile,
             @RequestParam String description,
             @RequestParam String ingredients,
-            @RequestParam String tags
+            @RequestParam String tags,
+            @RequestParam("details") List<String> details,
+            @RequestParam(value = "stepImages", required = false) List<MultipartFile> stepImages
     ) throws IOException {
-        // 1) 이미지 업로드 (예시: upload 폴더에 저장)
+
+        // 1) 레시피 대표 이미지 저장
         String imgPath = "";
         if (!imageFile.isEmpty()) {
             String filename = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
@@ -470,36 +467,62 @@ public class MyController {
             imgPath = "/upload/" + filename;
         }
 
-        // 2) Board 객체에 레시피 정보 설정
+        // 2) 레시피 기본 정보 저장
         Board recipe = Board.builder()
-            .recipe_name(title)
-            .cook_type(writer)
-            .recipe_difficulty(difficulty)
-            .servings(servings)
-            .recipe_img(imgPath)
-            .recipe_desc(description)
-            .tags(tags)
-            .build();
-
-        // 3) 레시피 저장 (자동 생성된 recipe_idx 반환)
+                .recipe_name(title)
+                .cook_type(writer)
+                .recipe_difficulty(difficulty)
+                .servings(servings)
+                .recipe_img(imgPath)
+                .recipe_desc(description)
+                .tags(tags)
+                .build();
         boardMapper.insertRecipe(recipe);
         Integer recipeIdx = recipe.getRecipe_idx();
 
-        // 4) 재료 저장: textarea 줄 단위 분리, 투입량 1로 고정
+        // 3) 식재료 저장 (기존 로직)
+
         String[] lines = ingredients.split("\\r?\\n");
         for (String line : lines) {
             String ingreName = line.trim();
             if (ingreName.isEmpty()) continue;
-            // 4-1) 식재료 이름으로 ingre_idx 조회(없으면 insert)
             Integer ingreIdx = boardMapper.getIngreIdxByName(ingreName);
             if (ingreIdx == null) {
                 boardMapper.insertIngredient(ingreName);
                 ingreIdx = boardMapper.getIngreIdxByName(ingreName);
             }
-            // 4-2) cf_input 테이블에 매핑
             boardMapper.insertRecipeInput(recipeIdx, ingreIdx, BigDecimal.ONE);
         }
 
-        return "redirect:/cfRecipe?recipe_idx=" + recipeIdx;
+        // 4) 상세 단계 저장
+        if (details != null && !details.isEmpty()) {
+            for (int i = 0; i < details.size(); i++) {
+                String stepDesc = details.get(i).trim();
+                String stepImgPath = "";
+
+                // stepImages가 null이 아니고, 해당 인덱스의 파일이 존재하면 저장
+                if (stepImages != null
+                        && stepImages.size() > i
+                        && stepImages.get(i) != null
+                        && !stepImages.get(i).isEmpty()) {
+
+                    MultipartFile stepImgFile = stepImages.get(i);
+                    String fname = System.currentTimeMillis() + "_" + stepImgFile.getOriginalFilename();
+                    File dst = new File("src/main/webapp/upload/" + fname);
+                    stepImgFile.transferTo(dst);
+                    stepImgPath = "/upload/" + fname;
+                }
+
+                boardMapper.insertRecipeDetail(
+                    recipeIdx,
+                    i + 1,
+                    stepDesc,
+                    stepImgPath
+                );
+            }
+        }
+
+        // 5) 등록 완료 후 상세 페이지로 리다이렉트
+        return "redirect:/recipe/detail/" + recipeIdx;
     }
 }

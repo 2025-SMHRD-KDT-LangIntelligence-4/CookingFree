@@ -39,6 +39,7 @@ public class SecurityConfig {
     @Value("${app.upload.base-dir}")
     private String uploadDir;
 
+    
 
 
     @Bean
@@ -46,6 +47,7 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers("/WEB-INF/**");
     }
+   
 
     // OAuth2 로그인 성공 핸들러 (소셜 로그인 전용)
     @Bean
@@ -172,7 +174,12 @@ public class SecurityConfig {
                 .maximumSessions(1)                                    // 최대 1개 세션만 허용
                 .maxSessionsPreventsLogin(false)                       // 초과 세션 시 새 로그인 허용, 이전 세션 만료
             		)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/cfjoinId"));
+            .csrf(csrf -> csrf
+            		.ignoringRequestMatchers("/cfjoinId")
+            		.ignoringRequestMatchers("/web/cfRecipeinsert")
+            		.ignoringRequestMatchers("/cfRecipeinsert")
+            		.ignoringRequestMatchers("/cfRecipeinsert/**")
+            );
 
         return http.build();
     }

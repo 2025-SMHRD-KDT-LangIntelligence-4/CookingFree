@@ -377,5 +377,14 @@ public interface BoardMapper {
      void insertRecipeInput(@Param("recipeIdx") Integer recipeIdx,
                             @Param("ingreIdx") Integer ingreIdx,
                             @Param("inputAmount") BigDecimal inputAmount);
+     
+     @Insert("INSERT INTO cf_recipe_detail (recipe_idx, step_order, cooking_desc, img, created_at) "
+    	      + "VALUES (#{recipeIdx}, #{stepOrder}, #{cookingDesc}, #{img}, NOW())")
+    	void insertRecipeDetail(
+    	    @Param("recipeIdx") Integer recipeIdx,
+    	    @Param("stepOrder") Integer stepOrder,
+    	    @Param("cookingDesc") String cookingDesc,
+    	    @Param("img") String img
+    	);
 
 }
