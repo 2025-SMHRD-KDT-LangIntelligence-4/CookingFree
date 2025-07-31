@@ -493,7 +493,7 @@ public class MyController {
             @RequestParam String writer,
             @RequestParam String difficulty,
             @RequestParam Integer servings,
-            @RequestParam Integer cooking_time,
+            @RequestParam (value = "cooking_time", required = false) Integer cooking_time,
             @RequestParam("image") MultipartFile imageFile,
             @RequestParam String description,
             @RequestParam String ingredients,
@@ -503,6 +503,7 @@ public class MyController {
             HttpSession session
     ) throws IOException {
         Integer user_idx = (Integer) session.getAttribute("user_idx");
+        if (cooking_time == null) cooking_time = 0;
 
 
         // 1) 업로드 폴더 절대경로 보정 및 생성

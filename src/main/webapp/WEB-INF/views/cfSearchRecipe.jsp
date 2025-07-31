@@ -107,7 +107,18 @@
 
 		// 모달 열기
 		$(document).on('click', '.start-gpt', function() {
-			$('#gptModal').addClass('active');
+			// 서버 세션 초기화
+			fetch(`${cpath}/chatbot/reset`, {
+				method: 'POST',
+				headers: { [csrfHeader]: csrfToken }
+			})
+					.finally(() => {
+						// 클라이언트 상태 초기화
+						lastRecipeList = [];
+						hasSearched = false;
+						// 모달 열기
+						$('#gptModal').addClass('active');
+					});
 		});
 		// 모달 닫기
 		$(document).on('click', '.gpt-close-btn', function() {

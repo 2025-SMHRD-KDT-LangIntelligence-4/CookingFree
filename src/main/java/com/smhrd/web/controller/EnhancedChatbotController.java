@@ -2,6 +2,7 @@ package com.smhrd.web.controller;
 
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,10 @@ public class EnhancedChatbotController {
     private static final int API_CALL_INTERVAL_SECONDS = 20;
 
     @GetMapping("/cfChatbot")
-    public String chatbotPage() {
+    public String chatbotPage(HttpSession session) {
         logger.info("챗봇 페이지 접근");
+        session.removeAttribute("lastRecipes");
+        session.removeAttribute("hasSearched");
         return "cfChatbot";
     }
     private List<String> getUserAllergyKeywords(Integer userIdx) {
@@ -95,17 +98,41 @@ public class EnhancedChatbotController {
                 (List<Map<String, Object>>) session.getAttribute("lastRecipes");
 
         // 3) 숫자 선택 처리 (가장 먼저)
-        if (trimmed.matches("\\d+") && lastRecipes != null && !lastRecipes.isEmpty()) {
+        if (trimmed.matches("\\d+") && Boolean.TRUE.equals(session.getAttribute("hasSearched"))) {
+            logger.debug("Session lastRecipes = {}", lastRecipes);
+            if (lastRecipes == null || lastRecipes.isEmpty()) {
+                Map<String,Object> err = new HashMap<>();
+                err.put("success", true);
+                err.put("message", "먼저 레시피를 검색해주세요.");
+                err.put("source", "error");
+                return err;
+            }
+
             int idx = Integer.parseInt(trimmed) - 1;
-            System.out.println("DEBUG: numeric branch idx=" + idx + ", lastRecipes=" + lastRecipes.size());
-            if (idx >= 0 && idx < lastRecipes.size()) {
-                return Map.of(
-                        "success", true,
-                        "redirectUrl", "/recipe/detail/" + lastRecipes.get(idx).get("recipe_idx"),
-                        "source", "selection"
-                );
+            logger.debug("[레시피 숫자 선택] idx={}, size={}", idx, lastRecipes.size());
+
+            // ===== 추가된 유효성 검증 =====
+            if (idx < 0 || idx >= lastRecipes.size()) {
+                Map<String,Object> err = new HashMap<>();
+                err.put("success", true);
+                err.put("message", String.format("선택 가능한 번호는 1부터 %d까지입니다.", lastRecipes.size()));
+                err.put("source", "error");
+                return err;
+            }
+            // ============================
+
+            Object ridx = lastRecipes.get(idx).get("recipe_idx");
+            if (ridx != null) {
+                Map<String,Object> sel = new HashMap<>();
+                sel.put("success", true);
+                sel.put("redirectUrl", "/recipe/detail/" + ridx);
+                sel.put("source", "selection");
+                return sel;
+            } else {
+                logger.warn("recipe_idx null at index {}", idx);
             }
         }
+
 
         // 4) 챗봇 세션 보장 (최초 한 번만)
         Integer userIdx = (Integer) session.getAttribute("user_idx");
@@ -118,9 +145,9 @@ public class EnhancedChatbotController {
         // 6) AI / 저장대화 / 룰 기반 응답 생성
         Map<String, Object> response;
         if (canUseOpenAI()) {
-            response = processWithAdvancedAI(trimmed, userIdx, chatSessionId);
+            response = processWithAdvancedAI(trimmed, userIdx, chatSessionId, session);
         } else {
-            response = processWithStoredData(trimmed, userIdx, chatSessionId);
+            response = processWithStoredData(trimmed, userIdx, chatSessionId, session);
             if (response == null || isFallbackResponse(response)) {
                 response = processWithEnhancedRules(trimmed, userIdx, chatSessionId);
             }
@@ -136,12 +163,25 @@ public class EnhancedChatbotController {
         if ("openai".equals(src) || "recipe_search".equals(src) || "popular_recipe".equals(src)) {
             @SuppressWarnings("unchecked")
             List<Map<String,Object>> recipes = (List<Map<String,Object>>) response.get("recipes");
-            if (recipes != null) {
+            // ===== 수정 전 코드 (주석 처리) =====
+            // if (recipes != null && !recipes.isEmpty()) {
+            //     session.setAttribute("lastRecipes", recipes);
+            //     session.setAttribute("hasSearched", true);
+            //     logger.debug("saved lastRecipes size={} for source={}", recipes.size(), src);
+            // } else {
+            //     logger.warn("no recipes to save for source={}. keeping previous lastRecipes", src);
+            // }
+            // ====================================
+
+            // ===== 수정 후 코드 (추가) =====
+            if (recipes != null && !recipes.isEmpty()) {
                 session.setAttribute("lastRecipes", recipes);
-                lastRecipes = recipes;
-                System.out.println("DEBUG: saved lastRecipes size=" + recipes.size() + " for source=" + src);
+                session.setAttribute("hasSearched", true);
+                logger.debug("saved lastRecipes size={} for source={}", recipes.size(), src);
             } else {
-                System.out.println("WARN: response.recipes is null for source=" + src);
+                // fallback 목록으로 덮어쓰지 않고 안내만
+                response.put("message",
+                        "죄송해요, 추천할 레시피가 없습니다. 다른 키워드를 입력하거나, 목록 번호를 다시 선택해주세요.");
             }
         }
 
@@ -211,11 +251,13 @@ public class EnhancedChatbotController {
     @ResponseBody
     public Map<String, Object> resetChatContext(HttpSession session) {
         logger.info("챗봇 대화 세션 초기화 요청");
-        session.invalidate();
+        // 기존 세션 속성만 제거
+        session.removeAttribute("lastRecipes");
+        session.removeAttribute("hasSearched");
         return createSuccessResponse("새로운 대화를 시작합니다! 🤖", "system");
     }
 
-    private Map<String, Object> processWithAdvancedAI(String message, Integer user_idx, String session_id) {
+    private Map<String, Object> processWithAdvancedAI(String message, Integer user_idx, String session_id,HttpSession session) {
         logger.debug("AI 기반 응답 생성 - 사용자: {}, 메시지: {}", user_idx, message);
 
         if (message.contains("도움") || message.contains("사용법") ||
@@ -262,32 +304,43 @@ public class EnhancedChatbotController {
         result.put("success", true);
         result.put("message", responseMessage);
         result.put("source", "openai");
-        result.put("recipes", convertRecipesToDto(recipes));
+
+// 레시피 DTO (빈 리스트 허용)
+        List<Map<String,Object>> dto = convertRecipesToDto(recipes == null ? Collections.emptyList() : recipes);
+        result.put("recipes", dto);
+
+// 빈 결과인 경우라도 바로 fallback 인기레시피를 세션에 저장
+        if (recipes == null || recipes.isEmpty()) {
+            List<Board> fallback = boardMapper.getAllergyFreeRecipes(getUserAllergyIds(user_idx), 5);
+            List<Map<String,Object>> fallbackDto = convertRecipesToDto(fallback);
+            session.setAttribute("lastRecipes", fallbackDto);
+            session.setAttribute("hasSearched", true);
+            logger.debug("openai empty->saved fallback lastRecipes size={}", fallbackDto.size());
+        }
 
         return result;
     }
-
-    private Map<String, Object> processWithStoredData(String message, Integer user_idx, String session_id) {
+    private Map<String, Object> processWithStoredData(String message, Integer user_idx, String session_id, HttpSession session) {
         // 1) 형태소 분석(명사 추출)
         CharSequence normalized = OpenKoreanTextProcessorJava.normalize(message);
         Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize(normalized);
         List<String> nouns = OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).stream()
-            .filter(tok -> tok.matches("[가-힣]+"))
-            .collect(Collectors.toList());
+                .filter(tok -> tok.matches("[가-힣]+"))
+                .collect(Collectors.toList());
 
         // 2) 저장된 대화(TF-IDF+코사인 유사도) 검색
         if (!nouns.isEmpty()) {
             List<Board> history = boardMapper.getUserConversationHistory(user_idx, 50);
-            
+
             List<List<String>> docs = history.stream()
-                .map(Board::getUser_message)
-                .filter(Objects::nonNull)
-                .map(text -> {
-                    CharSequence norm = OpenKoreanTextProcessorJava.normalize(text);
-                    Seq<KoreanTokenizer.KoreanToken> toks = OpenKoreanTextProcessorJava.tokenize(norm);
-                    return OpenKoreanTextProcessorJava.tokensToJavaStringList(toks);
-                })
-                .collect(Collectors.toList());
+                    .map(Board::getUser_message)
+                    .filter(Objects::nonNull)
+                    .map(text -> {
+                        CharSequence norm = OpenKoreanTextProcessorJava.normalize(text);
+                        Seq<KoreanTokenizer.KoreanToken> toks = OpenKoreanTextProcessorJava.tokenize(norm);
+                        return OpenKoreanTextProcessorJava.tokensToJavaStringList(toks);
+                    })
+                    .collect(Collectors.toList());
 
             Set<String> vocabSet = new HashSet<>();
             docs.forEach(vocabSet::addAll);
@@ -378,44 +431,48 @@ public class EnhancedChatbotController {
         // 6) 레시피 필터링
         if (!allergyKeywords.isEmpty() && !recipes.isEmpty()) {
             recipes = recipes.stream()
-                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
-                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
-                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
-                    (r.getTags()        != null && r.getTags().contains(kw))
-                ))
-                .collect(Collectors.toList());
+                    .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                            (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                                    (r.getTags() != null && r.getTags().contains(kw))
+                    ))
+                    .collect(Collectors.toList());
         }
 
         // 7) 맞춤 레시피 응답
         if (!recipes.isEmpty()) {
-            StringBuilder response = new StringBuilder();
-            response.append(String.format("'%s' 관련 맞춤 레시피를 추천해드릴게요!\n\n", foodKeyword));
-            formatRecipeList(response, recipes);
-            saveChatMessage(session_id, user_idx, "bot", response.toString(), "recipe_search", 0);
-            return createSuccessResponse(response.toString(), "recipe_search");
+            StringBuilder responseMsg = new StringBuilder();
+            responseMsg.append(String.format("'%s' 관련 맞춤 레시피를 추천해드릴게요!\n\n", foodKeyword));
+            formatRecipeList(responseMsg, recipes);
+            saveChatMessage(session_id, user_idx, "bot", responseMsg.toString(), "recipe_search", 0);
+
+            // 결과 맵 구성 (recipes 필드 추가)
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("message", responseMsg.toString());
+            result.put("source", "recipe_search");
+            result.put("recipes", convertRecipesToDto(recipes));
+            session.setAttribute("hasSearched", true);
+            return result;
         }
 
         // 8) 인기 레시피 추천 (알레르기 필터링 포함)
         List<Board> popularRecipes = boardMapper.getAllergyFreeRecipes(allergyIds, 5);
-        if (!allergyKeywords.isEmpty()) {
-            popularRecipes = popularRecipes.stream()
-                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
-                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
-                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
-                    (r.getTags()        != null && r.getTags().contains(kw))
-                ))
-                .collect(Collectors.toList());
-        }
+// ...필터링 로직...
+        StringBuilder popMsg = new StringBuilder("알레르기를 고려한 인기 레시피를 추천해드릴게요!\n\n");
+        formatRecipeList(popMsg, popularRecipes);
+        saveChatMessage(session_id, user_idx, "bot", popMsg.toString(), "popular_recipe", 0);
 
-        StringBuilder response = new StringBuilder();
-        response.append("알레르기를 고려한 인기 레시피를 추천해드릴게요!\n\n");
-        formatRecipeList(response, popularRecipes);
-        saveChatMessage(session_id, user_idx, "bot", response.toString(), "popular_recipe", 0);
-        return createSuccessResponse(response.toString(), "popular_recipe");
+// 결과 맵 구성
+        Map<String, Object> popResult = new HashMap<>();
+        popResult.put("success", true);
+        popResult.put("message", popMsg.toString());
+        popResult.put("source", "popular_recipe");
+        popResult.put("recipes", convertRecipesToDto(popularRecipes));
+        session.setAttribute("hasSearched", true);
+        return popResult;
+
     }
-
-
-
 
 
     private Map<String, Object> processWithEnhancedRules(String message, Integer user_idx, String session_id) {
