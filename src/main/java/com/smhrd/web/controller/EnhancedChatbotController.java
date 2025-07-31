@@ -52,6 +52,14 @@ public class EnhancedChatbotController {
         return "cfChatbot";
     }
     
+    private List<String> getUserAllergyKeywords(Integer userIdx) {
+        if (userIdx == null) return Collections.emptyList();
+        List<Integer> idxs = boardMapper.getUserAllergyIdxs(userIdx);
+        return idxs.isEmpty()
+            ? Collections.emptyList()
+            : boardMapper.selectKeywordsByAlergyIdxs(idxs);
+    }
+    
     private List<Map<String, Object>> convertRecipesToDto(List<Board> recipes) {
         return recipes.stream()
             .map(r -> {
@@ -202,25 +210,45 @@ public class EnhancedChatbotController {
     private Map<String, Object> processWithAdvancedAI(String message, Integer user_idx, String session_id) {
         logger.debug("AI 기반 응답 생성 - 사용자: {}, 메시지: {}", user_idx, message);
 
+        // 1) API 호출 시간 업데이트
         last_api_call_time = LocalDateTime.now();
+
+        // 2) AI용 응답 메시지 생성
         String responseMessage = generateAdvancedRecipeRecommendation(message, user_idx);
 
-        // 음식 키워드 추출, 알레르기 목록 조회
+        // 3) 음식 키워드 추출 및 사용자 알레르기 ID 목록 조회
         String foodKeyword = extractFoodKeyword(message);
         List<Integer> allergyIds = getUserAllergyIds(user_idx);
-        List<Board> recipes = Collections.emptyList();
 
+        // 4) 레시피 조회
+        List<Board> recipes = Collections.emptyList();
         if (foodKeyword != null && !foodKeyword.isBlank()) {
             recipes = boardMapper.searchAllergyFreeRecipes(foodKeyword, allergyIds, 5);
         }
 
+        // 5) 사용자 알레르기 키워드 리스트 조회
+        List<String> allergyKeywords = getUserAllergyKeywords(user_idx);
+
+        // 6) 레시피 필터링: 키워드가 포함된 레시피 제외
+        if (!allergyKeywords.isEmpty() && !recipes.isEmpty()) {
+            recipes = recipes.stream()
+                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                    (r.getTags()        != null && r.getTags().contains(kw))
+                ))
+                .collect(Collectors.toList());
+        }
+
+        // 7) 챗봇 메시지 저장
         saveChatMessage(session_id, user_idx, "bot", responseMessage, "openai", estimateTokens(responseMessage));
 
+        // 8) 결과 맵 구성
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
         result.put("message", responseMessage);
         result.put("source", "openai");
-        result.put("recipes", convertRecipesToDto(recipes)); // 레시피 리스트 포함
+        result.put("recipes", convertRecipesToDto(recipes));
 
         return result;
     }
@@ -236,7 +264,7 @@ public class EnhancedChatbotController {
         // 2) 저장된 대화(TF-IDF+코사인 유사도) 검색
         if (!nouns.isEmpty()) {
             List<Board> history = boardMapper.getUserConversationHistory(user_idx, 50);
-
+            
             List<List<String>> docs = history.stream()
                 .map(Board::getUser_message)
                 .filter(Objects::nonNull)
@@ -315,24 +343,56 @@ public class EnhancedChatbotController {
             }
         }
 
-        // 4) 저장된 대화 없거나 임계치 미만일 경우 DB에서 키워드 기반 레시피 검색
+        // 4) 키워드 기반 레시피 검색
         String foodKeyword = extractFoodKeyword(message);
         List<Integer> allergyIds = getUserAllergyIds(user_idx);
+        List<Board> recipes = Collections.emptyList();
 
         if (foodKeyword != null && !foodKeyword.isBlank()) {
-            List<Board> recipes = boardMapper.searchAllergyFreeRecipes(foodKeyword, allergyIds, 5);
-
-            if (!recipes.isEmpty()) {
-                StringBuilder response = new StringBuilder();
-                response.append(String.format("'%s' 관련 맞춤 레시피를 추천해드릴게요!\n\n", foodKeyword));
-                formatRecipeList(response, recipes);
-                saveChatMessage(session_id, user_idx, "bot", response.toString(), "recipe_search", 0);
-                return createSuccessResponse(response.toString(), "recipe_search");
-            }
+            recipes = boardMapper.searchAllergyFreeRecipes(foodKeyword, allergyIds, 5);
         }
 
-        // 5) 그래도 검색 결과 없으면 인기 레시피 추천
+        // 5) 사용자 알레르기 키워드 조회
+        final List<String> allergyKeywords;
+        if (user_idx != null) {
+            List<Integer> idxs = boardMapper.getUserAllergyIdxs(user_idx);
+            allergyKeywords = boardMapper.selectKeywordsByAlergyIdxs(idxs);
+        } else {
+            allergyKeywords = Collections.emptyList();
+        }
+
+        // 6) 레시피 필터링
+        if (!allergyKeywords.isEmpty() && !recipes.isEmpty()) {
+            recipes = recipes.stream()
+                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                    (r.getTags()        != null && r.getTags().contains(kw))
+                ))
+                .collect(Collectors.toList());
+        }
+
+        // 7) 맞춤 레시피 응답
+        if (!recipes.isEmpty()) {
+            StringBuilder response = new StringBuilder();
+            response.append(String.format("'%s' 관련 맞춤 레시피를 추천해드릴게요!\n\n", foodKeyword));
+            formatRecipeList(response, recipes);
+            saveChatMessage(session_id, user_idx, "bot", response.toString(), "recipe_search", 0);
+            return createSuccessResponse(response.toString(), "recipe_search");
+        }
+
+        // 8) 인기 레시피 추천 (알레르기 필터링 포함)
         List<Board> popularRecipes = boardMapper.getAllergyFreeRecipes(allergyIds, 5);
+        if (!allergyKeywords.isEmpty()) {
+            popularRecipes = popularRecipes.stream()
+                .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                    (r.getTags()        != null && r.getTags().contains(kw))
+                ))
+                .collect(Collectors.toList());
+        }
+
         StringBuilder response = new StringBuilder();
         response.append("알레르기를 고려한 인기 레시피를 추천해드릴게요!\n\n");
         formatRecipeList(response, popularRecipes);
@@ -356,7 +416,13 @@ public class EnhancedChatbotController {
      * 키워드를 기반으로 알레르기 고려해 레시피 추천
      */
     private String generateAdvancedRecipeRecommendation(String message, Integer user_idx) {
+        // 1) 사용자 알러지 ID 및 키워드 조회
         List<Integer> allergy_ids = getUserAllergyIds(user_idx);
+        final List<String> allergyKeywords = (user_idx != null)
+            ? boardMapper.selectKeywordsByAlergyIdxs(allergy_ids)
+            : Collections.emptyList();
+
+        // 2) 음식 키워드 추출
         String food_keyword = extractFoodKeyword(message);
 
         StringBuilder response = new StringBuilder();
@@ -365,11 +431,24 @@ public class EnhancedChatbotController {
         if (food_keyword != null) {
             response.append(String.format("'%s' 관련 맞춤 레시피를 추천해드릴게요!\n\n", food_keyword));
 
+            // 3) 키워드 기반 레시피 조회
             List<Board> recipes = boardMapper.searchAllergyFreeRecipes(food_keyword, allergy_ids, 5);
             if (recipes.isEmpty()) {
                 recipes = findSimilarRecipes(food_keyword, allergy_ids);
             }
 
+            // 4) 알러지 키워드 필터링
+            if (!allergyKeywords.isEmpty() && !recipes.isEmpty()) {
+                recipes = recipes.stream()
+                    .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                        (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                        (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                        (r.getTags()        != null && r.getTags().contains(kw))
+                    ))
+                    .collect(Collectors.toList());
+            }
+
+            // 5) 결과 구성
             if (!recipes.isEmpty()) {
                 formatRecipeList(response, recipes);
             } else {
@@ -381,6 +460,18 @@ public class EnhancedChatbotController {
             // 키워드 없는 경우에는 인기 레시피 추천
             response.append("알레르기를 고려한 인기 레시피를 추천해드릴게요!\n\n");
             List<Board> recipes = boardMapper.getAllergyFreeRecipes(allergy_ids, 5);
+
+            // 알러지 키워드 필터링
+            if (!allergyKeywords.isEmpty()) {
+                recipes = recipes.stream()
+                    .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                        (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                        (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                        (r.getTags()        != null && r.getTags().contains(kw))
+                    ))
+                    .collect(Collectors.toList());
+            }
+
             formatRecipeList(response, recipes);
         }
 

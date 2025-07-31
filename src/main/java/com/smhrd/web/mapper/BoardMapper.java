@@ -340,4 +340,15 @@ public interface BoardMapper {
 
      // 4) 사용자-알러지 매핑 테이블에 다중 insert
      int insertUserAllergies(@Param("user_idx") Integer userIdx, @Param("alergy_idx_list") List<Integer> alergyIdxList);
+     
+     // 위에껀 개쳐망함. 그냥 키워드기반 알레르기 걸러내기용 코드
+     @Select("SELECT keyword FROM allergy_keywords")
+     List<String> selectAllAllergyKeywords();
+     
+  // 1) 사용자별 alergy_idx 리스트 조회
+     @Select("SELECT alergy_idx FROM cf_user_alergy WHERE user_idx = #{userIdx}")
+     List<Integer> getUserAllergyIdxs(@Param("userIdx") Integer userIdx);
+
+     // 2) allergy_idx 리스트로 동의어 키워드 조회
+     List<String> selectKeywordsByAlergyIdxs(@Param("alergyIdxs") List<Integer> alergyIdxs);
 }

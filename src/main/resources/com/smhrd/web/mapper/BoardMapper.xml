@@ -319,5 +319,23 @@
 		FROM cf_alergy
 		ORDER BY alergy_idx;
 	</select>
+	
+	<select id="selectKeywordsByAlergyIdxs" parameterType="list" resultType="string">
+  SELECT keyword
+  FROM allergy_keywords
+  <where>
+    <!-- alergyIdxs가 있을 때만 IN 절 사용 -->
+    <if test="alergyIdxs != null and alergyIdxs.size() > 0">
+      alergy_idx IN
+      <foreach item="idx" collection="alergyIdxs" open="(" separator="," close=")">
+        #{idx}
+      </foreach>
+    </if>
+    <!-- 없으면 항상 false 처리로 빈 리스트 반환 -->
+    <if test="alergyIdxs == null or alergyIdxs.size() == 0">
+      1 = 0
+    </if>
+  </where>
+</select>
 
 </mapper>

@@ -77,16 +77,29 @@ public class MyController {
 
 
     @GetMapping({ "/", "/cfMain" })
-    public String mainPage(Model model,HttpServletRequest request) {
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        HttpSession session = request.getSession(false);
+    public String mainPage(Model model, HttpServletRequest request, HttpSession session) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("[cfMain] Session ID: {}", session != null ? session.getId() : "null");
-        logger.debug("[cfMain] Authentication: {}, authenticated={}", auth, auth != null ? auth.isAuthenticated() : "null");
-        // 조회수 기준 상위 레시피 3개 조회
-        List<Board> hotRecipes = boardMapper.getTopRecipesByViewCount(3);
-        model.addAttribute("hotRecipes", hotRecipes);
+        logger.debug("[cfMain] Authentication: {}, authenticated={}", auth,
+            auth != null ? auth.isAuthenticated() : "null");
 
-        logger.info("메인 페이지 - HOT 레시피 개수: {}", hotRecipes.size());
+        // 1) 모든 알러지 키워드 조회
+        List<String> allergyKeywords = boardMapper.selectAllAllergyKeywords();
+
+        // 2) 조회수 기준 상위 레시피 3개 조회
+        List<Board> hotRecipes = boardMapper.getTopRecipesByViewCount(3);
+
+        // 3) 알러지 키워드 필터링
+        List<Board> filtered = hotRecipes.stream()
+            .filter(r -> allergyKeywords.stream().noneMatch(kw ->
+                (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                (r.getTags()        != null && r.getTags().contains(kw))
+            ))
+            .collect(Collectors.toList());
+
+        model.addAttribute("hotRecipes", filtered);
+        logger.info("메인 페이지 - 필터링 후 HOT 레시피 개수: {}", filtered.size());
         return "cfMain";
     }
 
@@ -257,23 +270,75 @@ public class MyController {
 
 
     @GetMapping("/cfRecipeIndex")
-    public String cfRecipeIndex(Model model) {
-        // 조회수 기준으로 정렬된 레시피 목록 조회
-        List<Board> recipeList = boardMapper.getRecipesSortedByViewCount(20);
-        model.addAttribute("recipeList", recipeList);
+    public String cfRecipeIndex(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Integer userIdx = (session != null) ? (Integer) session.getAttribute("user_idx") : null;
+
+        // final 혹은 effectively final 키워드 리스트 선언
+        final List<String> keywords;
+        if (userIdx != null) {
+            List<Integer> allergyIdxs = boardMapper.getUserAllergyIdxs(userIdx);
+            keywords = boardMapper.selectKeywordsByAlergyIdxs(allergyIdxs);
+        } else {
+            keywords = Collections.emptyList();
+        }
+
+        List<Board> recipes = boardMapper.getRecipesSortedByViewCount(20);
+
+        // 람다에서 참조할 때 keywords 가 변경되지 않으므로 effectively final
+        List<Board> filtered = keywords.isEmpty()
+            ? recipes
+            : recipes.stream()
+                .filter(r -> keywords.stream().noneMatch(kw ->
+                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                    (r.getTags()        != null && r.getTags().contains(kw))
+                ))
+                .collect(Collectors.toList());
+
+        model.addAttribute("recipeList", filtered);
         return "cfRecipeIndex";
     }
 
     @PostMapping("/searchRecipe")
-    public String searchRecipe(@RequestParam("searchText") String keyword, Model model) {
-        // 알레르기 제외 검색(필요시 allergyIds 구하기)
-        List<Integer> allergyIds = Collections.emptyList();
-        // 키워드+알레르기 제외 레시피 조회
-        List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, allergyIds, 50);
-        model.addAttribute("searchResults", results);
+    public String searchRecipe(
+            @RequestParam("searchText") String keyword,
+            HttpServletRequest request,
+            Model model) {
+
+        // 1) 세션에서 사용자 식별자 가져오기
+        HttpSession session = request.getSession(false);
+        Integer userIdx = (session != null) ? (Integer) session.getAttribute("user_idx") : null;
+
+        // 2) final 키워드 리스트 선언 및 초기화
+        final List<String> keywords;
+        if (userIdx != null) {
+            List<Integer> allergyIdxs = boardMapper.getUserAllergyIdxs(userIdx);
+            keywords = boardMapper.selectKeywordsByAlergyIdxs(allergyIdxs);
+        } else {
+            keywords = Collections.emptyList();
+        }
+
+        // 3) 키워드 기반 레시피 검색
+        List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, Collections.emptyList(), 50);
+
+        // 4) 알러지 키워드가 있을 때만 필터링
+        List<Board> filtered = keywords.isEmpty()
+            ? results
+            : results.stream()
+                .filter(r -> keywords.stream().noneMatch(kw ->
+                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
+                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
+                    (r.getTags()        != null && r.getTags().contains(kw))
+                ))
+                .collect(Collectors.toList());
+
+        // 5) 모델에 결과 바인딩
+        model.addAttribute("searchResults", filtered);
         model.addAttribute("searchText", keyword);
-        return "cfSearchRecipe";  // 같은 JSP에서 결과 렌더링
+        return "cfSearchRecipe";
     }
+
 
 
 
