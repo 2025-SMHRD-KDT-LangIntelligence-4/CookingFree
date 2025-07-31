@@ -34,6 +34,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.ServletContext;
+
 import com.smhrd.web.entity.Board;
 import com.smhrd.web.mapper.BoardMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +52,9 @@ public class MyController {
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Autowired
+    private ServletContext servletContext;
 
     @Value("${spring.servlet.multipart.location:}")
     private String multipartLocation;
@@ -443,7 +449,10 @@ public class MyController {
     }
     
     // 레시피등록
-    
+
+    @Value("${app.upload.base-dir}")
+    private String baseDir; // "src/main/webapp/upload" 값이 주입됨
+
     @PostMapping("/cfRecipeinsert")
     public String insertRecipe(
             @RequestParam String title,
@@ -458,16 +467,25 @@ public class MyController {
             @RequestParam(value = "stepImages", required = false) List<MultipartFile> stepImages
     ) throws IOException {
 
-        // 1) 레시피 대표 이미지 저장
+        // 1) 업로드 폴더 절대경로 보정 및 생성
+        File uploadFolder = new File(baseDir);
+        if (!uploadFolder.isAbsolute()) {
+            uploadFolder = new File(System.getProperty("user.dir"), baseDir);
+        }
+        if (!uploadFolder.exists()) {
+            uploadFolder.mkdirs();
+        }
+
+        // 2) 레시피 대표 이미지 저장
         String imgPath = "";
         if (!imageFile.isEmpty()) {
             String filename = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-            File dest = new File("src/main/webapp/upload/" + filename);
+            File dest = new File(uploadFolder, filename);
             imageFile.transferTo(dest);
             imgPath = "/upload/" + filename;
         }
 
-        // 2) 레시피 기본 정보 저장
+        // 3) 레시피 기본 정보 저장
         Board recipe = Board.builder()
                 .recipe_name(title)
                 .cook_type(writer)
@@ -480,8 +498,7 @@ public class MyController {
         boardMapper.insertRecipe(recipe);
         Integer recipeIdx = recipe.getRecipe_idx();
 
-        // 3) 식재료 저장 (기존 로직)
-
+        // 4) 식재료 저장
         String[] lines = ingredients.split("\\r?\\n");
         for (String line : lines) {
             String ingreName = line.trim();
@@ -494,13 +511,12 @@ public class MyController {
             boardMapper.insertRecipeInput(recipeIdx, ingreIdx, BigDecimal.ONE);
         }
 
-        // 4) 상세 단계 저장
+        // 5) 상세 단계 저장
         if (details != null && !details.isEmpty()) {
             for (int i = 0; i < details.size(); i++) {
                 String stepDesc = details.get(i).trim();
                 String stepImgPath = "";
 
-                // stepImages가 null이 아니고, 해당 인덱스의 파일이 존재하면 저장
                 if (stepImages != null
                         && stepImages.size() > i
                         && stepImages.get(i) != null
@@ -508,21 +524,21 @@ public class MyController {
 
                     MultipartFile stepImgFile = stepImages.get(i);
                     String fname = System.currentTimeMillis() + "_" + stepImgFile.getOriginalFilename();
-                    File dst = new File("src/main/webapp/upload/" + fname);
-                    stepImgFile.transferTo(dst);
+                    File dest = new File(uploadFolder, fname);
+                    stepImgFile.transferTo(dest);
                     stepImgPath = "/upload/" + fname;
                 }
 
                 boardMapper.insertRecipeDetail(
-                    recipeIdx,
-                    i + 1,
-                    stepDesc,
-                    stepImgPath
+                        recipeIdx,
+                        i + 1,      // step_order
+                        stepDesc,
+                        stepImgPath
                 );
             }
         }
 
-        // 5) 등록 완료 후 상세 페이지로 리다이렉트
+        // 6) 리다이렉트
         return "redirect:/recipe/detail/" + recipeIdx;
     }
 }
