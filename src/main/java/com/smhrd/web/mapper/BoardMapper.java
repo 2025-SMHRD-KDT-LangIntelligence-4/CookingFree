@@ -387,4 +387,6 @@ public interface BoardMapper {
     	    @Param("img") String img
     	);
 
+
+
 }

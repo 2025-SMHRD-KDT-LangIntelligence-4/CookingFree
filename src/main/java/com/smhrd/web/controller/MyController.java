@@ -225,6 +225,11 @@ public class MyController {
         }
         Board user = boardMapper.selectUserByIdx(userIdx);
         model.addAttribute("user", user);
+
+        // 추가: 알러지 목록 조회
+        List<Board> allergies = boardMapper.getAllAllergies();
+        model.addAttribute("allergies", allergies);
+
         return "cfMyPageUpdate";
     }
 
@@ -252,6 +257,7 @@ public class MyController {
     @PostMapping("/mypageUpdate")
     public String updateUserInfo(
             @ModelAttribute Board updatedUser,
+            @RequestParam(name = "alg_code", required = false) String algCode,
             @RequestParam(name = "profileImgFile", required = false) MultipartFile profileImgFile,
             HttpSession session) throws IOException {
 

@@ -99,4 +99,6 @@ public class Board {
     private String user_message;     // 사용자 메시지 (검색 시 사용) ✅ NEW
     private String bot_response;     // 봇 응답 (검색 시 사용) ✅ NEW
     private String author_nick;      // 작성자 닉네임 (JOIN 시 사용) ✅ NEW
+
+
 }

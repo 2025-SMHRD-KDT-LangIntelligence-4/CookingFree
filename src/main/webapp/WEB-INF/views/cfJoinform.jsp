@@ -62,7 +62,11 @@
 
 				<div class="create-user">
 					<label for="userAlgCode">보유 알러지</label> <input type="text"
-						id="userAlgCode" class="userAlgCode" name="userAlgCode" readonly />
+						id="userAlgCode" class="userAlgCode" name="userAlgCode"  value="${user.alg_code}" readonly />
+					<input type="hidden"
+						   id="userAlgCode"
+						   name="alg_code"
+						   value="${user.alg_code}" />
 					<button type="button" id="searchAllergyBtn">검색하기</button>
 				</div>
 
@@ -112,7 +116,7 @@
               name="allergy"
               value="${alg.alergy_name}"
               data-allergy-idx="${alg.alergy_idx}"
-              <c:if test="${fn:contains(userAlgCode, alg.alergy_name)}">checked</c:if> />
+              <c:if test="${fn:contains(user.alg_code, alg.alergy_name)}">checked</c:if> />
             <label for="allergy_${alg.alergy_idx}">${alg.alergy_name}</label>
             <span class="allergy-info">${alg.alergy_info}</span>
           </div>

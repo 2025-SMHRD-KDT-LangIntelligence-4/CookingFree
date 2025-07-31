@@ -70,19 +70,30 @@
 							value="${user.prefer_taste}" />
 					</div>
 						<div class="myPage-container">
-						  	<label style="padding-right: 10%;">요리실력</label> 
+						  	<label style="padding-right: 10%;">요리실력</label>
 							<input type="radio" id="skill_beginner" name="userCookingSkill" value="초급" checked />
 							<label for="skill_beginner">초급</label>
-							
+
 							<input type="radio" id="skill_intermediate" name="userCookingSkill" value="중급" />
 							<label for="skill_intermediate">중급</label>
-							
+
 							<input type="radio" id="skill_advanced" name="userCookingSkill" value="고급" />
 							<label for="skill_advanced">고급</label>
 						</div>
 					<div class="myPage-container">
-						<label for="userAlgCode">보유 알러지</label> <input type="text"
-							id="userAlgCode" class="userAlgCode" name="userAlgCode" readonly />
+						<label for="userAlgCode">보유 알러지</label> <!-- 화면 표시용 (readonly) -->
+						<input type="text"
+							   id="userAlgCode"
+							   value="${user.alg_code}"
+							   readonly />
+
+						<!-- 전송용 hidden -->
+						<input type="hidden"
+							   id="userAlgCodehidden"
+							   name="alg_code"
+							   value="${user.alg_code}" />
+
+
 						<button type="button" id="searchAllergyBtn">검색하기</button>
 					</div>
 
@@ -114,7 +125,7 @@
               name="allergy"
               value="${alg.alergy_name}"
               data-allergy-idx="${alg.alergy_idx}"
-              <c:if test="${fn:contains(userAlgCode, alg.alergy_name)}">checked</c:if> />
+              <c:if test="${fn:contains(user.alg_code, alg.alergy_name)}">checked</c:if> />
             <label for="allergy_${alg.alergy_idx}">${alg.alergy_name}</label>
             <span class="allergy-info">${alg.alergy_info}</span>
           </div>
@@ -133,53 +144,58 @@
 	document.getElementById('logoutBtn').addEventListener('click', function() {
 		document.getElementById('logoutForm').submit();
 	});
+
 	(function() {
-		  // 1) 요소 참조
-		  var modal          = document.getElementById('allergyModal');
-		  var openBtn        = document.getElementById('searchAllergyBtn');
-		  var cancelBtn      = document.getElementById('cancelSelectionBtn');
-		  var doneBtn        = document.getElementById('selectDoneBtn');
-		  var inputField     = document.getElementById('userAlgCode');
-		  var checkContainer = document.getElementById('allergyCheckboxes');
-		  var searchInput    = document.getElementById('allergySearchInput');
+		// 1) 요소 참조
+		var modal          = document.getElementById('allergyModal');
+		var openBtn        = document.getElementById('searchAllergyBtn');
+		var cancelBtn      = document.getElementById('cancelSelectionBtn');
+		var doneBtn        = document.getElementById('selectDoneBtn');
+		var displayField   = document.getElementById('userAlgCode'); // 화면 표시용
+		var hiddenField    = document.getElementById('userAlgCodehidden');        // 전송용 hidden
+		var checkContainer = document.getElementById('allergyCheckboxes');
+		var searchInput    = document.getElementById('allergySearchInput');
 
-		  // 2) 모달 열고 닫기 핸들러 등록
-		  openBtn.addEventListener('click', function() {
-		    modal.style.display = 'flex';  // CSS에 flex 레이아웃 설정 시
-		    searchInput.value = '';
-		    filterList('');
-		  });
+		// 2) 모달 열고 닫기 핸들러 등록
+		openBtn.addEventListener('click', function() {
+			modal.style.display = 'flex';
+			searchInput.value = '';
+			filterList('');
+		});
 
-		  cancelBtn.addEventListener('click', function() {
-		    modal.style.display = 'none';
-		  });
+		cancelBtn.addEventListener('click', function() {
+			modal.style.display = 'none';
+		});
 
-		  window.addEventListener('click', function(e) {
-		    if (e.target === modal) {
-		      modal.style.display = 'none';
-		    }
-		  });
+		window.addEventListener('click', function(e) {
+			if (e.target === modal) {
+				modal.style.display = 'none';
+			}
+		});
 
-		  // 3) 선택 완료
-		  doneBtn.addEventListener('click', function() {
-		    var checked = checkContainer.querySelectorAll('input[type="checkbox"]:checked');
-		    var names = Array.from(checked).map(function(cb) { return cb.value; });
-		    inputField.value = names.join(', ');
-		    modal.style.display = 'none';
-		  });
+		// 3) 선택 완료
+		doneBtn.addEventListener('click', function() {
+			var checked = checkContainer.querySelectorAll('input[type="checkbox"]:checked');
+			var names   = Array.from(checked).map(function(cb) { return cb.value; }).join(', ');
+			// 화면 표시용에 동기화
+			displayField.value = names;
+			// 폼 전송용 hidden에 설정
+			hiddenField.value = names;
+			modal.style.display = 'none';
+		});
 
-		  // 4) 검색 필터
-		  searchInput.addEventListener('input', function() {
-		    filterList(this.value.trim().toLowerCase());
-		  });
+		// 4) 검색 필터
+		searchInput.addEventListener('input', function() {
+			filterList(this.value.trim().toLowerCase());
+		});
 
-		  function filterList(term) {
-		    var items = checkContainer.querySelectorAll('.allergy-item');
-		    items.forEach(function(item) {
-		      var text = item.querySelector('label').textContent.toLowerCase();
-		      item.style.display = text.includes(term) ? '' : 'none';
-		    });
-		  }
-		})();
+		function filterList(term) {
+			var items = checkContainer.querySelectorAll('.allergy-item');
+			items.forEach(function(item) {
+				var text = item.querySelector('label').textContent.toLowerCase();
+				item.style.display = text.includes(term) ? '' : 'none';
+			});
+		}
+	})();
 </script>
 </html>
