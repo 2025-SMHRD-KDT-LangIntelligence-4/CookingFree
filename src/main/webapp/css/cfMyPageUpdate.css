@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 @font-face {
     font-family: 'HakgyoansimByeoljariTTF-B';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimByeoljariTTF-B.woff2') format('woff2');
@@ -6,188 +7,218 @@
     font-style: normal;
     font-size: 50px;
 }
-body{
-	font-family: 'HakgyoansimByeoljariTTF-B',
-	sans-serif !important;
+
+body {
+    font-family: 'HakgyoansimByeoljariTTF-B', sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0 10% !important;
+    max-width: 1200px;
 }
+
 /* GNB */
 .gnb {
-	display: flex; /*화면을 능동으로 배치할때*/
-	flex-wrap: nowrap; /*수직정렬을 제한함 근데 기능 구현이 실패한듯함*/
-	justify-content: space-between;
-	align-items: center;
-	padding: 20px 20px;
-	background: #fff;
-	overflow-x: auto;
-	border-bottom: 1px solid #ddd;
-	box-sizing: border-box;
-	gap: 12px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    overflow-x: auto;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    gap: 12px;
 }
 
 /* 왼쪽/오른쪽 아이콘 링크 */
 .gnb-left a, .gnb-right a {
-	display: flex;
-	align-items: center;
-	margin-left: 10px;
-	text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    text-decoration: none;
 }
 
 /* 가운데 로고 */
 .gnb-center {
-	flex: 0 1 auto; /* 기본값 auto 유지 + 필요시 줄어듬 */
-	min-width: 80px; /* 최소 넓이 확보 */
-	left: 50%;
-	transform: translateX(-50%);
-	position: absolute;
+    flex: 0 1 auto;
+    min-width: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
 }
 
 .logo {
-	font-size: clamp(18px, 4vw, 32px); /* 반응형 크기 */
-	font-weight: bold;
-	font-family: 'Inter', sans-serif;
-	color: #000;
+    font-size: clamp(18px, 4vw, 32px);
+    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    color: #000;
 }
 
 /* 오른쪽 아이콘들 */
 .gnb-right {
-	display: flex;
-	gap: 12px;
+    display: flex;
+    gap: 12px;
 }
 
 /* 아이콘 유동 크기 + 최소한의 보장 */
 .icon {
-	width: clamp(18px, 5vw, 36px);
-	height: clamp(18px, 5vw, 36px);
-	min-width: 18px;
-	min-height: 18px;
-	object-fit: contain;
+    width: clamp(18px, 5vw, 36px);
+    height: clamp(18px, 5vw, 36px);
+    min-width: 18px;
+    min-height: 18px;
+    object-fit: contain;
 }
+
 /* 모바일 대응 */
-@media ( max-width : 768px) {
-	.gnb {
-		padding: 12px;
-		gap: 8px;
-	}
-	.gnb-right a {
-		margin-left: 6px;
-	}
+@media (max-width: 768px) {
+    .gnb {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .gnb-right a {
+        margin-left: 6px;
+    }
 }
-/*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
-    
-    .all-container{
-        display: flex;
-        justify-content: center;
-        max-width: 80%;
-        max-height: 100%;
-        flex-wrap: wrap;
-        gap: 30px;
+
+/* --------------------------------------------------------------------GNB 배너입니다 -------------------------------------------------------- */
+
+.all-container {
+    display: flex;
+    justify-content: center;
+    max-width: 80%; /* 최신 코드 반영 */
+    max-height: 100%;
+    flex-wrap: wrap;
+    gap: 5%; /* 최신 코드 반영 */
+    padding-bottom: 10%; /* 최신 코드 반영 */
+    margin-top: 100px; /* 기존 my-page-title의 margin-top 대신 all-container에 적용 */
+}
+
+.my-page-title {
+    width: 100%;
+    border-bottom: 3px solid gray;
+    font-size: 5vw;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 30px;
+}
+
+.pr-img-container {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    align-items: center;
+}
+
+.pr-img {
+    width: 40%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: aqua; /* 최신 코드 반영 */
+    overflow: hidden;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.pr-img img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.name-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 10px;
+}
+
+.info-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    border-bottom: 3px solid gray;
+    padding: 10px 20px;
+    font-size: 3vw;
+}
+
+.myPage-container {
+    width: 100%;
+    height: 100%; /* 최신 코드 반영 */
+    display: flex;
+    justify-content: left;
+    gap: 20%;
+    text-align: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .myPage-container {
+        gap: 10%;
     }
-    .my-page-title{
-        width: 100%;
-        border-bottom: 3px solid gray;
-        font-size: 90px;
-        margin-top: 100px;
-        display: flex;
-        justify-content: center;
-        padding-bottom: 30px;
-    }
-    .pr-img-container{
-        display: flex;
-        justify-content: space-between;
-        width: 90%;
-        margin-top: 30px;
-        align-items: center;
-    }
-    .pr-img{
-        width:50%;
-        aspect-ratio:1/1;
-        border-radius: 50%;
-        background-color: rgb(255, 255, 255);
-        overflow:hidden;
-        margin-bottom: 20px;
-        display:block;
-        cursor: pointer;
-    }
-     .pr-img:hover{
-       opacity: 0.7;
-    }
-    .pr-img img{
-    	object-fit:cover;
-    	width:100%;
-    	height:100%;
-    	display:block;
-    }
-    .name-container{
-        display: flex;
-        justify-content: space-between;
-        width:100%;
-        margin-left: 3%;
-    }
-    .info-container{
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        align-items: center;
-        border-bottom: 3px solid gray;
-        padding: 10px 20px;
-        font-size: 25px;
-    }
-    .myPage-container{
-        width: 100%;
-        height: 5%;
-        display: flex;
-        justify-content: left;
-        gap: 20%;
-        text-align: center;
-        align-items: center;
-        
-    }
-    @media (max-width: 500px) {
-        .myPage-container{
-            gap: 10%;
-        }
-        .my-page-title{
-            font-size: 50px;
-        }
-        .info-container{
-            font-size: 15px;
-        }
-        .pr-img{
-            width: 60%;
-        }
-        .pr-img-container{
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .div1 {
-            font-size: 15px !important;
-        }
-        .userInfo, .usernick{
-            font-size: 15px !important;
-        }
-    }
-    .div1{
-        width: 30%;
-        font-size: 25px;
-    }
-    .body{
-        display: flex;
-        justify-content: center;
-    }
-    .userInfo{
+
+    .pr-img {
         width: 60%;
-        font-size: 25px;
-        overflow: auto;
     }
-    .usernick{
-        font-size: clamp(18px, 2vw, 25px);
+
+    .pr-img-container {
+        flex-wrap: wrap;
+        justify-content: center;
     }
-    .joinform {
-  display: flex;
-  flex-direction: column; /* 세로 정렬 */
-  gap: 20px;             /* 행간 띄우기 */
-  align-items: center;   /* 가로 중앙 정렬(선택) */
+
+    body {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
 }
-    .footer{
-    	height:200px;
-    }
+
+.div1 {
+    width: 30%;
+    font-size: 25px;
+}
+
+.body {
+    display: flex;
+    justify-content: center;
+    flex: 1; /* 이 부분이 중요! 남는 공간을 모두 채움 */
+}
+
+.userInfo {
+    width: 60%;
+    font-size: 3vw;
+    overflow: auto;
+    margin:0 5px 0px 5px !important;
+}
+
+.usernick {
+    font-size: 3vw;
+}
+
+.joinform {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.footer {
+    height: 200px;
+    background-color: white;
+}
+
+.form-wrapper {
+    display: flex;
+    width: 100%;
+}
+button {
+    padding: 2% 5%;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 3vw;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}

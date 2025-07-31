@@ -788,6 +788,7 @@ h3 {
 					</div>
 					<div class="right">
 						<button id="btnVoiceMode" class="btn-mode">🎤</button>
+						<p>*처음,이전,다음,다시읽어,타이머로 음성조작</p>
 						<button id="btnTouchMode" class="btn-mode">👆</button>
 					</div>
 				</div>
@@ -1035,7 +1036,7 @@ h3 {
 
 			// 내비게이션 바인딩
 			function bindNavButtons() {
-				$('.nav-buttons').hide();
+				$('.nav-buttons').show();
 
 				if (currentStage === 2) {
 					// 조리 단계: 이전/다음/음성 버튼

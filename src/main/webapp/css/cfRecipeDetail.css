@@ -9,6 +9,7 @@
 body{
 	font-family: 'HakgyoansimByeoljariTTF-B',
 	sans-serif !important;
+	margin: 0 10% !important;
 }
 .container {
 	display: flex;

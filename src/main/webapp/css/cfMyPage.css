@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 @font-face {
     font-family: 'HakgyoansimByeoljariTTF-B';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimByeoljariTTF-B.woff2') format('woff2');
@@ -7,8 +8,12 @@
     font-size: 50px;
 }
 body{
-	font-family: 'HakgyoansimByeoljariTTF-B',
-	sans-serif !important;
+	font-family: 'HakgyoansimByeoljariTTF-B', sans-serif !important;
+	display: flex; /* Flexbox 활성화 */
+	flex-direction: column; /* 자식 요소들을 세로로 정렬 */
+	min-height: 100vh; /* 최소 높이를 화면 전체 높이로 설정 */
+	margin: 0 10% !important; /* body의 기본 여백 제거 */
+	max-width: 1200px;
 }
 /* GNB */
 .gnb {
@@ -81,6 +86,7 @@ body{
         max-height: 100%;
         flex-wrap: wrap;
         gap: 30px;
+        padding-bottom: 10%;
     }
     .my-page-title{
         width: 100%;
@@ -102,7 +108,6 @@ body{
         width:40%;
         aspect-ratio: 1/1;
         border-radius: 50%;
-        background-color: aqua;
         overflow:hidden;
         margin-bottom: 20px;
     }
@@ -111,6 +116,7 @@ body{
     	width:100%;
     	height:100%;
     	display:block;
+    	
     }
     .name-container{
         display: flex;
@@ -160,6 +166,9 @@ body{
         .userInfo, .usernick{
             font-size: 15px !important;
         }
+        body{
+        	margin:0 !important;
+        }
     }
     .div1{
         width: 30%;
@@ -168,6 +177,7 @@ body{
     .body{
         display: flex;
         justify-content: center;
+        flex: 1; /* 이 부분이 중요! 남는 공간을 모두 채움 */
     }
     .userInfo{
         width: 60%;
@@ -178,6 +188,6 @@ body{
         font-size: clamp(18px, 2vw, 25px);
     }
     .footer{
-    	display:flex;
     	height:200px;
+        background-color: white; /* 푸터가 잘 보이도록 배경색 추가 */
     }

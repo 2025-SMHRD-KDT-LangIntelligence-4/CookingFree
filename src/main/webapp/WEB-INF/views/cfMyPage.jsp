@@ -5,8 +5,7 @@
     <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
-<head><!-- s -->
- 	<title>Document</title>
+<head><title>Document</title>
  	<link rel="stylesheet" href="${cpath}/css/cfMyPage.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +19,8 @@
             <div>My Page</div>
         </div>
         <div class="pr-img-container">
-            <div class="pr-img" style="margin-left: 10px;">
-                <img src="${user.profile_img}" alt="프로필 이미지" />
+            <div class="pr-img" style="margin-left: 10px;" >
+                <img src="${user.profile_img}" onerror="this.onerror=null; this.src='${cpath}/upload/profileDefault.jpg';"/>
             </div>
             <div class="name-container">
                 <div class="usernick">${user.nick}<div>등급</div></div>
@@ -62,9 +61,8 @@
             <div class="userInfo">${user.alg_code}</div>
         </div>
     </div>
-	<footer class="footer"></footer>
 </div>
-<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+<footer class="footer"></footer>
 </body>
 <script>
     console.log(

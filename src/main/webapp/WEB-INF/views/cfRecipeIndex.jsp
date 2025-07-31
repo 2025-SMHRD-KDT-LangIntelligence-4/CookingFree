@@ -11,64 +11,66 @@
 <link rel="stylesheet" href="${cpath}/css/cfRecipeIndex.css">
 </head>
 <body>
-<!--------------------------------------------------------gnb 배너입니다.---------------------------------------------------------- -->
-<jsp:include page="inc/header.jsp" />
-<!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
-<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
-<div class="title-container">
-    <div class="title">Free(G)recipe</div>
+<div class="all-wrapper">
+	<!--------------------------------------------------------gnb 배너입니다.---------------------------------------------------------- -->
+	<jsp:include page="inc/header.jsp" />
+	<!--------------------------------------------------------gnb배너입니다.---------------------------------------------------------- -->
+	<!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
+	<div class="title-container">
+	    <div class="title">Free(G)recipe</div>
+	</div>
+	
+	<div class="recipe-index-container">
+	    <c:forEach var="recipe" items="${recipeList}">
+	        <div class="recipe-index">
+	            <div class="recipe-image">
+	                <c:choose>
+	                    <c:when test="${not empty recipe.recipe_img}">
+	                        <img src="${recipe.recipe_img}" alt="${recipe.recipe_name}" style="width:100%; height:100%; object-fit: cover;" />
+	                    </c:when>
+	                    <c:otherwise>
+	                        <div style="width:100%; height:100%; background-color:#aaa; display:flex; justify-content:center; align-items:center; color:#fff;">
+	                            이미지 없음
+	                        </div>
+	                    </c:otherwise>
+	                </c:choose>
+	            </div>
+	            <div class="recipe-name" data-full-name="<c:out value='${recipe.recipe_name}' />"> <%-- data-full-name 속성을 추가 --%>
+	                <c:out value="${recipe.recipe_name}" default="이름 없음" /> <%-- 일단 전체 이름을 출력 --%>
+	            </div>
+	            <div class="recipe-date">
+	                <fmt:formatDate value="${recipe.created_at}" pattern="yyyy-MM-dd" />
+	            </div>
+	            <button class="recipeInfo"
+	                    data-recipe-idx="${recipe.recipe_idx}"
+	                    data-recipe-name="${recipe.recipe_name}"
+	                    data-recipe-img="${recipe.recipe_img}"
+	                    data-recipe-desc="${recipe.recipe_desc != null ? recipe.recipe_desc : '설명 없음'}">
+	                레시피확인하기
+	            </button>
+	        </div>
+	    </c:forEach>
+	</div>
+	
+	<!---------------------------------------------------레시피정보출력창입니다------------------------------------------------------------>
+	<div class="recipe-info-modal" id="recipeModal" style="display:none;">
+	    <div class="recipe-info-modal-content">
+	        <h2 id="modalTitle">레시피 이름입니다.</h2>
+	        <div class="recipe-info-container">
+	            <div class="recipe-info-image" id="modalImage" style="width: 200px; height: 200px; background-color: #eee; margin-right: 20px;">
+	                <!-- 이미지 들어감 -->
+	            </div>
+	            <div class="short-info" id="modalDesc" style="text-align:left; max-height:300px; overflow-y:auto;">
+	                레시피간단 정보입니다.
+	            </div>
+	        </div>
+	        <button class="move-recipe" id="modalGoButton">요리하러가기</button>   
+	        <button style="margin-top: 15px;" id="modalCloseButton">닫기</button>
+	    </div>
+	</div>
+	
+	<footer class="footer"></footer>
 </div>
-
-<div class="recipe-index-container">
-    <c:forEach var="recipe" items="${recipeList}">
-        <div class="recipe-index">
-            <div class="recipe-image">
-                <c:choose>
-                    <c:when test="${not empty recipe.recipe_img}">
-                        <img src="${recipe.recipe_img}" alt="${recipe.recipe_name}" style="width:100%; height:100%; object-fit: cover;" />
-                    </c:when>
-                    <c:otherwise>
-                        <div style="width:100%; height:100%; background-color:#aaa; display:flex; justify-content:center; align-items:center; color:#fff;">
-                            이미지 없음
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="recipe-name" data-full-name="<c:out value='${recipe.recipe_name}' />"> <%-- data-full-name 속성을 추가 --%>
-                <c:out value="${recipe.recipe_name}" default="이름 없음" /> <%-- 일단 전체 이름을 출력 --%>
-            </div>
-            <div class="recipe-date">
-                <fmt:formatDate value="${recipe.created_at}" pattern="yyyy-MM-dd" />
-            </div>
-            <button class="recipeInfo"
-                    data-recipe-idx="${recipe.recipe_idx}"
-                    data-recipe-name="${recipe.recipe_name}"
-                    data-recipe-img="${recipe.recipe_img}"
-                    data-recipe-desc="${recipe.recipe_desc != null ? recipe.recipe_desc : '설명 없음'}">
-                레시피확인하기
-            </button>
-        </div>
-    </c:forEach>
-</div>
-
-<!---------------------------------------------------레시피정보출력창입니다------------------------------------------------------------>
-<div class="recipe-info-modal" id="recipeModal" style="display:none;">
-    <div class="recipe-info-modal-content">
-        <h2 id="modalTitle">레시피 이름입니다.</h2>
-        <div class="recipe-info-container">
-            <div class="recipe-info-image" id="modalImage" style="width: 200px; height: 200px; background-color: #eee; margin-right: 20px;">
-                <!-- 이미지 들어감 -->
-            </div>
-            <div class="short-info" id="modalDesc" style="text-align:left; max-height:300px; overflow-y:auto;">
-                레시피간단 정보입니다.
-            </div>
-        </div>
-        <button class="move-recipe" id="modalGoButton">요리하러가기</button>   
-        <button style="margin-top: 15px;" id="modalCloseButton">닫기</button>
-    </div>
-</div>
-
-<footer class="footer"></footer>
 <!---------------------------------------------------페이지 양식입니다.------------------------------------------------------------- -->
 
 <script>

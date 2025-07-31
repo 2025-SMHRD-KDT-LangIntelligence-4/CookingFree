@@ -13,6 +13,9 @@
 body {
 	font-family: 'HakgyoansimByeoljariTTF-B', sans-serif !important;
 }
+.all-wrapper{
+	margin: 0 10%;
+}
 /* GNB */
 .gnb {
 	display: flex; /*화면을 능동으로 배치할때*/
@@ -74,6 +77,10 @@ body {
 	.gnb-right a {
 		margin-left: 6px;
 	}
+	.all-wrapper{
+		margin: 0;
+	}
+	
 }
 /*--------------------------------------------------------------------gnb배너입니다--------------------------------------------------------*/
 .recipe-index-container {
@@ -155,6 +162,7 @@ body {
 	.recipe-index {
 		width: calc(33.33% - 20px); /* (100% / 3) - 양쪽 마진 10px씩 = 20px */
 	}
+	
 }
 
 /* 더 큰 화면에서는 4열로 표시 (선택 사항) */
