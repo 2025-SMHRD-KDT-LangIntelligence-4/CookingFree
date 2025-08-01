@@ -176,10 +176,13 @@ body{
 }
 @media ( max-width : 768px) {
 	.gnb {
-		padding: 12px;
+		padding: 12px 0 !important;
 		gap: 8px;
 	}
 	.gnb-right a {
 		margin-left: 6px;
+	}
+	body{
+		margin: 0 !important;
 	}
 }
