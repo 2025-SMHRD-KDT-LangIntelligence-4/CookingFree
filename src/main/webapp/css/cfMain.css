@@ -82,6 +82,10 @@ body{
 	.gnb-right a {
 		margin-left: 6px;
 	}
+	.container {
+    	padding: 0 !important;
+	    		
+    }
 }
 /* Hero Section */
 .hero {
