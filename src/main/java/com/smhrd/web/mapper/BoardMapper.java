@@ -3,6 +3,7 @@ package com.smhrd.web.mapper;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -346,6 +347,10 @@ public interface BoardMapper {
     	    @Param("img") String img
     	);
 
+     // 신규: 사용자 알러지 매핑 초기화
+     @Delete("DELETE FROM cf_user_alergy WHERE user_idx = #{user_idx}")
+     void deleteUserAllergies(@Param("user_idx") Integer user_idx);
 
+   
 
 }

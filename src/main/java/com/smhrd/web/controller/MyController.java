@@ -274,30 +274,51 @@ public class MyController {
     @PostMapping("/mypageUpdate")
     public String updateUserInfo(
             @ModelAttribute Board updatedUser,
-            @RequestParam(name = "alg_code", required = false) String algCode,
+            @RequestParam(name = "alg_code", required = false) String algCode,  // "난류,돼지고기" 형태 이름 리스트
             @RequestParam(name = "profileImgFile", required = false) MultipartFile profileImgFile,
             HttpSession session) throws IOException {
 
+        // 0) 로그인 세션 체크
         Integer userIdx = (Integer) session.getAttribute("user_idx");
         if (userIdx == null) {
             return "redirect:/login";
         }
 
-        // 1) 기존 사용자 정보 조회
+        // 1) 기존 사용자 정보 조회 (이미지 유지용)
         Board existingUser = boardMapper.selectUserByIdx(userIdx);
 
-        // 2) 새 파일 업로드 여부 판단
+        // 2) 프로필 이미지 처리: 새 파일 업로드 시 저장, 아니면 기존 유지
         if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            // 새 이미지 저장
             String imgUrl = saveFile(profileImgFile, profileSubDir);
             updatedUser.setProfile_img(imgUrl);
         } else {
-            // 파일 미선택 시 기존 이미지 유지
             updatedUser.setProfile_img(existingUser.getProfile_img());
         }
 
+        // 3) cf_user 테이블 업데이트 (닉네임, alg_code, 선호맛, 요리실력, 프로필 이미지)
         updatedUser.setUser_idx(userIdx);
+        updatedUser.setAlg_code(algCode);  // 알러지 이름 리스트 그대로 저장
         boardMapper.updateUserInfo(updatedUser);
+
+        // 4) cf_user_alergy 테이블 매핑 갱신
+        if (algCode != null && !algCode.isBlank()) {
+            // 4.1) algCode 이름 리스트 → List<String>
+            List<String> alergyNames = Arrays.stream(algCode.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+            // 4.2) 알러지 이름 → alergy_idx 리스트 조회
+            List<Integer> alergyIdxList = boardMapper.getAllergyIdxListByNames(alergyNames);
+
+            // 4.3) 기존 매핑 삭제
+            boardMapper.deleteUserAllergies(userIdx);
+
+            // 4.4) 새로운 매핑 일괄 삽입
+            boardMapper.insertUserAllergies(userIdx, alergyIdxList);
+        }
+
+        // 5) 마이페이지로 리다이렉트
         return "redirect:/cfMyPage";
     }
 
