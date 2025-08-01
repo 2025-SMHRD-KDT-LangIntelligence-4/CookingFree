@@ -186,12 +186,15 @@
   .gnb-right a {
     margin-left: 6px;
   }
+  body{
+  	justify-content: none !important;
+  }
 }
 
 </style>
 </head>
 <jsp:include page="inc/header.jsp" />
-<body>
+<body style="justify-content: start;">
 
 <div class="form-container">
     <form action="cfRecipeinsert" method="post" enctype="multipart/form-data">
