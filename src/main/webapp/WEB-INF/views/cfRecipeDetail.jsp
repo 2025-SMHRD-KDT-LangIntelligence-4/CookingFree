@@ -2,7 +2,6 @@
 		 pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var="cpath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html lang="ko">
@@ -79,16 +78,8 @@
 	<!-- 레시피 메인 콘텐츠 -->
 	<div class="main-content">
 		<img class="recipe-image"
-     src="${
-       not empty recipe.recipe_img
-         ? cpath.concat(
-             fn:startsWith(recipe.recipe_img,'/') 
-               ? recipe.recipe_img 
-               : '/'.concat(recipe.recipe_img)
-           )
-         : cpath.concat('/upload/default-recipe.jpg')
-     }"
-     alt="${recipe.recipe_name}" />
+			 src="${not empty recipe.recipe_img ? recipe.recipe_img : cpath.concat('/upload/default-recipe.jpg')}"
+			 alt="${recipe.recipe_name}" />
 
 		<div class="side-panel">
 			<div class="message-box">
