@@ -296,7 +296,7 @@ public interface BoardMapper {
 
 
 
-//    알레르기 조회해놓기
+//    알레르기 조회해놓기1
      List<Board> getAllAllergies(); 
      
 

@@ -67,7 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Board existingUser = boardMapper.selectUserBySocialId(socialId, authType);
 
         if (existingUser == null) {
-            // 신규 회원은 DB 등록은 성공 핸들러에서 하므로 여기서는 넘어갑니다.
+            // 신규 회원은 DB 등록은 성공 핸들러에서 하므로 여기서는 넘어갑니다.1
             System.out.println("[OAuth2UserService] 신규 회원정보 세션저장");
         } else {
             System.out.println("[OAuth2UserService] 기존 회원 로그인 socialId=" + socialId);

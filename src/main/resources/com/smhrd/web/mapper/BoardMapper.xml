@@ -37,7 +37,7 @@
 		</foreach>
 	</select>
 
-	<!-- 4) 사용자-알러지 매핑 다중 INSERT -->
+	<!-- 4) 사용자-알러지 매핑 다중 INSERT1 -->
 	<insert id="insertUserAllergies" parameterType="map">
     INSERT INTO cf_user_alergy (user_idx, alergy_idx)
     VALUES

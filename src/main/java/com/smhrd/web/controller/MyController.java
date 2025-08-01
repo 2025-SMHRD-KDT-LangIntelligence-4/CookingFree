@@ -606,7 +606,7 @@ public class MyController {
             }
         }
 
-        // 6) 리다이렉트
+        // 6) 리다이렉트1
         return "redirect:/recipe/detail/" + recipeIdx;
     }
 }

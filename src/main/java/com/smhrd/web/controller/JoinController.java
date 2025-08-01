@@ -147,7 +147,7 @@ public class JoinController {
                 .build();
 
         try {
-            // 6) 사용자 정보 등록 (자동 생성된 PK user_idx는 newUser.user_idx에 세팅됨)
+            // 6) 사용자 정보 등록 (자동 생성된 PK user_idx는 newUser.user_idx에 세팅됨1)
             int inserted = boardMapper.insertSocialUser(newUser);
             if (inserted != 1) {
                 model.addAttribute("msg", "회원가입 처리에 실패했습니다.");

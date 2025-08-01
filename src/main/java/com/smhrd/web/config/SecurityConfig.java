@@ -85,7 +85,7 @@ public class SecurityConfig {
 
                 Board existingUser = boardMapper.selectUserBySocialId(socialId, authType);
 
-                // 신규 회원인 경우 회원가입 폼으로 이동
+                // 신규 회원인 경우 회원가입 폼으로 이동1`
                 if (existingUser == null) {
                     String sessionEmail = (email != null && !email.isBlank()) ? email : socialId;
                     session.setAttribute("socialId", socialId);
