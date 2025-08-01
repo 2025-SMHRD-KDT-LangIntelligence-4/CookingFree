@@ -25,6 +25,11 @@ body{
 	.gnb-right a {
 		margin-left: 6px;
 	}
+	.gpt-modal-content {
+    	padding: 0 !important;
+    	width: 90% !important;
+    		
+    }
 }
 /*---------------------------------------------------------------테스트용 추가.--------------------------------------------------------------*/
 .chatbot-container { max-width:900px;margin:20px auto;border:1px solid #ddd;border-radius:12px;display:flex;flex-direction:column; }

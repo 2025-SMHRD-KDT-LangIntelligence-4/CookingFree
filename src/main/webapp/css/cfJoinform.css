@@ -63,6 +63,13 @@ body{
   .gnb-right a {
     margin-left: 6px;
   }
+  body{
+  	margin: 0 !important;
+  }
+  .join-container {
+	width: 100% !important;
+		
+}
 }
 
 
