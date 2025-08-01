@@ -81,10 +81,14 @@
 		<img class="recipe-image"
      src="${
        not empty recipe.recipe_img
-         ? cpath.concat(
-             fn:startsWith(recipe.recipe_img,'/') 
-               ? recipe.recipe_img 
-               : '/'.concat(recipe.recipe_img)
+         ? (
+             fn:startsWith(recipe.recipe_img, 'http')
+               ? recipe.recipe_img
+               : cpath.concat(
+                   fn:startsWith(recipe.recipe_img, '/') 
+                     ? recipe.recipe_img 
+                     : '/'.concat(recipe.recipe_img)
+                 )
            )
          : cpath.concat('/upload/default-recipe.jpg')
      }"
