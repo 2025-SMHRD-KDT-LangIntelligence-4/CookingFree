@@ -157,10 +157,10 @@ public class JoinController {
             // 7) 알러지 매핑 처리 (복수 선택: 컴마+띄어쓰기로 분리하여 DB 매핑)
             if (userAlgCode != null && !userAlgCode.trim().isEmpty()) {
                 List<String> allergyNameList = Arrays.asList(userAlgCode.split(",\\s*"));
-                List<Integer> allergyIdxList = boardMapper.getAllergyIdxListByNames(allergyNameList);
+                List<Integer> alergy_idx_list = boardMapper.getAllergyIdxListByNames(allergyNameList);
 
-                if (!allergyIdxList.isEmpty()) {
-                    boardMapper.insertUserAllergies(newUser.getUser_idx(), allergyIdxList);
+                if (!alergy_idx_list.isEmpty()) {
+                    boardMapper.insertUserAllergies(newUser.getUser_idx(), alergy_idx_list);
                 }
             }
          

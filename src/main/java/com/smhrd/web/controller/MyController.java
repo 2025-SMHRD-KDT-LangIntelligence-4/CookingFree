@@ -344,29 +344,56 @@ public class MyController {
         // 1) 세션에서 사용자 식별자 가져오기
         HttpSession session = request.getSession(false);
         Integer userIdx = (session != null) ? (Integer) session.getAttribute("user_idx") : null;
+        System.out.println("DEBUG: userIdx = " + userIdx);
 
-        // 2) final 키워드 리스트 선언 및 초기화
-        final List<String> keywords;
+        // 2) 사용자 알러지 키워드 조회
+        final List<String> allergyKeywords;
         if (userIdx != null) {
             List<Integer> allergyIdxs = boardMapper.getUserAllergyIdxs(userIdx);
-            keywords = boardMapper.selectKeywordsByAlergyIdxs(allergyIdxs);
+            allergyKeywords = boardMapper.selectKeywordsByAlergyIdxs(allergyIdxs);
+            System.out.println("DEBUG: allergyIdxs = " + allergyIdxs);
+            System.out.println("DEBUG: allergy keywords = " + allergyKeywords);
         } else {
-            keywords = Collections.emptyList();
+            allergyKeywords = Collections.emptyList();
         }
 
-        // 3) 키워드 기반 레시피 검색
+        // 3) 기본 레시피 검색 (알러지 제외 없이)
         List<Board> results = boardMapper.searchAllergyFreeRecipes(keyword, Collections.emptyList(), 50);
+        System.out.println("DEBUG: 검색 결과 수 (필터링 전) = " + results.size());
 
-        // 4) 알러지 키워드가 있을 때만 필터링
-        List<Board> filtered = keywords.isEmpty()
+        // 4) 알러지 키워드 스트림 필터링 (대소문자·공백 정규화 포함)
+        List<Board> filtered = allergyKeywords.isEmpty()
             ? results
             : results.stream()
-                .filter(r -> keywords.stream().noneMatch(kw ->
-                    (r.getRecipe_name() != null && r.getRecipe_name().contains(kw)) ||
-                    (r.getRecipe_desc() != null && r.getRecipe_desc().contains(kw)) ||
-                    (r.getTags()        != null && r.getTags().contains(kw))
-                ))
+                .filter(r -> {
+                    String title = r.getRecipe_name() == null
+                        ? ""
+                        : r.getRecipe_name().toLowerCase().trim();
+                    String desc = r.getRecipe_desc() == null
+                        ? ""
+                        : r.getRecipe_desc().toLowerCase().trim();
+                    String tags = r.getTags() == null
+                        ? ""
+                        : r.getTags().toLowerCase().trim();
+
+                    boolean shouldKeep = allergyKeywords.stream().noneMatch(kw -> {
+                        String k = kw.toLowerCase().trim();
+                        return title.contains(k)
+                            || desc.contains(k)
+                            || tags.contains(k);
+                    });
+
+                    // 계란 관련 레시피 필터링 디버그
+                    if (title.contains("계란")) {
+                        System.out.println("DEBUG: 계란 레시피 필터링(보정후) - "
+                            + r.getRecipe_name() + " -> " + (shouldKeep ? "유지" : "제거"));
+                    }
+
+                    return shouldKeep;
+                })
                 .collect(Collectors.toList());
+
+        System.out.println("DEBUG: 검색 결과 수 (필터링 후) = " + filtered.size());
 
         // 5) 모델에 결과 바인딩
         model.addAttribute("searchResults", filtered);

@@ -304,7 +304,7 @@ public interface BoardMapper {
      List<Integer> getAllergyIdxListByNames(@Param("names") List<String> names);
 
      // 4) 사용자-알러지 매핑 테이블에 다중 insert
-     int insertUserAllergies(@Param("user_idx") Integer userIdx, @Param("alergy_idx_list") List<Integer> alergyIdxList);
+     int insertUserAllergies(@Param("user_idx") Integer userIdx, @Param("alergy_idx_list") List<Integer> alergy_idx_list);
 
      
   // 1) 사용자별 alergy_idx 리스트 조회
