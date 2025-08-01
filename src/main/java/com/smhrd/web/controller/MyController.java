@@ -94,28 +94,36 @@ public class MyController {
             return "cfMain";
         }
 
-        // 로그인 사용자 조회
         Board user;
         if (auth instanceof OAuth2AuthenticationToken oauth2) {
-            // OAuth2 로그인
+            // OAuth2 로그인 처리
             String provider = oauth2.getAuthorizedClientRegistrationId();
             String authType = provider.substring(0,1).toUpperCase();
             Map<String,Object> attrs = oauth2.getPrincipal().getAttributes();
-
-            // socialId 추출
             String socialId;
             if ("google".equals(provider)) {
                 socialId = (String) attrs.get("sub");
             } else if ("naver".equals(provider)) {
                 socialId = (String) ((Map<?,?>)attrs.get("response")).get("id");
-            } else { // kakao
+            } else {
                 socialId = String.valueOf(attrs.get("id"));
             }
             user = boardMapper.selectUserBySocialId(socialId, authType);
+
+            // DB에 없는 OAuth2 사용자라면 회원가입 페이지로
+            if (user == null) {
+                return "redirect:/cfJoinform";
+            }
         } else {
             // 로컬 로그인
             String email = auth.getName();
             user = boardMapper.selectUserByEmail(email);
+
+            // DB에 없는 로컬 사용자라면 익명 처리
+            if (user == null) {
+                model.addAttribute("hotRecipes", hotRecipes);
+                return "cfMain";
+            }
         }
 
         // 알러지 키워드 분리
@@ -128,14 +136,15 @@ public class MyController {
         List<Board> filtered = hotRecipes.stream()
                 .filter(r -> allergyKeywords.stream().noneMatch(kw ->
                         Optional.ofNullable(r.getRecipe_name()).orElse("").contains(kw) ||
-                                Optional.ofNullable(r.getRecipe_desc()).orElse("").contains(kw) ||
-                                Optional.ofNullable(r.getTags()).orElse("").contains(kw)
+                        Optional.ofNullable(r.getRecipe_desc()).orElse("").contains(kw) ||
+                        Optional.ofNullable(r.getTags()).orElse("").contains(kw)
                 ))
                 .collect(Collectors.toList());
 
         model.addAttribute("hotRecipes", filtered);
         return "cfMain";
     }
+
 
 
     @GetMapping("/login")
