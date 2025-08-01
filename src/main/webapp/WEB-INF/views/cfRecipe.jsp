@@ -783,8 +783,12 @@ h3 {
 				<div class="layout">
 					<div class="left">
 						<img
-							src="${not empty recipe.recipe_img ? recipe.recipe_img : cpath + '/upload/default-recipe.jpg'}"
-							alt="레시피 이미지" />
+								src="${not empty recipe.recipe_img
+          ? (fn:startsWith(recipe.recipe_img, 'http')
+              ? recipe.recipe_img
+              : cpath.concat(recipe.recipe_img.startsWith('/') ? '' : '/').concat(recipe.recipe_img))
+          : cpath.concat('/upload/default-recipe.jpg')}"
+								alt="레시피 이미지" />
 						<p>${recipe.recipe_desc}</p>
 					</div>
 					<div class="right">
@@ -825,9 +829,13 @@ h3 {
 						<div class="step-item" data-index="${st.index}">
 							<h3>STEP ${step.step_order}/${steps.size()}</h3>
 							<img
-								src="${not empty step.img ? step.img : cpath + '/upload/default-step.jpg'}"
-								alt="step" 
-								style="width:600px; height:600px; object-fit:cover;"/>
+									src="${not empty step.img
+          ? (fn:startsWith(step.img, 'http')
+                ? step.img
+                : cpath.concat(step.img.startsWith('/') ? '' : '/').concat(step.img))
+          : cpath.concat('/upload/default-step.jpg')}"
+									alt="step"
+									style="width:600px; height:600px; object-fit:cover;" />
 							<p class="step-text" style="position:relative; left:20%; text-align:center;">${step.cooking_desc}</p>
 						</div>
 					</c:forEach>
