@@ -39,8 +39,8 @@
 - SNS 로그인 (Kakao Developers, Naver OAuth)
 
 ### 개발 도구
-- **Build Tool**: Maven 3.9.10
-- **IDE**: IntelliJ IDEA
+- **Build Tool**: Maven 
+- **IDE**: STS(Spring Tool Suite)
 - **VCS**: Git / GitHub
 
 ---
@@ -179,7 +179,7 @@ INSERT INTO cf_alergy (alergy_name) VALUES
 ('복숭아'), ('토마토'), ('초콜릿'), ('카페인'), ('MSG'), ('글루텐'),
 ('참깨'), ('콩'), ('돼지고기'), ('소고기');
 
--- 레시피 데이터 (20만 개) 로드
+-- 레시피 데이터 로드
 -- LOAD DATA INFILE 또는 배치 스크립트로 import
 ```
 
