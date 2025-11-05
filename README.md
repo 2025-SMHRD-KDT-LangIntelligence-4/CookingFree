@@ -4,7 +4,7 @@
 
 ## 프로젝트 개요
 
-**CookingFree**는 20만 개의 레시피 데이터를 활용하여 사용자의 알레르기 정보(16가지)에 따라 자동으로 안전한 요리를 검색·추천하는 서비스입니다.
+**CookingFree**는 만개의레시피 데이터를 활용하여 사용자의 알레르기 정보(16가지)에 따라 자동으로 안전한 요리를 검색·추천하는 서비스입니다.
 
 ### 핵심 기능
 
@@ -107,7 +107,7 @@ CREATE TABLE cf_user (
 );
 ```
 
-### cf_recipe (레시피) - 20만 개 데이터
+### cf_recipe (레시피)  - 레시피 디테일 데이터 매핑 필요.
 ```sql
 CREATE TABLE cf_recipe (
   recipe_idx INT PRIMARY KEY AUTO_INCREMENT,
